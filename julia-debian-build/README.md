@@ -1,5 +1,7 @@
 # Docker
 
+The content of this folder is migrated from [okatsn/my-julia-build](https://github.com/okatsn/my-julia-build); please refer to this archive for older history.
+
 ## How to build the image solely from the Dockerfile:
 
 ```bash
