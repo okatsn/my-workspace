@@ -46,7 +46,7 @@ FROM okatsn/my-julia-build:v1.10-2024a as build-julia
 FROM okatsn/my-tex-life:v2024a1
 ```
 
-In this case, both the `Dockerfile` in `my-julia-build` and `my-tex-life` have 
+In this case, both the `Dockerfile` in `my-julia-build` and `my-tex-life` ([okatsn/MyTeXLife](https://github.com/okatsn/MyTeXLife.git)) have 
 `NB_GID` and `NB_UID` described in their `.env` file. You have to make sure they are consistent because they are critical in setting the ownership of files/applications.
 
 
