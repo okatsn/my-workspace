@@ -1,47 +1,77 @@
 # Docker
 
-# KEYNOTE: How to build the image solely from this Dockerfile:
-# (These commands should be executed in WSL at the repository directory my-julia-build)
-# $ docker-compose build
-# $ docker tag jbuild okatsn/my-julia-build:latest
-# $ docker push okatsn/my-julia-build:latest
-#
-# # Hint: Use a local build for testing
-# Create a temporary local build: `docker tag jbuild temp-local:latest`, and
-# use it in other Dockerfile `FROM temp-local as build-julia`.
-#
-# Explain:
-# - bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
-# - tag the image 
-# - push it to dockerhub
-# Why not use devcontainer.json to build (saying `$ docker-compose -f .devcontainer/docker-compose.yml build`)?
-# - Building image from devcontainer.json creates some additional files, such as those in /home/okatsn/.vscode-server and /home/okatsn/.vscode-server-insiders
-# - If there are other container (saying the-target) that was directly built upon this image, and it also has /home/okatsn/.vscode-server but should with different content, the files in source (my-julia-build) is kept, and those in the target are discarded. This is not what we want.
-#
-# References:
-# https://github.com/andferrari/julia_notebook/blob/master/Dockerfile
-# https://github.com/marius311/CMBLensing.jl/blob/master/Dockerfile
-# https://github.com/MalteBoehm/julia_docker-compose_template/blob/main/Dockerfile
-#
-#
-# KEYNOTE: How to use (please replace $NB_USER, $WORKSPACE_DIR and $VARIANT yourself). $JULIA_PROJECT is something like "v1.10".
-# FROM okatsn/my-julia-build:latest as build-julia
-# # (at USER root). Refer .env file of the last stage (i.e., my-tex-life) for NB_UID and NB_GID; or define your NB_UID and NB_GID for this build in .env, and include it in docker-compose.yml as args.
-# COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
-# COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
-# # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
-# RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
-# # (Switch to $NB_USER)
-# # Build IJulia
-# RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
-#
-# # VSCODE environment: Add Named volume in your docker-compose.yml; please refer MyTeXLife or MyTeXLifeWithJulia as an example.
+## How to build the image solely from the Dockerfile:
+
+```bash
+# These commands should be executed in WSL at the directory of my-julia-build
+cd ./julia-debian-build
+
+# bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
+docker-compose build
+
+# tag the image 
+docker tag jbuild okatsn/my-julia-build:latest
+
+# push it to dockerhub
+docker push okatsn/my-julia-build:latest
+```
+
+Use a local build for quick testing:
+- Create a temporary local build: `docker tag jbuild temp-local:latest`, and
+- use it in other Dockerfile `FROM temp-local as build-julia`.
+
+### Explain
+Why not use devcontainer.json to build (saying `$ docker-compose -f .devcontainer/docker-compose.yml build`)?
+- Building image from devcontainer.json creates some additional files, such as those in `/home/okatsn/.vscode-server` and `/home/okatsn/.vscode-server-insiders`
+- If there are other container (saying the-target) that was directly built upon this image, and it also has `/home/okatsn/.vscode-server` but should with different content, the files in source (my-julia-build) is kept, and those in the target are discarded. This is not what we want.
+- References: 
+    - https://github.com/andferrari/julia_notebook/blob/master/Dockerfile
+    - https://github.com/marius311/CMBLensing.jl/blob/master/Dockerfile
+    - https://github.com/MalteBoehm/julia_docker-compose_template/blob/main/Dockerfile
+
+## How to use `my-julia-build` in another `Dockerfile`
+
+### Import the image
+
+- `FROM okatsn/my-julia-build:latest as build-julia`
+
+### Consistent environment variable
+
+The environment variables such as `NB_UID` and `NB_GID` are defined in the `.env` file which are included as arguments for `Dockerfile` in the `docker-compose.yml`.
+
+These variables should be consistent with your final-stage image. For example: 
+
+```Dockerfile
+FROM okatsn/my-julia-build:v1.10-2024a as build-julia
+FROM okatsn/my-tex-life:v2024a1
+```
+
+In this case, both the `Dockerfile` in `my-julia-build` and `my-tex-life` have 
+`NB_GID` and `NB_UID` described in their `.env` file. You have to make sure they are consistent because they are critical in setting the ownership of files/applications.
 
 
+### `COPY` the julia installation in the last stage
+
+```Dockerfile
+COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
+
+COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
+
+# Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
+RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
+
+# Switch to $NB_USER
+USER $NB_USER
+# Build IJulia
+RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
+```
+
+### VSCODE environment
+
+Add Named volume in your docker-compose.yml; please refer [okatsn/MyTeXLife] or [MyTeXLifeWithJulia] as an example.
 
 
-
-# KEYNOTE
+### Other KEYNOTE
 1. The building of `my-julia-build` is controlled by `docker-compose.yml`.
 2. Please follow the instruction in Dockerfile.
 3. Those in `.devcontainer` is intended just for the convenience of building the image and open the container using VSCODE's interface. Without them, the building command instruction in Dockerfile should still work.
