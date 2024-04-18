@@ -9,11 +9,6 @@
 # $ docker tag devjuliatex okatsn/my-tex-life-with-julia:latest
 # $ docker push okatsn/my-tex-life-with-julia:latest
 
-# KEYNOTE: Trouble shooting
-# Use the following command if it fails to build in one machine but success in the other with exactly the same script.
-# - `docker builder prune` # Clear Build Cache
-# - `docker volume prune` # Remove Unused Volumes
-
 # # WARN: Try BOTH delete volumes and `docker builder prune` before rebuild. Ohterwise, the Project.toml won't be overwritten by Project_for_env.toml.
 # # Explain:
 # # If the volume mounted for julia already exists, anything modifying the volume won't work. For example, 
@@ -31,8 +26,8 @@
 
 FROM okatsn/my-typst-space AS build0
 
-FROM okatsn/my-julia-build:v1.10-2024a as build-julia
-FROM okatsn/my-tex-life:v2024a1
+FROM okatsn/my-julia-build:v1.10-2024b as build-julia
+FROM okatsn/my-tex-life:v2024b
 # Docker image https://hub.docker.com/repository/docker/okatsn/my-tex-life/general built from https://github.com/okatsn/MyTeXLife
 
 
