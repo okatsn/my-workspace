@@ -42,7 +42,12 @@ ARG JULIA_VER
 RUN curl -sL https://raw.githubusercontent.com/retorquere/zotero-deb/master/install.sh | bash
 RUN apt-get update && apt-get -y install \
     zotero
+# Get the better-bibtex file
+COPY .devcontainer/get_zoteroaddons.sh /tmp/
+RUN chmod +x /tmp/get_zoteroaddons.sh && \
+    . /tmp/get_zoteroaddons.sh
 # TODO: Install Zotero and BibTeX (cannot be done in Dockerfile)
+# KEYNOTE: . /tmp/get_zoteroaddons.sh is prefered than sh /tmp/get_zoteroaddons.sh, where in the later sh might not be available. See https://stackoverflow.com/a/34217720
 # - Download Better BibTeX: https://github.com/retorquere/zotero-better-bibtex/releases/latest 
 # - $ zotero          // open zotero (a window of zotero app should pop out)
 # - In Zotero app, click Tools > Add-ons > ⚙️ (setting icon) > Install Add-on from file... and click on the zotero-better-bibtex-6.7.143.xpi you just downloaded.
