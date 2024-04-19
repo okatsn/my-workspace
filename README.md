@@ -27,3 +27,19 @@ ONLY IF the it was not the latest `git` being installed, try either the followin
 Configuration:
 - `git config --global user.name "YOUR_USERNAME"`
 - `git config --global user.email "YOUR_ADDRESS@Xmail.com"`
+
+## This repository contains submodules
+
+### Initialize/Update `okatsn/my-workspace`
+
+
+Initialize
+```bash
+git clone --recurse-submodules https://github.com/okatsn/my-workspace.git
+# The `--recurse-submodules` is available for Git 2.13 or later, which is more efficient than `--recursive`. See https://stackoverflow.com/questions/3796927/how-do-i-git-clone-a-repo-including-its-submodules
+cd my-workspace
+git submodule init
+git submodule update
+```
+
+
