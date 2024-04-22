@@ -41,6 +41,8 @@
                 "iterative.dvc", // data version control
                 // Zotero
                 "XING.zotero-cite",
+                // Quarto
+                "quarto.quarto",
             ],
             "settings": {
                 "python.terminal.activateEnvironment": false,
