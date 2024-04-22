@@ -6,7 +6,7 @@
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
-    "service": "devtj", // the service in docker-compose.yml // SETME: Rename all of this name if you are building another container of this kind.
+    "service": "devtj", // the service in docker-compose.yml // SETME: Rename ALL of this name if you are building another container of this kind.
     // "runServices": [ // This seems useless
     //     "devtj"
     // ],

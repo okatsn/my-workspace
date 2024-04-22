@@ -4,6 +4,7 @@
 version: "3.8"
 
 services:
+  # SETME: the service name should be consistent with that in devcontainer.json
   devtj:
     build:
       context: ..

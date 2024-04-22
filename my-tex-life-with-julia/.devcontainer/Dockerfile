@@ -26,11 +26,11 @@
 
 FROM okatsn/my-typst-space AS build0
 
-FROM okatsn/my-julia-build:v1.10-2024b as build-julia
+FROM okatsn/my-julia-build:v1.10-2024c as build-julia
 
-FROM okatsn/my-quarto-build:2024b as build-quarto
+FROM okatsn/my-quarto-build:2024c as build-quarto
 
-FROM okatsn/my-tex-life:v2024b
+FROM okatsn/my-tex-life:2024c
 # Docker image https://hub.docker.com/repository/docker/okatsn/my-tex-life/general built from https://github.com/okatsn/MyTeXLife
 
 

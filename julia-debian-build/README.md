@@ -9,7 +9,7 @@ The content of this folder is migrated from [okatsn/my-julia-build](https://gith
 cd ./julia-debian-build
 
 # bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
-docker-compose --env-file ../my-build.env build
+docker-compose --env-file ../my-build.env build --no-cache
 
 # tag the image 
 docker tag jbuild okatsn/my-julia-build:latest
