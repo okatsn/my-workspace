@@ -8,8 +8,8 @@
 # - A Debian basis, which should be sticked to qdm12/latexdevcontainer.
 # - Explain: althougth the installation of julia on a Ubuntu basis works, but for the use based on a `my-tex-life` basis (such as MyTeXLifeWithJulia) there might be compatibility issues.
 # - See https://github.com/qdm12/latexdevcontainer/blob/master/Dockerfile and https://github.com/okatsn/MyTeXLife
-ARG DEBIAN_VERSION=bullseye-slim
-FROM debian:${DEBIAN_VERSION} AS chktex
+ARG DEBIAN_VERSION="blablabla"
+FROM debian:${DEBIAN_VERSION}
 
 # Set non-interactive mode
 ENV DEBIAN_FRONTEND=noninteractive
@@ -18,8 +18,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y install \
     gdebi-core \
     curl \
-    tar \
-    git
+    tar
 
 # Install Julia 
 # SETME: Set the julia version here.

@@ -27,6 +27,9 @@
 FROM okatsn/my-typst-space AS build0
 
 FROM okatsn/my-julia-build:v1.10-2024b as build-julia
+
+FROM okatsn/my-quarto-build:2024b as build-quarto
+
 FROM okatsn/my-tex-life:v2024b
 # Docker image https://hub.docker.com/repository/docker/okatsn/my-tex-life/general built from https://github.com/okatsn/MyTeXLife
 
@@ -42,7 +45,12 @@ ARG JULIA_VER
 RUN curl -sL https://raw.githubusercontent.com/retorquere/zotero-deb/master/install.sh | bash
 RUN apt-get update && apt-get -y install \
     zotero
+# Get the better-bibtex file
+COPY .devcontainer/get_zoteroaddons.sh /tmp/
+RUN chmod +x /tmp/get_zoteroaddons.sh && \
+    . /tmp/get_zoteroaddons.sh
 # TODO: Install Zotero and BibTeX (cannot be done in Dockerfile)
+# KEYNOTE: . /tmp/get_zoteroaddons.sh is prefered than sh /tmp/get_zoteroaddons.sh, where in the later sh might not be available. See https://stackoverflow.com/a/34217720
 # - Download Better BibTeX: https://github.com/retorquere/zotero-better-bibtex/releases/latest 
 # - $ zotero          // open zotero (a window of zotero app should pop out)
 # - In Zotero app, click Tools > Add-ons > ⚙️ (setting icon) > Install Add-on from file... and click on the zotero-better-bibtex-6.7.143.xpi you just downloaded.
@@ -84,6 +92,9 @@ COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
+
+# # Quarto part
+COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
 
 # WORKDIR $WORKSPACE_DIR
 USER $NB_USER
