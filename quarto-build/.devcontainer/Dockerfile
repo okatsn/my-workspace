@@ -1,5 +1,5 @@
-# Build stage
-FROM okatsn/my-julia-space:v1.9.4
+ARG DEBIAN_VERSION="blablabla"
+FROM debian:${DEBIAN_VERSION}
 
 USER root
 RUN apt-get update \
@@ -14,7 +14,6 @@ RUN apt-get update \
 # ghostscript for handling eps image files
 # pdf2svg is for vscode eps-preview extension
 # gdebi-core is for install deb file
-# tree is a convenient tool to print directory tree
 
 # Install quarto
 # See: 

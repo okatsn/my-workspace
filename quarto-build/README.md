@@ -1,8 +1,21 @@
 [TOC]
 
 # README
-This is a workspace of the julia language built based on [jupyter/minimal-notebook](https://hub.docker.com/r/jupyter/minimal-notebook).
-You can use built image `FROM` [okatsn/my-julia-space](https://hub.docker.com/repository/docker/okatsn/my-julia-space).
+## How to build the image solely from the Dockerfile:
+
+```bash
+# These commands should be executed in WSL at the directory of my-quarto-build
+cd ./quarto-debian-build
+
+# bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
+docker-compose --env-file ../my-build.env build
+
+# tag the image 
+docker tag qbuild okatsn/my-quarto-build:latest
+
+# push it to dockerhub
+docker push okatsn/my-quarto-build:latest
+```
 
 ## Instruction for developer
 ### Build the image based on files in .devcontainer
