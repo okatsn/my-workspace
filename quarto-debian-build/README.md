@@ -17,6 +17,23 @@ docker tag qbuild okatsn/my-quarto-build:latest
 docker push okatsn/my-quarto-build:latest
 ```
 
+## How to use:
+```Dockerfile
+FROM okatsn/my-quarto-build:latest as build-quarto
+COPY --from=build-quarto --chown=$NB_UID:$NB_GID /usr/local/bin/quarto /usr/local/bin/quarto
+```
+You can use the following commands to find out dependencies for quarto
+- `which quarto`
+- `type quarto`
+- `dpkg-query -W -f='${Depends}\n' quarto`
+- `apt-cache rdepends quarto`
+- `apt-cache depends quarto`
+Search the log by keyword or time:
+- `cat /var/log/dpkg.log | grep '2024-04-22'`
+- `cat /var/log/dpkg.log | grep 'quarto'`
+
+
+
 ## Instruction for developer
 ### Build the image based on files in .devcontainer
 Make sure the following files are prepared:

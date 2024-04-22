@@ -23,17 +23,4 @@ RUN curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb \
 RUN mkdir -p /home/$NB_USER/.julia/config
 COPY startup_ijulia.jl /home/$NB_USER/.julia/config/startup_ijulia.jl
 
-# # How to use:
-# FROM okatsn/my-quarto-build:v1.10-2024b as build-quarto
-# COPY --from=build-quarto --chown=$NB_UID:$NB_GID /usr/local/bin/quarto /usr/local/bin/quarto
-#
-# You can use the following commands to find out dependencies for quarto
-# - which quarto
-# - type quarto
-# - dpkg-query -W -f='${Depends}\n' quarto
-# - apt-cache rdepends quarto
-# - apt-cache depends quarto
-# Search the log by keyword or time:
-# - cat /var/log/dpkg.log | grep '2024-04-22'
-# - cat /var/log/dpkg.log | grep 'quarto'
 
