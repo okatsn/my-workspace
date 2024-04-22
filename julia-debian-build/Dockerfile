@@ -18,8 +18,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y install \
     gdebi-core \
     curl \
-    tar \
-    git
+    tar
 
 # Install Julia 
 # SETME: Set the julia version here.
