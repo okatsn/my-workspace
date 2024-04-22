@@ -95,6 +95,9 @@ RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
 
 # # Quarto part
 COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
+# Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
+RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
+
 
 # WORKDIR $WORKSPACE_DIR
 USER $NB_USER
