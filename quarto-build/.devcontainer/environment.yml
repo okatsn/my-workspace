@@ -1,0 +1,32 @@
+name: base
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - mamba=1.4
+  - conda==23.1
+  - pip==23.1.2=pyhd8ed1ab_0
+  - ca-certificates=2023.5.7=hbcca054_0
+  - certifi=2023.5.7=pyhd8ed1ab_0
+  - openssl=3.1.0=hd590300_3
+  # - scipy=1.7
+  # - scikit-learn=1.0
+  # - numpy=1.21
+  # - matplotlib=3.5
+  # - pandas=1.3
+  # # data version control
+  # - dvc-s3=2.9
+  # - dvc-gdrive=2.9
+  # # dev
+  # - notebook=6.4
+  # - jupyterhub=2.0
+  # - jupyterlab=3.2
+  # - ipywidgets=7.6
+  # - pre-commit=2.16
+  # - invoke=1.6
+  # - commitizen=2.20
+
+prefix: /opt/conda
+
+# Hints:
+# - use `conda list --explicit` to list all currently installed with version and hash
