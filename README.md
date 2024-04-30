@@ -30,6 +30,18 @@ Configuration:
 
 ## This repository contains submodules
 
+## `dive` into the image
+Using `dive` to inspect what modifications were made in one layer:
+
+Example
+```bash
+cd ./python-debian-build
+docker-compose --env-file ../my-build.env build --no-cache
+dive pbuild
+```
+
+
+Referring https://github.com/wagoodman/dive
 ### Initialize/Update `okatsn/my-workspace`
 
 

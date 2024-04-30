@@ -10,9 +10,4 @@ RUN apt-get update \
     python3-pip \
     && apt-get clean && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
-# Install quarto
-# See: 
-# - https://www.r-bloggers.com/2022/07/how-to-set-up-quarto-with-docker-part-1-static-content/
-# - https://docs.posit.co/resources/install-quarto/#quarto-deb-file-install
-
-
+RUN pip3 install tldr
