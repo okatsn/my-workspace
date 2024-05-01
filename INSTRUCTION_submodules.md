@@ -1,5 +1,19 @@
 ## More about submodules
 
+### Initialize submodules
+
+When you clone a repo in a fresh new local directory, without initiation there will be no information in `.git/config` and no referencing files in `.git/modules`
+
+```bash
+# Initialize without clone
+git submodule init 
+
+# Initialize and clone
+git submodule update --init
+```
+
+
+
 ### Add submodules
 
 ```bash
