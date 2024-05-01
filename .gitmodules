@@ -1,3 +1,6 @@
 [submodule "my-tex-life"]
 	path = my-tex-life
 	url = https://github.com/okatsn/MyTeXLife.git
+[submodule "typst-debian-build"]
+	path = typst-debian-build
+	url = https://github.com/okatsn/my-typst-space.git
