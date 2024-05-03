@@ -55,3 +55,17 @@ git submodule update
 ```
 
 
+## Trouble shooting
+### Docker
+
+Use the following command if it fails to build in one machine but success in the other with exactly the same script.
+- `docker image prune`:  Clear images
+- `docker builder prune`:  Clear Build Cache
+- `docker volume prune`: Remove Unused Volumes
+- `docker system prune -a --volumes`: Remove systemwide volumes. (DANGER!)
+- `docker container prune`: Remove all stopped container.
+
+See references:
+- [docker system](https://docs.docker.com/reference/cli/docker/system/)
+- [Remove All Containers and Images in Docker](https://www.geeksforgeeks.org/remove-all-containers-and-images-in-docker/)
+- [Problem building dockerfile-with-features after upgrading to debian bookworm](https://github.com/microsoft/vscode-remote-release/issues/8202)
