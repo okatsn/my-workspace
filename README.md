@@ -28,6 +28,24 @@ Configuration:
 - `git config --global user.name "YOUR_USERNAME"`
 - `git config --global user.email "YOUR_ADDRESS@Xmail.com"`
 
+### Trouble shooting
+
+If you encounter authentication issues, an easy way to authenticate is use `gh` to open a page in your Windows browser and authenticate this WSL machine:
+
+```
+sudo apt update
+sudo apt install gh
+```
+
+```
+gh auth login
+```
+
+See also:
+- [Installing gh on Linux and BSD](https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
+- [About authentication to GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github)
+- [gh auth login](https://cli.github.com/manual/gh_auth_login)
+
 ## This repository contains submodules
 
 ## `dive` into the image
