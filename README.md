@@ -1,16 +1,16 @@
 # README
 
 ## Install WSL
-Open the Windows Terminal, install WSL2 and the Ubuntu-22.04 distribution as default with the following command.
+Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
 
 ```bash
-wsl --install -d Ubuntu-22.04
-wsl --set-default Ubuntu-22.04
+wsl --install -d Ubuntu-24.04
+wsl --set-default Ubuntu-24.04
 ```
 
 Confirm the followings:
-- `wsl -l -v`: Check if your Ubuntu-22.04 distribution uses WSL 2.
-- `wsl --set-version Ubuntu-22.04 2`: Set WSL version to `2` if it is not.
+- `wsl -l -v`: Check if your Ubuntu-24.04 distribution uses WSL 2.
+- `wsl --set-version Ubuntu-24.04 2`: Set WSL version to `2` if it is not.
 
 ## Install and configure `git`
 
@@ -77,7 +77,7 @@ See also:
 
 ### Permission Denied on mounted volumes
 
-For example, if you mount the `~/.ssh` in host to `/home/jovyan/.ssh` in container, "Permission denied" error will occur IF **the default user of host** (e.g., `okatsn`) do not have permissions. Many of these issues can be easily solved by execute the following code on **host**:
+For example, if you mount the `~/.ssh` in host to `/home/jovyan/.ssh` in container, "Permission denied" error will occur IF **the default user of host** (e.g., `okatsn`) do not have permissions. Many of these issues can be solved by executing the following code on **host**:
 
 ```bash
 sudo chown -R okatsn:okatsn /home/okatsn/
@@ -86,8 +86,8 @@ sudo chown -R okatsn:okatsn /home/okatsn/
 Hints for trouble shooting this kind of issues:
 - Check user id and group id of the default user in **host** and  **container** separately. (Use `id -g [<username>]` and `id [<username>]`)
 - Use `ls -la` to check the folder/file that causes a Permissions-denied error in **host** and  **container** separately.
-- Use `sudo chown [-R]`
-- Use `chmod 755 <filename>` to fix the modifiability of a certain file. `755` (drwxr-xr-x) is a typical permission for those in the home directory that should be.
+- Use `sudo chown [-R]` as needed.
+- Use `chmod 755 <filename>` to fix the modifiability of a certain file as needed. `755` (drwxr-xr-x) is a typical permission for those in the home directory that should be.
 > (`[]` denotes optional arguments or flags)
 
 
