@@ -1,3 +1,17 @@
+[README](#readme)
+- [README](#readme)
+  - [Install WSL](#install-wsl)
+  - [Install and configure `git`](#install-and-configure-git)
+  - [This repository contains submodules](#this-repository-contains-submodules)
+  - [Export and Import](#export-and-import)
+  - [`dive` into the image](#dive-into-the-image)
+    - [Initialize/Update `okatsn/my-workspace`](#initializeupdate-okatsnmy-workspace)
+  - [Trouble shooting](#trouble-shooting)
+    - [Git](#git)
+    - [Permission Denied on mounted volumes](#permission-denied-on-mounted-volumes)
+    - [Docker](#docker)
+
+
 # README
 
 ## Install WSL
@@ -31,6 +45,40 @@ Configuration:
 
 ## This repository contains submodules
 
+## Export and Import
+Referring [How can I change the location of docker images when using Docker Desktop on WSL2 with Windows 10 Home?](https://stackoverflow.com/questions/62441307/how-can-i-change-the-location-of-docker-images-when-using-docker-desktop-on-wsl2)
+> A similar ref.: https://needlify.com/post/how-to-move-wsl-distributions-including-docker-images-to-new-locations-on-windows-6412384cbd14c
+
+In windows Terminal, 
+list all the distributions:
+```
+wsl --list -v
+```
+
+```
+  NAME                   STATE           VERSION
+* Ubuntu-24.04           Running         2
+  Ubuntu-22.04           Stopped         2
+  docker-desktop-data    Stopped         2
+  Ubuntu-20.04           Stopped         2
+  docker-desktop         Stopped         2
+```
+> Use `wsl --shutdown` in case the one you are going to move is running. See also [Move docker-desktop-data distro out of System Drive](https://dev.to/kim-ch/move-docker-desktop-data-distro-out-of-system-drive-4cg2)
+
+**Export**
+```
+wsl --export docker-desktop-data "D:\temp\docker-desktop-data.tar"
+```
+
+**Unregister** old
+```
+wsl --unregister docker-desktop-data
+```
+
+**Import** to the target (e.g., "D:\WSL\data")
+```
+wsl --import docker-desktop-data "D:\WSL\data" "D:\temp\docker-desktop-data.tar" --version 2
+```
 ## `dive` into the image
 Using `dive` to inspect what modifications were made in one layer:
 
