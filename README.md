@@ -28,23 +28,6 @@ Configuration:
 - `git config --global user.name "YOUR_USERNAME"`
 - `git config --global user.email "YOUR_ADDRESS@Xmail.com"`
 
-### Trouble shooting
-
-If you encounter authentication issues, an easy way to authenticate is use `gh` to open a page in your Windows browser and authenticate this WSL machine:
-
-```
-sudo apt update
-sudo apt install gh
-```
-
-```
-gh auth login
-```
-
-See also:
-- [Installing gh on Linux and BSD](https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
-- [About authentication to GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github)
-- [gh auth login](https://cli.github.com/manual/gh_auth_login)
 
 ## This repository contains submodules
 
@@ -74,6 +57,40 @@ git submodule update
 
 
 ## Trouble shooting
+### Git
+
+If you encounter authentication issues, an easy way to authenticate is use `gh` to open a page in your Windows browser and authenticate this WSL machine:
+
+```bash
+sudo apt update
+sudo apt install gh
+```
+
+```bash
+gh auth login
+```
+
+See also:
+- [Installing gh on Linux and BSD](https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
+- [About authentication to GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github)
+- [gh auth login](https://cli.github.com/manual/gh_auth_login)
+
+### Permission Denied on mounted volumes
+
+For example, if you mount the `~/.ssh` in host to `/home/jovyan/.ssh` in container, "Permission denied" error will occur IF **the default user of host** (e.g., `okatsn`) do not have permissions. Many of these issues can be easily solved by execute the following code on **host**:
+
+```bash
+sudo chown -R okatsn:okatsn /home/okatsn/
+```
+
+Hints for trouble shooting this kind of issues:
+- Check user id and group id of the default user in **host** and  **container** separately. (Use `id -g [<username>]` and `id [<username>]`)
+- Use `ls -la` to check the folder/file that causes a Permissions-denied error in **host** and  **container** separately.
+- Use `sudo chown [-R]`
+- Use `chmod 755 <filename>` to fix the modifiability of a certain file. `755` (drwxr-xr-x) is a typical permission for those in the home directory that should be.
+> (`[]` denotes optional arguments or flags)
+
+
 ### Docker
 
 Use the following command if it fails to build in one machine but success in the other with exactly the same script.
