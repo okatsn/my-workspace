@@ -2,6 +2,8 @@
 - [README](#readme)
   - [Install WSL](#install-wsl)
   - [Install and configure `git`](#install-and-configure-git)
+  - [Install others (optional)](#install-others-optional)
+    - [Install DVC](#install-dvc)
   - [This repository contains submodules](#this-repository-contains-submodules)
   - [Export and Import](#export-and-import)
   - [`dive` into the image](#dive-into-the-image)
@@ -42,6 +44,11 @@ Configuration:
 - `git config --global user.name "YOUR_USERNAME"`
 - `git config --global user.email "YOUR_ADDRESS@Xmail.com"`
 
+## Install others (optional)
+
+### Install DVC
+
+Please refer to [DVC-Installation on Linux](https://dvc.org/doc/install/linux#installation-on-linux) or [this Dockerfile](https://github.com/okatsn/MyTeXLife/blob/main/.devcontainer/Dockerfile) to install DVC.
 
 ## This repository contains submodules
 
