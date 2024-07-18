@@ -16,6 +16,11 @@ sudo apt install nodejs npm -y
 
 ## To create a mustache project
 
+- Create and go to the project directory
+  ```bash
+  mkdir mustache-project
+  cd mustache-project
+  ```
 - Initiate a Node.js project of Mustache:
   ```bash
   npm init -y
