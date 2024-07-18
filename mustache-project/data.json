@@ -1,0 +1,14 @@
+{
+    "title": "Shopping List",
+    "items": [
+        {
+            "name": "Milk"
+        },
+        {
+            "name": "Eggs"
+        },
+        {
+            "name": "Bread"
+        }
+    ]
+}
