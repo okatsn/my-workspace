@@ -6,7 +6,8 @@
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
-    "service": "{{service}}", // the service in docker-compose.yml 
+    // the service in docker-compose.yml 
+    "service": "{{service}}", 
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {

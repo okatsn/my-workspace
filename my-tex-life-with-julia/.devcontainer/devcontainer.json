@@ -2,14 +2,12 @@
 // - For "name", make it unique among existing container
 // - For all others, make it the same/consistent with that in https://github.com/okatsn/MyTeXLife
 {
-    "name": "MyTeXLifeWithJulia", // SETME: Rename all of this name if you are building another container of this kind.
+    "name": "MyTeXLifeWithJulia", 
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
-    "service": "devtj", // the service in docker-compose.yml // SETME: Rename ALL of this name if you are building another container of this kind.
-    // "runServices": [ // This seems useless
-    //     "devtj"
-    // ],
+    // the service in docker-compose.yml 
+    "service": "devtj", 
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {

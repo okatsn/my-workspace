@@ -4,7 +4,7 @@
 version: "3.8"
 
 services:
-  # SETME: the service name should be consistent with that in devcontainer.json
+  # The service name should be consistent with that in devcontainer.json
   devtj:
     build:
       context: ..
@@ -15,10 +15,13 @@ services:
       args:
         JULIA_VER: "v1.10" # SETME: Set the julia version. It should be consistent with that of my-julia-build in the Dockerfile.
 
-    image: texjuliadev # SETME: Better not to have duplicate image name
-    init: true
+    # Better not to have duplicate image name
+    image: texjuliadev 
+    init: true 
     # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
-    container_name: tex-with-julia # SETME: Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
+    
+    # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
+    container_name: tex-with-julia 
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ../:/workspace
