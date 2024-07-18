@@ -9,7 +9,8 @@ FROM quay.io/jupyter/minimal-notebook:2024-07-15
 # ENV CHOWN=yes
 
 # Referring [Permission-specific configurations](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#permission-specific-configurations)
-ENV GRANT_SUDO=yes
+# # This command is currently useless
+# ENV GRANT_SUDO=yes
 
 
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
@@ -22,8 +23,6 @@ USER root
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
 
-
-RUN su ${NB_USER}
 
 # Switch to $NB_USER
 # # Switch to $NB_USER is essential for the following RUN julia -e ...
