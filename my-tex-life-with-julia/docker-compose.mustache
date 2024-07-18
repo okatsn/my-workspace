@@ -1,3 +1,4 @@
+<!DOCTYPE yml>
 # # Instruction
 # - assign a new image name
 # - make this file consistent with that in https://github.com/okatsn/MyTeXLife
@@ -5,7 +6,7 @@ version: "3.8"
 
 services:
   # SETME: the service name should be consistent with that in devcontainer.json
-  devtj:
+  {{service}}:
     build:
       context: ..
       #     That is out of /.devcontainer
@@ -15,10 +16,10 @@ services:
       args:
         JULIA_VER: "v1.10" # SETME: Set the julia version. It should be consistent with that of my-julia-build in the Dockerfile.
 
-    image: texjuliadev # SETME: Better not to have duplicate image name
+    image: {{image}} # SETME: Better not to have duplicate image name
     init: true
     # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
-    container_name: tex-with-julia # SETME: Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
+    container_name: {{docker_compose_name}} # SETME: Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ../:/workspace
