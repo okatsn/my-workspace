@@ -16,6 +16,9 @@ sudo apt install nodejs npm -y
 
 ## To create a mustache project
 
+!!! note 
+    Replace `mustache-project` to something like `my-tex-life-with-julia` .
+
 - Create and go to the project directory
   ```bash
   mkdir mustache-project
@@ -26,7 +29,6 @@ sudo apt install nodejs npm -y
   npm init -y
   npm install mustache
   ```
-- Install Mustache: `npm install mustache`.
 - Create the file `template.mustache`.
 - Create the files `render.js` script and `data.json` for variables.
 
@@ -35,6 +37,6 @@ sudo apt install nodejs npm -y
 ## To use the mustache template
 
 (in continuation to [To create a mustache project](#to-create-a-mustache-project))
-
+- Go to the project directory `cd mustache-project` (where there is `render.js`).
 - Set variables in `data.json`
 - Run `node render.js` in the directory of the Mustache project.
