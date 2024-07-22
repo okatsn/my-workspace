@@ -76,6 +76,21 @@ USER $NB_USER
 # Build IJulia
 RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
 
+# Referring: https://github.com/okatsn/MyJuliaSpace/blob/master/.devcontainer/Dockerfile
+RUN mamba install --quiet --yes \
+    dvc \
+    # ipywidgets=8.0 \
+    # invoke=2.0 \
+    # pre-commit=3.1 \
+    # commitizen=2.28 \
+    # dvc=3.33.4 \
+    # dvc-s3=2.21 \
+    # dvc-gdrive=2.19 \
+    # # DVC-S3 uses S3 protocol, such as for Amazon S3
+    # jupyter_contrib_nbextensions=0.7 \
+    && mamba clean --all -f -y \
+    && npm cache clean --force
+
 
 # You must start the container as NB_USER, because all apps are owned by NB_USER. For example, error will occur if a root user in Julia pkg REPL do `registry up`.
 # USER root
