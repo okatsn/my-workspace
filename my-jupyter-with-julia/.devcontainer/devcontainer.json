@@ -23,17 +23,12 @@
                 // "ms-python.vscode-pylance",
                 // "quarto.quarto",
                 "tamasfe.even-better-toml",
-                // MyTeXLife Exclusive
-                "james-yu.latex-workshop", // Latex
-                "mathematic.vscode-latex",
-                "jeffersonqin.latex-snippets-jeff",
-                "tecosaur.latex-utilities",
                 "valentjn.vscode-ltex", // Spell & Grammar check
                 "stkb.rewrap", // rewrap comments after n characters on one line
                 "vscode-icons-team.vscode-icons",
                 // Typst extensions
                 "nvarner.typst-lsp",
-                "mgt19937.typst-preview",
+                "myriad-dreamin.tinymist",
                 "oijaz.unicode-latex",
                 // DVC
                 "iterative.dvc", // data version control
@@ -47,14 +42,6 @@
                     "~/.julia/dev",
                     // KEYNOTE: it is allows GPM (felipecaputo.git-project-manager) to open repo in the "projects" in a new window
                     "/workspace"
-                ],
-                // MyTeXLife Exclusive
-                "latex-workshop.latexindent.path": "latexindent",
-                "latex-workshop.latexindent.args": [
-                    "-c",
-                    "%DIR%/",
-                    "%TMPFILE%",
-                    "-y=defaultIndent: '%INDENT%'"
                 ],
                 // SECTION: MyTeXLifeWithJulia Exclusive
                 "ltex.dictionary": {
@@ -77,11 +64,6 @@
                 "julia.environmentPath": "/workspace", // KEYNOTE: it is expected to be WORKSPACE_DIR  defined in Dockerfile
                 // General settings
                 "files.eol": "\n",
-                // Latex settings
-                "latex-workshop.linting.chktex.enabled": true,
-                "latex-workshop.linting.chktex.exec.path": "chktex",
-                "latex-workshop.latex.clean.subfolder.enabled": true,
-                "latex-workshop.latex.autoClean.run": "onBuilt",
                 "editor.formatOnSave": true,
                 "files.associations": {
                     "*.tex": "latex"
