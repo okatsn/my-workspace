@@ -77,8 +77,11 @@ USER $NB_USER
 RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
 
 # Referring: https://github.com/okatsn/MyJuliaSpace/blob/master/.devcontainer/Dockerfile
+# Also see: https://dvc.org/doc/install/linux#install-with-pip
 RUN mamba install --quiet --yes \
     dvc \
+    dvc-gdrive \
+    dvc-webdav \
     # ipywidgets=8.0 \
     # invoke=2.0 \
     # pre-commit=3.1 \
