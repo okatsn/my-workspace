@@ -9,7 +9,7 @@
     // the service in docker-compose.yml 
     "service": "devjj", 
     "shutdownAction": "stopCompose",
-    "workspaceFolder": "/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
+    "workspaceFolder": "~/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
         "vscode": {
             "extensions": [
