@@ -13,6 +13,20 @@ FROM quay.io/jupyter/minimal-notebook:2024-07-15
 # # This command is currently useless
 # ENV GRANT_SUDO=yes
 
+
+
+ARG HOME="/home/$NB_USER"
+# KEYNOTE: the tailing "/" matters. 
+
+ARG VSCODE_PATH="$HOME/.vscode-server/"
+ARG WORKSPACE_DIR="$HOME/workspace/"
+ARG JULIA_PKG_DEVDIR="$HOME/.julia/dev/"
+# just let it be default. See [JULIA_PKG_DEVDIR](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_PKG_DEVDIR). Be aware that some tests will depend on JULIA_PKG_DEVDIR.
+ARG SUB_PROJECT_DIR="$HOME/workspace/projects/" 
+# KEYNOTE: also check 
+# - "gitProjectManager.baseProjectsFolders" in devcontainer.json that if GPM can get JULIA_PKG_DEVDIR and SUB_PROJECT_DIR
+# - docker-compose.yml for defining volumes.
+
 USER root
 # Root user is necessary for the following command that creates the julia/quarto... link
 
@@ -37,6 +51,17 @@ COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
 RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 
 
+RUN mkdir -p $WORKSPACE_DIR $SUB_PROJECT_DIR $JULIA_PKG_DEVDIR
+
+
+
+## Fix permissions for NB_USER
+# ERROR will occur if:
+# - Without `chown $NB_USER:$NB_GID /home/$NB_USER`, subdirectories for vscode cannot be created because "/home/$NB_USER" is created and only owned by root.
+RUN mkdir -p $VSCODE_PATH/extensions && \
+    chown $NB_USER:$NB_GID $WORKSPACE_DIR && \
+    chown $NB_USER:$NB_GID /usr/local/bin
+# in order to install starship
 
 # Switch to $NB_USER
 # # Switch to $NB_USER is essential for the following RUN julia -e ...
