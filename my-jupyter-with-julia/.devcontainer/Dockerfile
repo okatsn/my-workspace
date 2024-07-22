@@ -111,6 +111,11 @@ RUN mamba install --quiet --yes \
     && mamba clean --all -f -y \
     && npm cache clean --force
 
+USER root
+RUN dvc completion -s bash | tee /etc/bash_completion.d/dvc
+
+
+USER $NB_USER
 
 # You must start the container as NB_USER, because all apps are owned by NB_USER. For example, error will occur if a root user in Julia pkg REPL do `registry up`.
 # USER root
