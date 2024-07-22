@@ -30,6 +30,11 @@ ARG SUB_PROJECT_DIR="$HOME/workspace/projects/"
 USER root
 # Root user is necessary for the following command that creates the julia/quarto... link
 
+## Copy the file ".devcontainer/fix-permissions" to local machine for later call
+# - also see https://www.cnblogs.com/sparkdev/p/9573248.html for "building context"
+COPY .devcontainer/fix-permissions /usr/local/bin/fix-permissions
+RUN chmod a+rx /usr/local/bin/fix-permissions
+
 
 # # Julia part
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
@@ -60,7 +65,11 @@ RUN mkdir -p $WORKSPACE_DIR $SUB_PROJECT_DIR $JULIA_PKG_DEVDIR
 # - Without `chown $NB_USER:$NB_GID /home/$NB_USER`, subdirectories for vscode cannot be created because "/home/$NB_USER" is created and only owned by root.
 RUN mkdir -p $VSCODE_PATH/extensions && \
     chown $NB_USER:$NB_GID $WORKSPACE_DIR && \
-    chown $NB_USER:$NB_GID /usr/local/bin
+    chown $NB_USER:$NB_GID /usr/local/bin && \
+    fix-permissions $WORKSPACE_DIR && \
+    fix-permissions /home/$NB_USER && \
+    # or `chown $NB_USER:$NB_GID /home/$NB_USER`
+    fix-permissions /usr/local/bin
 # in order to install starship
 
 # Switch to $NB_USER
