@@ -31,6 +31,23 @@ USER root
 # Root user is necessary for the following command that creates the julia/quarto... link
 
 
+RUN apt-get update && apt-get -y install \
+    bash-completion\
+    fontconfig \
+    fonts-noto-cjk \
+    fonts-noto-cjk-extra
+
+
+## Install Starship
+## Starship configuration
+COPY --chown=$NB_UID:$NB_GID .devcontainer/starship.toml /$HOME/.config/starship.toml
+RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
+    && echo 'eval "$(starship init bash)"' >> ~/.bashrc
+
+
+
+
+
 # # Julia part
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
 
