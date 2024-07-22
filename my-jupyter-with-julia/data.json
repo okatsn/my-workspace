@@ -1,6 +1,6 @@
 {
-    "devcontainer_name": "MyTeXLifeWithJulia",
-    "service": "devtj",
-    "image": "texjuliadev",
-    "docker_compose_name": "tex-with-julia"
+    "devcontainer_name": "MyJupyterNotebookWithJulia",
+    "service": "devjj",
+    "image": "jujulia",
+    "docker_compose_name": "jupyter-with-julia"
 }
