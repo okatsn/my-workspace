@@ -1,0 +1,6 @@
+{
+    "devcontainer_name": "MyJupyterNotebookWithJulia",
+    "service": "devjj",
+    "image": "jujulia",
+    "docker_compose_name": "jupyter-with-julia"
+}
