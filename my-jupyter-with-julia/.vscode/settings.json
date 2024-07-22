@@ -1,0 +1,4 @@
+{
+    "quarto.usePipQuarto": false,
+    "python.defaultInterpreterPath": "/opt/conda/bin/python", // I don't know why these settings not work in devcontainer.json, so I set it again here.
+} // See also descriptions in devcontainer.json

@@ -2,12 +2,12 @@
 // - For "name", make it unique among existing container
 // - For all others, make it the same/consistent with that in https://github.com/okatsn/MyTeXLife
 {
-    "name": "MyJupyterNotebookWithJulia",
+    "name": "{{devcontainer_name}}", 
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
     // the service in docker-compose.yml 
-    "service": "devjj",
+    "service": "{{service}}", 
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/home/jovyan/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
