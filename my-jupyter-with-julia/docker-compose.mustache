@@ -12,8 +12,6 @@ services:
       # context: .
       #     That is /.devcontainer
       dockerfile: .devcontainer/Dockerfile
-      args:
-        JULIA_VER: "v1.10" # SETME: Set the julia version. It should be consistent with that of my-julia-build in the Dockerfile.
 
     # Better not to have duplicate image name
     image: {{image}} 

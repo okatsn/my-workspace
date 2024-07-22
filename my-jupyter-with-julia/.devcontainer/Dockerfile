@@ -1,4 +1,5 @@
 FROM okatsn/my-julia-build:v1.10-2024a as build-julia
+FROM okatsn/my-quarto-build:2024c as build-quarto
 
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
@@ -12,16 +13,29 @@ FROM quay.io/jupyter/minimal-notebook:2024-07-15
 # # This command is currently useless
 # ENV GRANT_SUDO=yes
 
+USER root
+# Root user is necessary for the following command that creates the julia/quarto... link
 
+
+# # Julia part
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
 
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
 
-# Switch to root user is necessary for the following command that creates the julia link
-USER root
+# Optional: Use customized Project.toml for default julia environment.
+# The variable JULIA_PROJECT is defined in my-julia-build
+COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
+
+
+
+# # Quarto part
+COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
+# Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
+RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
+
 
 
 # Switch to $NB_USER
