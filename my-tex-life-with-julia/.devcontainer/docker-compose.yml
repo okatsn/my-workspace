@@ -12,16 +12,14 @@ services:
       # context: .
       #     That is /.devcontainer
       dockerfile: .devcontainer/Dockerfile
-      args:
-        JULIA_VER: "v1.10" # SETME: Set the julia version. It should be consistent with that of my-julia-build in the Dockerfile.
 
     # Better not to have duplicate image name
-    image: texjuliadev 
-    init: true 
+    image: texjuliadev
+    init: true
     # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
-    
+
     # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
-    container_name: tex-with-julia 
+    container_name: tex-with-julia
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ../:/workspace
@@ -41,7 +39,6 @@ services:
       # # - Named volumes is chosen because VSCode extensions of this environment is not expected to be shared with those in WSL.
       # # - Please refer to okatsn/MyTeXLife for more explanation
       - vscode-server:/home/jovyan/.vscode-server
-
 
     environment:
       - TZ=TW
