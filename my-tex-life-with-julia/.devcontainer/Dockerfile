@@ -4,7 +4,7 @@
 # 
 # Building command: 
 # # SETME: `devjuliatex` and `my-tex-life-with-julia` can be replaced by arbitrary names.
-# # SETME: Remember to change the tag name
+# # SETME: Remember to change the tag name before build and push.
 # $ docker build -t devjuliatex -f .devcontainer/Dockerfile .
 # $ docker tag devjuliatex okatsn/my-tex-life-with-julia:latest
 # $ docker push okatsn/my-tex-life-with-julia:latest
@@ -22,11 +22,11 @@
 #
 # # (This doesn't work either):
 # COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /tmp/Project.toml
-# RUN mv -f /tmp/Project.toml /home/$NB_USER/.julia/environments/${JULIA_VER}/Project.toml
+# RUN mv -f /tmp/Project.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 
 FROM okatsn/my-typst-space AS build0
 
-FROM okatsn/my-julia-build:v1.10-2024c as build-julia
+FROM okatsn/my-julia-build:v1.10-2024d as build-julia
 
 FROM okatsn/my-quarto-build:2024c as build-quarto
 
@@ -37,8 +37,7 @@ FROM okatsn/my-tex-life:2024c
 USER root
 
 
-ARG JULIA_VER
-# KEYNOTE: This variable is defined in docker-compose.yml, and should be consistent with that of my-julia-build
+# KEYNOTE: The variable JULIA_PROJECT is defined in my-julia-build
 
 
 # # Install Zotero
@@ -88,7 +87,7 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 
 # # Julia part (Please refer the Dockerfile in okatsn/my-julia-build)
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
-COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/${JULIA_VER}/Project.toml
+COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
