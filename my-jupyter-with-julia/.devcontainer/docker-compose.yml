@@ -22,7 +22,7 @@ services:
     container_name: jupyter-with-julia 
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
-      - ../:/home/jovyan/workspace
+      - ..:/home/jovyan/workspace
       # # Docker socket to access Docker server
       - /var/run/docker.sock:/var/run/docker.sock
       # # SSH directory
