@@ -1,4 +1,4 @@
-FROM okatsn/my-julia-build:v1.10-2024a as build-julia
+FROM okatsn/my-julia-build:v1.10-2024d as build-julia
 FROM okatsn/my-quarto-build:2024c as build-quarto
 
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
@@ -50,6 +50,10 @@ COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
 # Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
 RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 
+# [There is no "Jupyter path"](https://github.com/quarto-dev/quarto-cli/discussions/9432)
+# and it is currently no need to set QUARTO_PYTHON 
+# Quarto CLI (e.g., `quarto preview ...`, `quarto render ...`) works when this container is built; however, additional VSCode settings needs to be correctly specified otherwise VSCode quarto extension won't work properly (cannot find Jupyter  pre-installed in minimal-notebook). See the settings in devcontainer.json
+# ENV QUARTO_PYTHON=/opt/conda/bin/jupyter
 
 RUN mkdir -p $WORKSPACE_DIR $SUB_PROJECT_DIR $JULIA_PKG_DEVDIR
 

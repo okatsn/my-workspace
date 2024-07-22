@@ -2,12 +2,12 @@
 // - For "name", make it unique among existing container
 // - For all others, make it the same/consistent with that in https://github.com/okatsn/MyTeXLife
 {
-    "name": "MyJupyterNotebookWithJulia", 
+    "name": "MyJupyterNotebookWithJulia",
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
     // the service in docker-compose.yml 
-    "service": "devjj", 
+    "service": "devjj",
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/home/jovyan/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
@@ -46,11 +46,11 @@
                 // SECTION: MyTeXLifeWithJulia Exclusive
                 "ltex.dictionary": {
                     "en-US": [
-                        ":/workspace/ltex-dictionary/ltex.dictionary.en-US.txt",
+                        ":~/workspace/ltex-dictionary/ltex.dictionary.en-US.txt",
                     ],
                 },
                 // !!! note "workspaceExternalFile"
-                //     - "workspaceExternalFile" refers "/workspace/ltex-dictionary/externalFile.txt", no matter whether you have set it in "ltex.dictionary" 
+                //     - "workspaceExternalFile" refers "~/workspace/ltex-dictionary/externalFile.txt", no matter whether you have set it in "ltex.dictionary" 
                 //     - In that "externalFile.txt", you can specify the relative path to other dictionary such as "ltex.dictionary.en-US.txt"
                 //
                 // For more information, please refer: 
@@ -59,9 +59,12 @@
                 "ltex.configurationTarget": {
                     "dictionary": "workspaceExternalFile", // This setting allows Quick Fix (Ctrl+.) add words to "workspaceExternalFile"
                 },
+                // SECTION: Quarto
+                "python.defaultInterpreterPath": "/opt/conda/bin/python", // this is for quarto to correctly work with VSCode. This path is obtained from `quarto check jupyter`.
+                "quarto.usePipQuarto": false,
+                "quarto.render.previewType": "external",
                 // SECTION: JULIA Exclusive
-                // "python.defaultInterpreterPath": "/opt/conda/bin/python", // this is for quarto to correctly work with VSCode.
-                "julia.environmentPath": "/workspace", // KEYNOTE: it is expected to be WORKSPACE_DIR  defined in Dockerfile
+                "julia.environmentPath": "~/workspace", // KEYNOTE: it is expected to be WORKSPACE_DIR  defined in Dockerfile
                 // General settings
                 "files.eol": "\n",
                 "editor.formatOnSave": true,
