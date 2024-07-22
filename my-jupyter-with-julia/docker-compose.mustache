@@ -22,15 +22,13 @@ services:
     container_name: {{docker_compose_name}} 
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
-      - ../:/workspace
+      - ..:/home/jovyan/workspace
       # # Docker socket to access Docker server
       - /var/run/docker.sock:/var/run/docker.sock
       # # SSH directory
       - ~/.ssh:/home/jovyan/.ssh
       # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
-      # # Shell history persistence
-      - ~/.zsh_history:/home/jovyan/.zsh_history:z
       # # Git config
       - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions

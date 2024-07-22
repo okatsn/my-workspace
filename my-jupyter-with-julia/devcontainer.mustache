@@ -9,7 +9,7 @@
     // the service in docker-compose.yml 
     "service": "{{service}}", 
     "shutdownAction": "stopCompose",
-    "workspaceFolder": "/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
+    "workspaceFolder": "/home/jovyan/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
         "vscode": {
             "extensions": [
@@ -38,10 +38,10 @@
             "settings": {
                 "python.terminal.activateEnvironment": false,
                 "gitProjectManager.baseProjectsFolders": [
-                    "/workspace/projects", // SUB_PROJECT_DIR defined in this Dockerfile or the previous image (i.e., okatsn/my-tex-life)
+                    "~/workspace/projects", // SUB_PROJECT_DIR defined in this Dockerfile or the previous image (i.e., okatsn/my-tex-life)
                     "~/.julia/dev",
                     // KEYNOTE: it is allows GPM (felipecaputo.git-project-manager) to open repo in the "projects" in a new window
-                    "/workspace"
+                    "~/workspace"
                 ],
                 // SECTION: MyTeXLifeWithJulia Exclusive
                 "ltex.dictionary": {
