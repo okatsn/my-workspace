@@ -118,6 +118,9 @@ RUN mamba install --quiet --yes \
     && npm cache clean --force
 
 USER root
+
+# # Set dvc auto-complete. This requires bash-completion to be installed.
+# KEYNOTE: git auto-completion seems to be handled correctly in jupyter minimal notebook. For how to set git completion, you may refer to [the Dockerfile of MyTeXLife](https://github.com/okatsn/MyTeXLife/blob/fc00e3b840db2f63d8e3d67ac41065042f5b0602/.devcontainer/Dockerfile)
 RUN dvc completion -s bash | tee /etc/bash_completion.d/dvc
 
 
