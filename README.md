@@ -87,6 +87,9 @@ wsl --unregister docker-desktop-data
 wsl --import docker-desktop-data "D:\WSL\data" "D:\temp\docker-desktop-data.tar" --version 2
 ```
 ## `dive` into the image
+
+[Install dive](https://github.com/wagoodman/dive?tab=readme-ov-file#installation) on WSL.
+
 Using `dive` to inspect what modifications were made in one layer:
 
 Example
@@ -96,6 +99,12 @@ docker-compose --env-file ../my-build.env build --no-cache
 dive pbuild
 ```
 
+Example (list the already built images, and choose one to dive into)
+
+```bash
+docker image list
+dive pbuild
+```
 
 Referring https://github.com/wagoodman/dive
 ### Initialize/Update `okatsn/my-workspace`

@@ -1,5 +1,6 @@
 FROM okatsn/my-julia-build:v1.10-2024d as build-julia
 FROM okatsn/my-quarto-build:2024c as build-quarto
+FROM okatsn/my-typst-space:latest AS build0
 
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
@@ -31,10 +32,30 @@ USER root
 # Root user is necessary for the following command that creates the julia/quarto... link
 
 
+RUN apt-get update && apt-get -y install \
+    bash-completion\
+    fontconfig \
+    fonts-noto-cjk \
+    fonts-noto-cjk-extra
+
+## Install typst
+COPY --from=build0 /bin/typst /bin
+
+## Install Starship
+## Starship configuration
+COPY --chown=$NB_UID:$NB_GID .devcontainer/starship.toml /$HOME/.config/starship.toml
+RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
+    && echo 'eval "$(starship init bash)"' >> ~/.bashrc
+
+
+
+
+
 # # Julia part
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
 
-COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
+COPY --from=build-julia /opt/julia-okatsn /opt/julia-okatsn
+# TODO:  --chown=$NB_UID:$NB_GID is disabled because julia was installed by root and only root had the permissions. If everything is OK, modify the README of julia-debian-build accordingly
 
 # Optional: Use customized Project.toml for default julia environment.
 # The variable JULIA_PROJECT is defined in my-julia-build
@@ -46,8 +67,10 @@ RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
 
 
 # # Quarto part
-COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
-# Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
+COPY --from=build-quarto /opt/quarto /opt/quarto
+# TODO:  --chown=$NB_UID:$NB_GID is disabled because quarto was installed by root and only root had the permissions. If everything is OK, modify the README of quarto-debian-build accordingly
+#
+# # Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
 RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 
 # [There is no "Jupyter path"](https://github.com/quarto-dev/quarto-cli/discussions/9432)
@@ -77,8 +100,11 @@ USER $NB_USER
 RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
 
 # Referring: https://github.com/okatsn/MyJuliaSpace/blob/master/.devcontainer/Dockerfile
+# Also see: https://dvc.org/doc/install/linux#install-with-pip
 RUN mamba install --quiet --yes \
     dvc \
+    dvc-gdrive \
+    dvc-webdav \
     # ipywidgets=8.0 \
     # invoke=2.0 \
     # pre-commit=3.1 \
@@ -91,6 +117,14 @@ RUN mamba install --quiet --yes \
     && mamba clean --all -f -y \
     && npm cache clean --force
 
+USER root
+
+# # Set dvc auto-complete. This requires bash-completion to be installed.
+# KEYNOTE: git auto-completion seems to be handled correctly in jupyter minimal notebook. For how to set git completion, you may refer to [the Dockerfile of MyTeXLife](https://github.com/okatsn/MyTeXLife/blob/fc00e3b840db2f63d8e3d67ac41065042f5b0602/.devcontainer/Dockerfile)
+RUN dvc completion -s bash | tee /etc/bash_completion.d/dvc
+
+
+USER $NB_USER
 
 # You must start the container as NB_USER, because all apps are owned by NB_USER. For example, error will occur if a root user in Julia pkg REPL do `registry up`.
 # USER root
