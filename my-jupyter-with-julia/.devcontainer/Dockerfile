@@ -1,5 +1,6 @@
 FROM okatsn/my-julia-build:v1.10-2024d as build-julia
 FROM okatsn/my-quarto-build:2024c as build-quarto
+FROM okatsn/my-typst-space:latest AS build0
 
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
@@ -37,6 +38,8 @@ RUN apt-get update && apt-get -y install \
     fonts-noto-cjk \
     fonts-noto-cjk-extra
 
+## Install typst
+COPY --from=build0 /bin/typst /bin
 
 ## Install Starship
 ## Starship configuration
