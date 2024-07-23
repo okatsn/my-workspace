@@ -54,7 +54,8 @@ RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
 # # Julia part
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
 
-COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
+COPY --from=build-julia /opt/julia-okatsn /opt/julia-okatsn
+# TODO:  --chown=$NB_UID:$NB_GID is disabled because julia was installed by root and only root had the permissions. If everything is OK, modify the README of julia-debian-build accordingly
 
 # Optional: Use customized Project.toml for default julia environment.
 # The variable JULIA_PROJECT is defined in my-julia-build
@@ -66,8 +67,10 @@ RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
 
 
 # # Quarto part
-COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
-# Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
+COPY --from=build-quarto /opt/quarto /opt/quarto
+# TODO:  --chown=$NB_UID:$NB_GID is disabled because quarto was installed by root and only root had the permissions. If everything is OK, modify the README of quarto-debian-build accordingly
+#
+# # Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
 RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 
 # [There is no "Jupyter path"](https://github.com/quarto-dev/quarto-cli/discussions/9432)
