@@ -33,10 +33,16 @@ USER root
 
 
 RUN apt-get update && apt-get -y install \
-    bash-completion\
+    bash-completion \
+    #
+    # KEYNOTE:
+    # - `apt-cache search fonts | grep noto` to see available fonts.
+    # - See also https://samwhelp.github.io/note-about-ubuntu/read/adjustment/env/font.html
+    # RUN apt-get update && apt-get -y install \
     fontconfig \
     fonts-noto-cjk \
-    fonts-noto-cjk-extra
+    fonts-noto-cjk-extra \
+    fonts-noto-color-emoji
 
 ## Install typst
 COPY --from=build0 /bin/typst /bin
@@ -94,6 +100,10 @@ RUN mkdir -p $VSCODE_PATH/extensions && \
 # # Switch to $NB_USER is essential for the following RUN julia -e ...
 # # because associated files and directories are owned by NB_USER
 USER $NB_USER
+
+# Install font via conda.
+# RUN conda install font-ttf-noto-cjk font-ttf-noto-emoji -y
+
 
 
 # Build IJulia
