@@ -112,6 +112,19 @@ USER $NB_USER
 # KEYNOTE: This seems to cause Permission denied error until you (firstly disable this line in order to successfully build the container) add and build IJulia in your container, and rebuild again. (The permission issue is related to conda)
 # RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
 
+
+
+
+# Install DVC
+RUN wget https://dvc.org/deb/dvc.list -O /etc/apt/sources.list.d/dvc.list \
+    && wget -qO - https://dvc.org/deb/iterative.asc | gpg --dearmor > packages.iterative.gpg \
+    && install -o root -g root -m 644 packages.iterative.gpg /etc/apt/trusted.gpg.d/ \
+    && rm -f packages.iterative.gpg \
+    && apt update \
+    && apt install dvc=3.53.2 \
+    && dvc completion -s bash | tee /etc/bash_completion.d/dvc
+
+
 COPY --from=build0 /bin/typst /bin
 # Please refer: https://github.com/my-typst-space
 
