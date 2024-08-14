@@ -98,6 +98,17 @@ COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
 RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 
 
+# Install DVC
+RUN wget https://dvc.org/deb/dvc.list -O /etc/apt/sources.list.d/dvc.list \
+    && wget -qO - https://dvc.org/deb/iterative.asc | gpg --dearmor > packages.iterative.gpg \
+    && install -o root -g root -m 644 packages.iterative.gpg /etc/apt/trusted.gpg.d/ \
+    && rm -f packages.iterative.gpg \
+    && apt update \
+    && apt install dvc=3.53.2 \
+    && dvc completion -s bash | tee /etc/bash_completion.d/dvc
+
+
+
 # WORKDIR $WORKSPACE_DIR
 USER $NB_USER
 # RUN julia -e '...' will fail if the permission settings (`chown`) have problems.
@@ -115,14 +126,6 @@ USER $NB_USER
 
 
 
-# Install DVC
-RUN wget https://dvc.org/deb/dvc.list -O /etc/apt/sources.list.d/dvc.list \
-    && wget -qO - https://dvc.org/deb/iterative.asc | gpg --dearmor > packages.iterative.gpg \
-    && install -o root -g root -m 644 packages.iterative.gpg /etc/apt/trusted.gpg.d/ \
-    && rm -f packages.iterative.gpg \
-    && apt update \
-    && apt install dvc=3.53.2 \
-    && dvc completion -s bash | tee /etc/bash_completion.d/dvc
 
 
 COPY --from=build0 /bin/typst /bin
