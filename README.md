@@ -12,6 +12,7 @@
     - [Git](#git)
     - [Permission Denied on mounted volumes](#permission-denied-on-mounted-volumes)
     - [Docker](#docker)
+    - [DVC](#dvc)
 
 
 # README
@@ -168,3 +169,22 @@ See references:
 - [docker system](https://docs.docker.com/reference/cli/docker/system/)
 - [Remove All Containers and Images in Docker](https://www.geeksforgeeks.org/remove-all-containers-and-images-in-docker/)
 - [Problem building dockerfile-with-features after upgrading to debian bookworm](https://github.com/microsoft/vscode-remote-release/issues/8202)
+
+
+### DVC
+
+Every time a container is rebuilt, you'll experience the auth process again.
+If you encounter authorization issues when trying to grant DVC permissions to access Google drive, manually copy existing credentials to the new virtual machine could bypass the process and might solve the problem.
+
+Please refer https://dvc.org/doc/user-guide/data-management/remote-storage/google-drive#authorization
+
+Here are an example workflow: 
+- Save `default.json` file in the machine where DVC can access your Google Drive. This file locates at `~/.cache/pydrive2fs/xxxxxxxx-xxxxxxxxxxxxxxx.apps.googleusercontent.com/default.json`.
+- In the new machine, `dvc status -c` to print messages as follows and confirm that it prints identical  `xxxxxxxx-xxxxxxxxxxxxxxx` part.
+  ```
+  0% Checking cache in '1XXXXXXXXXXXXX-xx/files/md5'|                                                        |0/? [00:00<?,    ?files/s]oauth2client/_helpers.py:255: UserWarning: Cannot access /home/jovyan/.cache/pydrive2fs/xxxxxxxx-xxxxxxxxxxxxxxx.apps.googleusercontent.com/default.json: No such file or directory
+  ```
+- Copy `default.json` to the new machine at the same place, and DVC should access Google Drive as the old machine.
+
+
+    
