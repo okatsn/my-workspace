@@ -18,10 +18,6 @@ docker tag jbuild okatsn/my-julia-build:latest
 docker push okatsn/my-julia-build:latest
 ```
 
-Use a local build for quick testing:
-- Create a temporary local build: `docker tag jbuild temp-local:latest`, and
-- use it in other Dockerfile `FROM temp-local as build-julia`.
-
 ### Explain
 Why not use devcontainer.json to build (saying `$ docker-compose -f .devcontainer/docker-compose.yml build`)?
 - Building image from devcontainer.json creates some additional files, such as those in `/home/okatsn/.vscode-server` and `/home/okatsn/.vscode-server-insiders`

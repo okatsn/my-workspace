@@ -170,6 +170,11 @@ See references:
 - [Remove All Containers and Images in Docker](https://www.geeksforgeeks.org/remove-all-containers-and-images-in-docker/)
 - [Problem building dockerfile-with-features after upgrading to debian bookworm](https://github.com/microsoft/vscode-remote-release/issues/8202)
 
+#### Use a local build for quick testing
+(following `julia-debian-build/README.md`)
+- Create a temporary local build: `docker tag jbuild temp-local:latest`, and
+- use it in other Dockerfile `FROM temp-local as build-julia`.
+
 
 ### DVC
 
