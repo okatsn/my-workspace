@@ -13,6 +13,7 @@
     - [Permission Denied on mounted volumes](#permission-denied-on-mounted-volumes)
     - [Docker](#docker)
     - [DVC](#dvc)
+    - [Remove Zone.Identifier](#remove-zoneidentifier)
 
 
 # README
@@ -192,4 +193,11 @@ Here are an example workflow:
 - Copy `default.json` to the new machine at the same place, and DVC should access Google Drive as the old machine.
 
 
-    
+### Remove Zone.Identifier
+
+```
+find ./ -type f -name "*:Zone.Identifier" -exec rm -f {} \;
+```
+
+- `type f`: This restricts the search to files (excluding directories).
+- `exec rm -f {} \;`: This runs the `rm` command on each file found. The `{}` is replaced with the filename, and `\;` indicates the end of the command.
