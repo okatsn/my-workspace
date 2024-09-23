@@ -1,4 +1,7 @@
 {
+    // Quarto
+    // These settings are critical for quarto to work correctly with jupyter of my-workspace/my-jupyter-with-julia. Please refer to .devcontainer/devcontainer.json therein.
+    "python.defaultInterpreterPath": "/opt/conda/bin/python", // this is for quarto to correctly work with VSCode. This path is obtained from `quarto check jupyter`.
     "quarto.usePipQuarto": false,
-    "python.defaultInterpreterPath": "/opt/conda/bin/python", // I don't know why these settings not work in devcontainer.json, so I set it again here.
-} // See also descriptions in devcontainer.json
+    "quarto.render.previewType": "external"
+}
