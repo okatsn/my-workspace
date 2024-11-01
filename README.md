@@ -4,6 +4,7 @@
   - [Install and configure `git`](#install-and-configure-git)
   - [Install others (optional)](#install-others-optional)
     - [Install DVC](#install-dvc)
+    - [Install lefthook](#install-lefthook)
   - [This repository contains submodules](#this-repository-contains-submodules)
   - [Export and Import](#export-and-import)
   - [`dive` into the image](#dive-into-the-image)
@@ -51,6 +52,34 @@ Configuration:
 ### Install DVC
 
 Please refer to [DVC-Installation on Linux](https://dvc.org/doc/install/linux#installation-on-linux) or [this Dockerfile](https://github.com/okatsn/MyTeXLife/blob/main/.devcontainer/Dockerfile) to install DVC.
+
+
+### Install lefthook
+
+Install
+
+```
+sudo snap install --classic lefthook
+```
+
+Create `lefthook.yml`, for example:
+
+```
+# lefthook.yml
+post-commit:
+  scripts:
+    docker_build_and_push:
+      run: ./docker_build_and_push.sh
+      include:
+        - 'my-mini-explorer/Dockerfile'
+```
+
+Verify the installation
+
+```
+lefthook run post-commit
+```
+
 
 ## This repository contains submodules
 

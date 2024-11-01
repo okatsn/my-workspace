@@ -1,0 +1,6 @@
+post-commit:
+  scripts:
+    docker_build_and_push:
+      run: ./docker_build_and_push.sh
+      include:
+        - 'my-mini-explorer/Dockerfile'
