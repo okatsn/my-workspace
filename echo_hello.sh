@@ -1,1 +1,1 @@
-echo "Hello World"
+echo "There are sh files staged."

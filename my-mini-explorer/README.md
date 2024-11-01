@@ -11,7 +11,6 @@ This is a minimal machine for file editing and exploration with DVC utilities.
 ## How to build the image solely from the Dockerfile:
 
 ```bash
-# These commands should be executed in WSL at the directory of my-julia-build
 cd ./my-mini-explorer
 
 docker-compose --env-file ../my-build.env build --no-cache
