@@ -39,6 +39,8 @@ RUN apt-get update && apt-get -y install \
     # - `apt-cache search fonts | grep noto` to see available fonts.
     # - See also https://samwhelp.github.io/note-about-ubuntu/read/adjustment/env/font.html
     # RUN apt-get update && apt-get -y install \
+    tree \
+    # `tree` list the tree of file directory.
     fontconfig \
     fonts-noto-cjk \
     fonts-noto-cjk-extra \

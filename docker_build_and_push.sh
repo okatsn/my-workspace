@@ -15,3 +15,5 @@ docker tag dvcbuild okatsn/my-mini-explorer:latest
 docker push okatsn/my-mini-explorer:latest
 
 echo "Docker image built and pushed successfully."
+
+cd ..
