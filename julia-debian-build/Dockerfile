@@ -4,7 +4,6 @@
 # FROM ubuntu:focal-20200703 AS build-julia
 # # this version of ubuntu is sticked to https://hub.docker.com/r/jupyter/base-notebook/dockerfile that https://hub.docker.com/r/jupyter/minimal-notebook/dockerfile uses.
 #
-#
 # - A Debian basis, which should be sticked to qdm12/latexdevcontainer.
 # - Explain: althougth the installation of julia on a Ubuntu basis works, but for the use based on a `my-tex-life` basis (such as MyTeXLifeWithJulia) there might be compatibility issues.
 # - See https://github.com/qdm12/latexdevcontainer/blob/master/Dockerfile and https://github.com/okatsn/MyTeXLife
