@@ -2,7 +2,7 @@ pre-commit:
   commands:
     dockerbuild1:
       glob: "my-mini-explorer/Dockerfile"
-      run: . ./docker_build_and_push.sh
+      run: . ./my-mini-explorer/docker_build_and_push.sh
     dockerbuild2:
       glob: "julia-debian-build/Dockerfile"
       run: . ./julia-debian-build/docker_build_and_push.sh
