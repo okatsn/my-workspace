@@ -1,0 +1,1 @@
+echo "There are sh files staged."

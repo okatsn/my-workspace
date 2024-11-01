@@ -4,6 +4,7 @@
   - [Install and configure `git`](#install-and-configure-git)
   - [Install others (optional)](#install-others-optional)
     - [Install DVC](#install-dvc)
+    - [Install lefthook](#install-lefthook)
   - [This repository contains submodules](#this-repository-contains-submodules)
   - [Export and Import](#export-and-import)
   - [`dive` into the image](#dive-into-the-image)
@@ -51,6 +52,25 @@ Configuration:
 ### Install DVC
 
 Please refer to [DVC-Installation on Linux](https://dvc.org/doc/install/linux#installation-on-linux) or [this Dockerfile](https://github.com/okatsn/MyTeXLife/blob/main/.devcontainer/Dockerfile) to install DVC.
+
+
+### Install lefthook
+[Lefthook Documentaion](https://github.com/evilmartians/lefthook)
+
+1. Install
+```
+sudo snap install --classic lefthook
+```
+2. Create `lefthook.yml`.
+3. Stage files
+4. Run 
+   - It will run `pre-commit` before actually commit (`git commit -m "Commit message"`).
+   - You can also run on demand: `lefthook run pre-commit`
+
+!!! warning
+    - **Commit with VSCode's button will not trigger the lefthook actions.**
+    - Lefthook has to be installed in WSL (not in container) if the command have `docker`-whatever in use.
+
 
 ## This repository contains submodules
 

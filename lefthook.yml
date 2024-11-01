@@ -1,0 +1,28 @@
+pre-commit:
+  commands:
+    dockerbuild1:
+      glob: "my-mini-explorer/Dockerfile"
+      run: . ./docker_build_and_push.sh
+    dockerbuild2:
+      glob: "julia-debian-build/Dockerfile"
+      run: . ./julia-debian-build/docker_build_and_push.sh
+    dockerbuild4:
+      glob:   "quarto-debian-build/Dockerfile"
+      run: . ./quarto-debian-build/docker_build_and_push.sh
+    testing:
+      run: echo "Hello these are all {staged_files}"
+    testing2:
+      glob: "*.sh"
+      run: . ./echo_hello.sh
+
+# Lefthook:  https://github.com/evilmartians/lefthook
+# - Use `lefthook run pre-commit` to manually run pre-commit commands.
+# - `glob` is the filter for the name of staged files, that the command will be invoked only when the matched `staged_files` is not empty. See https://github.com/evilmartians/lefthook?tab=readme-ov-file#glob-and-regexp-filters
+#
+# # Official examples:
+# - complete example: https://github.com/evilmartians/lefthook/blob/master/examples/complete/lefthook.yml
+# - Configuration: https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+#
+#
+# # 3rd party tutorials:
+# - https://dev.to/renanpaixao/how-to-set-up-lefthook-to-handle-git-hooks-in-react-applications-527i

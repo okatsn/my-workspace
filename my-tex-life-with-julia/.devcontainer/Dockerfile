@@ -43,6 +43,7 @@ USER root
 # # Install Zotero
 RUN curl -sL https://raw.githubusercontent.com/retorquere/zotero-deb/master/install.sh | bash
 RUN apt-get update && apt-get -y install \
+    tree \
     zotero
 # Get the better-bibtex file
 COPY .devcontainer/get_zoteroaddons.sh /tmp/
