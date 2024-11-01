@@ -26,9 +26,9 @@
 
 FROM okatsn/my-typst-space AS build0
 
-FROM okatsn/my-julia-build:v1.10-2024e as build-julia
+FROM okatsn/my-julia-build:v1.10-2024e AS build-julia
 
-FROM okatsn/my-quarto-build:2024c as build-quarto
+FROM okatsn/my-quarto-build:2024c AS build-quarto
 
 FROM okatsn/my-tex-life:2024c
 # Docker image https://hub.docker.com/repository/docker/okatsn/my-tex-life/general built from https://github.com/okatsn/MyTeXLife
