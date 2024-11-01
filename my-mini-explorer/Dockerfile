@@ -5,6 +5,9 @@ RUN apt update \
     && apt install -y wget gnupg 
 # which is used for handling the GPG key.
 
+# `tree` list the tree of file directory.
+RUN apt-get install -y tree 
+
 # Install DVC
 RUN wget https://dvc.org/deb/dvc.list -O /etc/apt/sources.list.d/dvc.list \
     && wget -qO - https://dvc.org/deb/iterative.asc | gpg --dearmor > packages.iterative.gpg \
