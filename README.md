@@ -55,30 +55,21 @@ Please refer to [DVC-Installation on Linux](https://dvc.org/doc/install/linux#in
 
 
 ### Install lefthook
+[Lefthook Documentaion](https://github.com/evilmartians/lefthook)
 
-Install
-
+1. Install
 ```
 sudo snap install --classic lefthook
 ```
+2. Create `lefthook.yml`.
+3. Stage files
+4. Run 
+   - It will run `pre-commit` before actually commit (`git commit -m "Commit message"`).
+   - You can also run on demand: `lefthook run pre-commit`
 
-Create `lefthook.yml`, for example:
-
-```
-# lefthook.yml
-post-commit:
-  scripts:
-    docker_build_and_push:
-      run: ./docker_build_and_push.sh
-      include:
-        - 'my-mini-explorer/Dockerfile'
-```
-
-Verify the installation
-
-```
-lefthook run post-commit
-```
+!!! warning
+    - **Commit with VSCode's button will not trigger the lefthook actions.**
+    - Lefthook has to be installed in WSL (not in container) if the command have `docker`-whatever in use.
 
 
 ## This repository contains submodules
