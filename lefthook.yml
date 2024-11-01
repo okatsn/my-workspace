@@ -1,6 +1,11 @@
-post-commit:
-  scripts:
-    docker_build_and_push:
-      run: ./docker_build_and_push.sh
-      include:
-        - 'my-mini-explorer/Dockerfile'
+pre-commit:
+  commands:
+    dockerbuild:
+      glob: "*Dockerfile"
+      # run: . ./docker_build_and_push.sh
+      run: . ./echo_hello.sh
+    testing:
+      glob: "*.sh"
+      run: echo "Hello these are all {staged_files}"
+# - Use `lefthook run pre-commit` to run on demand.
+# - `glob` is the filter for the name of staged files, that the command will be invoked only when the matched `staged_files` is not empty.
