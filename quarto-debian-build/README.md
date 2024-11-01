@@ -19,7 +19,7 @@ docker push okatsn/my-quarto-build:latest
 
 ## How to use:
 ```Dockerfile
-FROM okatsn/my-quarto-build:latest as build-quarto
+FROM okatsn/my-quarto-build:latest AS build-quarto
 # COPY the main application
 COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
 # Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.

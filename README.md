@@ -174,7 +174,7 @@ See references:
 #### Use a local build for quick testing
 (following `julia-debian-build/README.md`)
 - Create a temporary local build: `docker tag jbuild temp-local:latest`, and
-- use it in other Dockerfile `FROM temp-local as build-julia`.
+- use it in other Dockerfile `FROM temp-local AS build-julia`.
 
 
 ### DVC

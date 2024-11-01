@@ -31,7 +31,7 @@ Why not use devcontainer.json to build (saying `$ docker-compose -f .devcontaine
 
 ### Import the image
 
-- `FROM okatsn/my-julia-build:latest as build-julia`
+- `FROM okatsn/my-julia-build:latest AS build-julia`
 
 ### Consistent environment variable
 
@@ -40,7 +40,7 @@ The environment variables such as `NB_UID` and `NB_GID` are defined in the `.env
 These variables should be consistent with your final-stage image. For example: 
 
 ```Dockerfile
-FROM okatsn/my-julia-build:v1.10-2024a as build-julia
+FROM okatsn/my-julia-build:v1.10-2024a AS build-julia
 FROM okatsn/my-tex-life:v2024a1
 ```
 

@@ -19,7 +19,7 @@ docker push okatsn/my-python-build:latest
 
 ## How to use:
 ```Dockerfile
-FROM okatsn/my-python-build:latest as build-python
+FROM okatsn/my-python-build:latest AS build-python
 ```
 
 !!! note 
