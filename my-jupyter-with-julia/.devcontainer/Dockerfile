@@ -138,6 +138,12 @@ RUN mamba install --quiet --yes \
     && mamba clean --all -f -y \
     && npm cache clean --force
 
+# Update pandoc to the latest
+# (this allows typst conversion e.g., `pandoc input.typ -o output.docx`)
+RUN conda install -y -c conda-forge pandoc
+
+
+
 USER root
 
 # # Set dvc auto-complete. This requires bash-completion to be installed.
