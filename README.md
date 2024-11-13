@@ -1,7 +1,7 @@
 [README](#readme)
 - [README](#readme)
   - [Install WSL](#install-wsl)
-  - [Install and configure `git`](#install-and-configure-git)
+  - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
     - [Install DVC](#install-dvc)
     - [Install lefthook](#install-lefthook)
@@ -23,20 +23,25 @@
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
 
 ```bash
+wsl --update
 wsl --install -d Ubuntu-24.04
 wsl --set-default Ubuntu-24.04
 ```
+
+> 💡Useful tips:
+> - If connection problem occurs (e.g., Failed to fetch ...; the connection to server was reset ...), run `wsl --shutdown` and try again.
 
 Confirm the followings:
 - `wsl -l -v`: Check if your Ubuntu-24.04 distribution uses WSL 2.
 - `wsl --set-version Ubuntu-24.04 2`: Set WSL version to `2` if it is not.
 
-## Install and configure `git`
+## Install, configure and update `git`
 
 VSCode extensions such as `mhutchie.git-graph` use `git`. 
 Here is how to install `git`:
 - `sudo apt-get update`
 - `sudo apt-get install git`
+> 💡 These are exactly the same commands to update Git in linux.
 
 ONLY IF the it was not the latest `git` being installed, try either the followings: 
 - `sudo apt-get dist-upgrade`
@@ -178,6 +183,14 @@ Hints for trouble shooting this kind of issues:
 
 
 ### Docker
+
+#### build
+
+Build container in VSCode based on `devcontainer.json` may fail with a short and ambiguous message on different user settings.
+Here is an [Example](https://github.com/microsoft/vscode-remote-release/issues/9461). 
+Switch the settings to your recent profile on another PC may solve the problem.
+
+#### Clean volumes, containers and images
 
 Use the following command if it fails to build in one machine but success in the other with exactly the same script.
 - `docker image prune`:  Clear images
