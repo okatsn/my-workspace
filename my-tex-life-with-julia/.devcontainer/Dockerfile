@@ -26,7 +26,7 @@
 
 FROM okatsn/my-typst-space AS build0
 
-FROM okatsn/my-julia-build:v1.10-2024e AS build-julia
+FROM okatsn/my-julia-build:v1.10-LTS AS build-julia
 
 FROM okatsn/my-quarto-build:2024c AS build-quarto
 
