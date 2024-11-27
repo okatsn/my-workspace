@@ -5,6 +5,8 @@
   - [Install others (optional)](#install-others-optional)
     - [Install DVC](#install-dvc)
     - [Install lefthook](#install-lefthook)
+    - [Install pip](#install-pip)
+    - [Install `git-filter-repo`](#install-git-filter-repo)
   - [This repository contains submodules](#this-repository-contains-submodules)
   - [Export and Import](#export-and-import)
   - [`dive` into the image](#dive-into-the-image)
@@ -76,6 +78,76 @@ sudo snap install --classic lefthook
     - **Commit with VSCode's button will not trigger the lefthook actions.**
     - Lefthook has to be installed in WSL (not in container) if the command have `docker`-whatever in use.
 
+
+### Install pip
+
+If you want to use `pip`, consider using `pipx` instead:
+
+```
+sudo apt install pipx
+```
+
+The reason is that, install python3 (e.g., `sudo apt install python3-full`) in WSL do not immediately allow `pip` ready to use; typically you will get an error message "This environment is externally managed".
+
+
+### Install `git-filter-repo`
+
+```
+sudo apt install git-filter-repo
+```
+
+You can use this package to remove files totally from the history.
+
+For example: 
+
+```
+$ git-filter-repo --invert-paths --path path/to/file/or/directory
+```
+
+After remove files from all the commits, you might need to add remote back again, for example:
+
+
+Make sure your remote is missing
+```
+git remote -v
+```
+
+Add the remote back 
+```
+git remote add origin https://github.com/okatsn/HelloWorld.git
+```
+
+Set the local `main` as upstream again; Noted that the remote `main` will be overwritten in this step.
+```
+git push --force --set-upstream origin main
+```
+
+Overwrite all other branches on the remote
+```
+git push origin --all --force
+```
+
+Remove Old Remote References
+```
+git fetch origin --prune
+```
+
+Remove Dangling References
+```
+$ git reflog expire --expire=now --all
+$ git gc --prune=now --aggressive
+```
+
+Make sure the files are completely removed
+
+```
+git clone <repository-url>
+cd <repository-name>
+git log --all -- path/to/file
+```
+
+Some instructions of this section is ChatGPT's advices. 
+Please refer [git-filter-repo(1) Manual Page](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html), [newren/git-filter-repo](https://github.com/newren/git-filter-repo) and [How to remove file from Git history?](https://stackoverflow.com/questions/43762338/how-to-remove-file-from-git-history)
 
 ## This repository contains submodules
 
