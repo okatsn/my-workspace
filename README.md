@@ -306,3 +306,10 @@ find ./ -type f -name "*:Zone.Identifier" -exec rm -f {} \;
 
 - `type f`: This restricts the search to files (excluding directories).
 - `exec rm -f {} \;`: This runs the `rm` command on each file found. The `{}` is replaced with the filename, and `\;` indicates the end of the command.
+
+### Error "Are you trying to mount a directory onto a file (or vice-versa)?"
+
+When you reset your WSL distro, you might encounter this kind of non-sense error.
+[Clean volumes, containers and images](#clean-volumes-containers-and-images) and restart docker desktop might solve the problem.
+
+See [this post](https://stackoverflow.com/questions/45972812/are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa).
