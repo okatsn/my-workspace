@@ -27,7 +27,7 @@ docker push okatsn/my-mini-explorer:latest
 ### `Dockerfile`
 
 ```dockerfile
-FROM temp-local:latest AS build-dvc
+FROM okatsn/my-mini-explorer:latest AS build-dvc
 
 ENV NB_UID=1000\
     NB_GID=100 \
