@@ -17,6 +17,7 @@
     - [Docker](#docker)
     - [DVC](#dvc)
     - [Remove Zone.Identifier](#remove-zoneidentifier)
+    - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
 
 
 # README
@@ -101,7 +102,7 @@ You can use this package to remove files totally from the history.
 For example: 
 
 ```
-$ git-filter-repo --invert-paths --path path/to/file/or/directory
+git-filter-repo --invert-paths --path path/to/file/or/directory
 ```
 
 After remove files from all the commits, you might need to add remote back again, for example:
@@ -134,8 +135,8 @@ git fetch origin --prune
 
 Remove Dangling References
 ```
-$ git reflog expire --expire=now --all
-$ git gc --prune=now --aggressive
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
 ```
 
 Make sure the files are completely removed
