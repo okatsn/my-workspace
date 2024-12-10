@@ -1,4 +1,6 @@
-## More about submodules
+# Working with two repositories
+
+## About submodules
 
 ### Initialize submodules
 
@@ -74,3 +76,14 @@ rm -rf .git/modules/sub-something
 ### Other tips
 
 If you manually change the url in .gitmodules, please run `git submodule sync`. [This updates .git/config](https://stackoverflow.com/questions/11637175/swap-git-submodule-with-own-fork).
+
+
+## Merge two repositories as a squash
+
+```
+git remote add RepoB <url-of-RepoB>
+git fetch RepoB
+git checkout -b merge-repoB
+git merge --allow-unrelated-histories --squash RepoB/main
+git commit -m "Merged RepoB without preserving history"
+```
