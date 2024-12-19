@@ -24,7 +24,43 @@ git submodule add https://github.com/okatsn/MyTeXLife.git sub-something
 git commit -m "Add MyTeXLife as submodule sub-something."
 ```
 
-### Keep submodules updated
+### Keep submodules updated to remote
+
+Update all submodules:
+
+```
+git submodule update --remote
+```
+
+Update only a specific submodule:
+
+```
+git submodule update --remote <your_submodule_name>
+```
+
+
+To make your submodule keep in track with a specific branch when update, `main` for example, add `branch = main` in .gitmodule:
+
+```
+# .gitmodule file
+
+[submodule "<your_submodule_name>"]
+	path = <your_submodule_name>
+	url = https://github.com/okatsn/<your_submodule_name>.git
+	branch = main
+    # The submodule's HEAD will always checkout to main after `git submodule update --remote`
+
+```
+
+
+> Noted that `update` will typically result in a detached head unless additional flag `--rebase` or `--merge` is specified.
+> See: 
+> - https://git-scm.com/docs/git-submodule#_options
+> - https://stackoverflow.com/questions/19619747/git-submodule-update-remote-vs-git-pull/19621245#19621245
+
+
+### Edit local submodule
+
 Saying a repository was added as the submodule of "sub-something", and I have done some new modifications:
 
 ```bash
