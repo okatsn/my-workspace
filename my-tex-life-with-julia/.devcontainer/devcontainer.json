@@ -2,12 +2,12 @@
 // - For "name", make it unique among existing container
 // - For all others, make it the same/consistent with that in https://github.com/okatsn/MyTeXLife
 {
-    "name": "MyTeXLifeWithJulia", 
+    "name": "MyTeXLifeWithJulia",
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
     // the service in docker-compose.yml 
-    "service": "devtj", 
+    "service": "devtj",
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
@@ -57,11 +57,11 @@
                     "-y=defaultIndent: '%INDENT%'"
                 ],
                 // SECTION: MyTeXLifeWithJulia Exclusive
-                "ltex.dictionary": {
-                    "en-US": [
-                        ":/workspace/ltex-dictionary/ltex.dictionary.en-US.txt",
-                    ],
-                },
+                // "ltex.dictionary": {
+                //     "en-US": [
+                //         ":/workspace/ltex-dictionary/ltex.dictionary.en-US.txt",
+                //     ],
+                // },
                 // !!! note "workspaceExternalFile"
                 //     - "workspaceExternalFile" refers "/workspace/ltex-dictionary/externalFile.txt", no matter whether you have set it in "ltex.dictionary" 
                 //     - In that "externalFile.txt", you can specify the relative path to other dictionary such as "ltex.dictionary.en-US.txt"
@@ -69,9 +69,9 @@
                 // For more information, please refer: 
                 // https://valentjn.github.io/ltex/settings.html#ltexdictionary
                 // https://valentjn.github.io/ltex/vscode-ltex/setting-scopes-files.html#external-setting-files
-                "ltex.configurationTarget": {
-                    "dictionary": "workspaceExternalFile", // This setting allows Quick Fix (Ctrl+.) add words to "workspaceExternalFile"
-                },
+                // "ltex.configurationTarget": {
+                //     "dictionary": "workspaceExternalFile", // This setting allows Quick Fix (Ctrl+.) add words to "workspaceExternalFile"
+                // },
                 // SECTION: JULIA Exclusive
                 // "python.defaultInterpreterPath": "/opt/conda/bin/python", // this is for quarto to correctly work with VSCode.
                 "julia.environmentPath": "/workspace", // KEYNOTE: it is expected to be WORKSPACE_DIR  defined in Dockerfile
