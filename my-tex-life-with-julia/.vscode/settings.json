@@ -1,0 +1,4 @@
+{
+    // see this issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
+    "latex-workshop.formatting.latex": "latexindent"
+}
