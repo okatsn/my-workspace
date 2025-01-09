@@ -11,7 +11,7 @@
   - [Export and Import](#export-and-import)
   - [`dive` into the image](#dive-into-the-image)
     - [Initialize/Update `okatsn/my-workspace`](#initializeupdate-okatsnmy-workspace)
-  - [Trouble shooting](#trouble-shooting)
+  - [Trouble shooting and cheatsheet](#trouble-shooting-and-cheatsheet)
     - [Git](#git)
     - [Permission Denied on mounted volumes](#permission-denied-on-mounted-volumes)
     - [Docker](#docker)
@@ -19,6 +19,7 @@
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
     - [Grant sudo for `jovyan`](#grant-sudo-for-jovyan)
+    - [DVC files batch import using `xargs`](#dvc-files-batch-import-using-xargs)
 
 
 # README
@@ -221,7 +222,7 @@ git submodule update
 ```
 
 
-## Trouble shooting
+## Trouble shooting and cheatsheet
 ### Git
 
 If you encounter authentication issues, an easy way to authenticate is use `gh` to open a page in your Windows browser and authenticate this WSL machine:
@@ -339,3 +340,42 @@ However, the problem is if the the terminal user is root, many things go wrong d
 To sum up, there seems to be no way to grant sudo to `jovyan` AND log in as `jovyan` in a `jupyter/minimal-notebook` based containerized workspace; 
 you have to install those only `root` can install in Dockerfile and rebuild.
 
+### DVC files batch import using `xargs`
+
+We can use `dvc list` to list remote files, save the results in a json, then use `xargs` to import files in batch:
+
+```bash
+# Save the list of all remote files
+dvc list --dvc-only --json -R https://github.com/okatsn/XXXXX.git > remote_file_list.json
+# Edit the json file, and then run the following command to import all file in the list in batch:
+jq -r '.[].path' remote_file_list.json | xargs -I {} dvc import https://github.com/okatsn/XXXXX.git {} -o target_dir/
+```
+
+In the script above, `jq` to get the contents in json. The syntax `.[].path` indexes into field `path` (and then return all the `path`s) in a structured dictionary as below
+
+```json
+[
+    {
+       ...,
+        "path": "figures/Fig1_TimeSeriesPhases.eps"
+    },
+    {
+        ...,
+        "path": "figures/Fig2_s763_CLS.eps"
+    },
+    ...
+]
+```
+
+
+
+
+The reason to save the file list to json is that you can manually edit the list before do batch import.
+Alternatively, you can also import all files and find what you want then `dvc mv`:
+
+```bash
+# Import all dvc files to the temporary folder:
+dvc list --dvc-only -R https://github.com/okatsn/XXXXX.git | xargs -I {} dvc import https://github.com/okatsn/XXXXX.git {} -o temp/
+# Find all eps files and move them to the folder "figures"
+find ./temp -type f -name '*.eps' | xargs -I {} dvc mv {} figures/
+```
