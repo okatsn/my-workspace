@@ -379,3 +379,9 @@ dvc list --dvc-only -R https://github.com/okatsn/XXXXX.git | xargs -I {} dvc imp
 # Find all eps files and move them to the folder "figures"
 find ./temp -type f -name '*.eps' | xargs -I {} dvc mv {} figures/
 ```
+
+If what you want to import is all in a specific directory, you can do the jobs using the following one-line command:
+
+```bash
+dvc list --dvc-only https://github.com/okatsn/FSFrictionExp_23.jl.git figures/ | xargs -I {} dvc import https://github.com/okatsn/FSFrictionExp_23.jl.git figures/{} -o latex_tectonophysics/
+```
