@@ -380,6 +380,8 @@ dvc list --dvc-only -R https://github.com/okatsn/XXXXX.git | xargs -I {} dvc imp
 find ./temp -type f -name '*.eps' | xargs -I {} dvc mv {} figures/
 ```
 
+**⚠️ Warning**: In DVC 3.53.2, `dvc mv` will discard all the information of the remote source (`url`, `rev_lock` and etc.), which I don't know if it is a bug. This means that if this repo doesn't have a remote or the imported data haven't been pushed to the this remote, you cannot recover these data in this repo somewhere else.
+
 If what you want to import is all in a specific directory, you can do the jobs using the following one-line command:
 
 ```bash
