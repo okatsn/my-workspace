@@ -18,7 +18,7 @@
     - [DVC](#dvc)
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
-    - [Grant sudo for jovyan](#grant-sudo-for-jovyan)
+    - [Grant sudo for `jovyan`](#grant-sudo-for-jovyan)
 
 
 # README
@@ -317,9 +317,9 @@ When you reset your WSL distro, you might encounter this kind of non-sense error
 See [this post](https://stackoverflow.com/questions/45972812/are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa).
 
 
-### Grant sudo for jovyan
+### Grant sudo for `jovyan`
 
-To use sudo, not only `GRANT_SUDO` has to be "yes", but also user to be root. See 
+To use sudo, not only `GRANT_SUDO` has to be "yes", but also user to be `root`. See 
 - https://github.com/jupyter/docker-stacks/issues/949
 - https://stackoverflow.com/questions/78460730/what-is-the-password-for-jovyan-user-in-jupyter-lab-docker-container and links therein: https://github.com/jupyter/docker-stacks/issues/408#issuecomment-1588023099
 
@@ -335,3 +335,7 @@ services:
 
 or in `devcontainer.json`, set `"remoteUser": "root",`, such that when you open an integrated terminal in VS Code within the Dev Container you'll be logged in as the root user.
 However, the problem is if the the terminal user is root, many things go wrong due to permission mismatch, including that GIT will be unavailable when the folder is opened in this DevContainer (GIT authentication is granted in WSL for user `okatsn`, and in DevContainer `jovyan` should have the same UID as `okatsn` for user to work smoothly in the containerized workspace).
+
+To sum up, there seems to be no way to grant sudo to `jovyan` AND log in as `jovyan` in a `jupyter/minimal-notebook` based containerized workspace; 
+you have to install those only `root` can install in Dockerfile and rebuild.
+
