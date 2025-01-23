@@ -36,5 +36,7 @@
         "tamasfe.even-better-toml",
         "yzhang.markdown-all-in-one",
         "ziyasal.vscode-open-in-github",
+        // For python linting and formatting.
+        "charliermarsh.ruff"
     ]
 }
