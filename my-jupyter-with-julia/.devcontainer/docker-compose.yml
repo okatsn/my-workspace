@@ -25,6 +25,8 @@ services:
       - ..:/home/jovyan/workspace
       # # Docker socket to access Docker server
       - /var/run/docker.sock:/var/run/docker.sock
+      # # Cache directory (this makes DVC credential persistant)
+      - ~/.cache:/home/jovyan/.cache
       # # SSH directory
       - ~/.ssh:/home/jovyan/.ssh
       # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
@@ -40,11 +42,9 @@ services:
 
 
     environment:
-      # Set time zone (GMT-8 is UTC+8):
-      # - To print available time-zone names: ls /usr/share/zoneinfo
-      TZ: Etc/GMT-8
+      - TZ=TW
+      # Set time zone
       # entrypoint: ["zsh", "-c", "while sleep 1000; do :; done"]
-      # GRANT_SUDO: "yes"
     entrypoint: sh -c "sleep infinity"
 # KEYNOTE: Those defined volumes in service should be declared in the root level
 # Unbind vscode-server to volumes to ensure extensions in devcontainer.json to be installed on rebuild
