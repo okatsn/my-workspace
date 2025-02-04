@@ -49,6 +49,7 @@ You have to add the followings to the `pyproject.toml` for pytest to initiate th
 pythonpath = "src"
 ```
 
+## VSCode settings:
 
 [In `.vscode/settings.json`, you may need to set the pytest path](https://youtu.be/PwGKhvqJCQM?si=RRIwudapyCWimnMc&t=1238):
 ```json
@@ -65,3 +66,6 @@ pythonpath = "src"
     "python.testing.pytestPath": "${workspaceFolder}/.venv/bin/pytest",
 }
 ```
+
+Hint: If `Ctrl+Enter` doesn't execute the current line with the python of `defaultInterpreterPath`, please try `Ctrl+Shift+P`, select `Python: Create Environment`, then choose `Venv`, then choose `Use existing`.
+> Referring Vscode documentation: https://code.visualstudio.com/docs/python/environments#_using-the-create-environment-command
