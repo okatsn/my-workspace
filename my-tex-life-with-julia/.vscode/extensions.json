@@ -28,6 +28,7 @@
         "shd101wyy.markdown-preview-enhanced",
         "streetsidesoftware.code-spell-checker",
         "TakumiI.markdowntable",
+        "renathossain.markdown-runner", // "copy" button for code block
         "tamasfe.even-better-toml",
         "yzhang.markdown-all-in-one",
         "ziyasal.vscode-open-in-github",

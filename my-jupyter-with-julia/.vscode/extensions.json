@@ -32,10 +32,12 @@
         "redhat.vscode-yaml",
         "shd101wyy.markdown-preview-enhanced",
         "streetsidesoftware.code-spell-checker",
-        "TakumiI.markdowntable",
         "tamasfe.even-better-toml",
-        "yzhang.markdown-all-in-one",
         "ziyasal.vscode-open-in-github",
+        // Markdown
+        "TakumiI.markdowntable",
+        "yzhang.markdown-all-in-one",
+        "renathossain.markdown-runner", // "copy" button for code block
         // For python linting and formatting.
         "charliermarsh.ruff"
     ]
