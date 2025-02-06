@@ -59,6 +59,9 @@ pythonpath = "src"
     "python.envFile": "${workspaceFolder}/.env",
     "python.terminal.activateEnvironment": true,
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.analysis.extraPaths":[
+        "${workspaceFolder}"
+    ], // for vscode extension Pylance. See https://youtu.be/PwGKhvqJCQM?si=Casljn05MqK8haVH&t=1335
     // Pytest settings
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
