@@ -30,7 +30,7 @@ FROM okatsn/my-julia-build:v1.10-LTS AS build-julia
 
 FROM okatsn/my-quarto-build:v1.6 AS build-quarto
 
-FROM okatsn/my-go-build:latest AS my-go-build
+FROM okatsn/my-go-build:v2024 AS my-go-build
 
 
 FROM okatsn/my-tex-life:2024c

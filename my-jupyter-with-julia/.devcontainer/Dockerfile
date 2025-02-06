@@ -1,7 +1,7 @@
 FROM okatsn/my-julia-build:v1.10-LTS AS build-julia
 FROM okatsn/my-quarto-build:v1.6 AS build-quarto
 FROM okatsn/my-typst-space:v2024d AS build0
-FROM okatsn/my-go-build:latest AS my-go-build
+FROM okatsn/my-go-build:v2024 AS my-go-build
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
 # # The list of available tags: https://quay.io/repository/jupyter/minimal-notebook?tab=tags
