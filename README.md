@@ -18,6 +18,7 @@
     - [DVC](#dvc)
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
+    - [Docker rebuild error "connect: network is unreachable"](#docker-rebuild-error-connect-network-is-unreachable)
     - [Grant sudo for `jovyan`](#grant-sudo-for-jovyan)
     - [DVC files batch import using `xargs`](#dvc-files-batch-import-using-xargs)
 
@@ -316,6 +317,23 @@ When you reset your WSL distro, you might encounter this kind of non-sense error
 [Clean volumes, containers and images](#clean-volumes-containers-and-images) and restart docker desktop might solve the problem.
 
 See [this post](https://stackoverflow.com/questions/45972812/are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa).
+
+### Docker rebuild error "connect: network is unreachable"
+
+The error message would be something like:
+
+```
+failed to solve: okatsn/my-quarto-build:v1.6: 
+failed to resolve source metadata for docker.io/okatsn/my-quarto-build:v1.6: 
+failed to authorize: 
+failed to fetch oauth token: 
+Post "https://auth.docker.io/token": 
+dial tcp [xxxx:xxxx:xxxx:xxxx:xxxx]:443: 
+connect: network is unreachable 
+```
+
+You may first connect your PC to another network or reconnect wifi before further actions before rebuild and reopen, even though any other network connection works fine.
+
 
 
 ### Grant sudo for `jovyan`
