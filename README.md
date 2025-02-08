@@ -3,6 +3,7 @@
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
+    - [Fonts](#fonts)
     - [Install DVC](#install-dvc)
     - [Install lefthook](#install-lefthook)
     - [Install pip](#install-pip)
@@ -59,6 +60,39 @@ Configuration:
 - `git config --global user.email "YOUR_ADDRESS@Xmail.com"`
 
 ## Install others (optional)
+
+### Fonts 
+
+Get the font:
+
+```
+wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/CascadiaMono.zip
+```
+
+```
+cd ~/.local/share/fonts
+```
+
+```
+unzip CascadiaMono
+```
+
+
+Install:
+```
+sudo cp -r CascadiaMono /usr/share/fonts/truetype/
+```
+
+```
+fc-cache -fv
+```
+
+Uninstall:
+
+```
+sudo rm /usr/share/fonts/truetype/CascadiaMono
+fc-cache -fv
+```
 
 ### Install DVC
 
