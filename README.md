@@ -74,7 +74,7 @@ cd ~/.local/share/fonts
 ```
 
 ```
-unzip CascadiaMono
+unzip CascadiaMono -d CascadiaMono
 ```
 
 
@@ -90,9 +90,15 @@ fc-cache -fv
 Uninstall:
 
 ```
-sudo rm /usr/share/fonts/truetype/CascadiaMono
+sudo rm -rv /usr/share/fonts/truetype/CascadiaMono
 fc-cache -fv
 ```
+
+Hint:
+
+- Use `fc-list` to list the installed fonts.
+- Remember to remove zip files in `~/.local/share/fonts/`
+- You might need to install `unzip` (`sudo apt install unzip`).
 
 ### Install DVC
 
