@@ -25,8 +25,6 @@ services:
       - ../:/workspace
       # # Docker socket to access Docker server
       - /var/run/docker.sock:/var/run/docker.sock
-      # # Cache directory (this makes DVC credential persistant)
-      - ~/.cache:/home/jovyan/.cache
       # # SSH directory
       - ~/.ssh:/home/jovyan/.ssh
       # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
@@ -41,7 +39,8 @@ services:
       # # - Named volumes is chosen because VSCode extensions of this environment is not expected to be shared with those in WSL.
       # # - Please refer to okatsn/MyTeXLife for more explanation
       - vscode-server:/home/jovyan/.vscode-server
-
+      # # DVC credential cache directory (this makes DVC credential persistant)
+      - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
 
     environment:
       - TZ=TW
