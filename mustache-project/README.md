@@ -11,6 +11,9 @@ For how to use mustache.
 
 ```bash
 sudo apt update
+```
+
+```bash
 sudo apt install nodejs npm -y
 ```
 
