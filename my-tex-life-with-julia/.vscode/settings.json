@@ -1,4 +1,45 @@
 {
     // see this issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
-    "latex-workshop.formatting.latex": "latexindent"
+    "latex-workshop.formatting.latex": "latexindent",
+    "latex-workshop.latexindent.args": [
+        "-c",
+        "%DIR%/",
+        "%TMPFILE%",
+        "-y=defaultIndent: '%INDENT%'"
+    ],
+    // Latex settings
+    "latex-workshop.linting.chktex.enabled": true,
+    "latex-workshop.linting.chktex.exec.path": "chktex",
+    "latex-workshop.latex.clean.subfolder.enabled": true,
+    "latex-workshop.latex.autoClean.run": "onBuilt",
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "*.tex": "latex"
+    },
+    "cSpell.customDictionaries": {
+        "project-words": {
+            "name": "project-words",
+            "path": "${workspaceRoot}/.vscode/ltex.dictionary.en-US.txt",
+            "description": "Words used in this project; shared with LTeX.",
+            "addWords": true
+        },
+        "custom": true, // Enable the `custom` dictionary
+        "internal-terms": false // Disable the `internal-terms` dictionary
+    }, // This prevents cSpell to highlight words already added to LTeX's dictionary.
+    // SECTION: MyTeXLifeWithJulia Exclusive
+    // "ltex.dictionary": {
+    //     "en-US": [
+    //         ":/workspace/ltex-dictionary/ltex.dictionary.en-US.txt",
+    //     ],
+    // },
+    // !!! note "workspaceExternalFile"
+    //     - "workspaceExternalFile" refers "/workspace/ltex-dictionary/externalFile.txt", no matter whether you have set it in "ltex.dictionary" 
+    //     - In that "externalFile.txt", you can specify the relative path to other dictionary such as "ltex.dictionary.en-US.txt"
+    //
+    // For more information, please refer: 
+    // https://valentjn.github.io/ltex/settings.html#ltexdictionary
+    // https://valentjn.github.io/ltex/vscode-ltex/setting-scopes-files.html#external-setting-files
+    // "ltex.configurationTarget": {
+    //     "dictionary": "workspaceExternalFile", // This setting allows Quick Fix (Ctrl+.) add words to "workspaceExternalFile"
+    // },
 }
