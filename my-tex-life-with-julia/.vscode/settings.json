@@ -16,6 +16,16 @@
     "files.associations": {
         "*.tex": "latex"
     },
+    "cSpell.customDictionaries": {
+        "project-words": {
+            "name": "project-words",
+            "path": "${workspaceRoot}/.vscode/ltex.dictionary.en-US.txt",
+            "description": "Words used in this project; shared with LTeX.",
+            "addWords": true
+        },
+        "custom": true, // Enable the `custom` dictionary
+        "internal-terms": false // Disable the `internal-terms` dictionary
+    }, // This prevents cSpell to highlight words already added to LTeX's dictionary.
     // SECTION: MyTeXLifeWithJulia Exclusive
     // "ltex.dictionary": {
     //     "en-US": [
