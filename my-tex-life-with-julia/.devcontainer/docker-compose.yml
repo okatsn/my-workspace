@@ -2,7 +2,6 @@
 # - assign a new image name
 # - make this file consistent with that in https://github.com/okatsn/MyTeXLife
 
-
 services:
   # The service name should be consistent with that in devcontainer.json
   devtj:
@@ -14,12 +13,12 @@ services:
       dockerfile: .devcontainer/Dockerfile
 
     # Better not to have duplicate image name
-    image: texjuliadev
-    init: true
+    image: texjuliadev 
+    init: true 
     # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
-
+    
     # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
-    container_name: tex-with-julia
+    container_name: tex-with-julia 
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ../:/workspace
@@ -41,7 +40,7 @@ services:
       - vscode-server:/home/jovyan/.vscode-server
       # # DVC credential cache directory (this makes DVC credential persistant)
       - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
-      
+
     environment:
       - TZ=TW
       # Set time zone

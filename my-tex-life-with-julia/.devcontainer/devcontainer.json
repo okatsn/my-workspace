@@ -2,44 +2,16 @@
 // - For "name", make it unique among existing container
 // - For all others, make it the same/consistent with that in https://github.com/okatsn/MyTeXLife
 {
-    "name": "MyTeXLifeWithJulia",
+    "name": "MyTeXLifeWithJulia", 
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
     // the service in docker-compose.yml 
-    "service": "devtj",
+    "service": "devtj", 
     "shutdownAction": "stopCompose",
     "workspaceFolder": "/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
         "vscode": {
-            "extensions": [
-                // KEYNOTE: Please refer "dev.containers.defaultExtensions" in  settings.json (Ctrl+Shift+P and Open User Settings (JSON)) for Common Extensions
-                // MyJuliaSpace Exclusive
-                // CHECKPOINT: julia extension not installed on rebuild.
-                "julialang.language-julia", // julia
-                "colinfang.markdown-julia",
-                // CHECKPOINT: unlock me if python and jupyter are installed
-                // "ms-python.python",                        // python
-                // "ms-python.vscode-pylance",
-                // "quarto.quarto",
-                "tamasfe.even-better-toml",
-                // MyTeXLife Exclusive
-                "james-yu.latex-workshop", // Latex
-                "mathematic.vscode-latex",
-                "jeffersonqin.latex-snippets-jeff",
-                "tecosaur.latex-utilities",
-                "valentjn.vscode-ltex", // Spell & Grammar check
-                "stkb.rewrap", // rewrap comments after n characters on one line
-                "vscode-icons-team.vscode-icons",
-                // Typst extensions
-                "nvarner.typst-lsp",
-                "mgt19937.typst-preview",
-                "oijaz.unicode-latex",
-                // DVC
-                "iterative.dvc", // data version control
-                // Quarto
-                "quarto.quarto",
-            ],
             "settings": {
                 // KEYNOTE: These settings are valid for ANY workspace opened in this container.
                 // As one specific container is built for one project, you should set most of the settings

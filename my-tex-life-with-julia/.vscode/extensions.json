@@ -14,8 +14,6 @@
         "GitHub.copilot-chat",
         "Gruntfuggly.todo-tree",
         "imgildev.vscode-mustache-snippets",
-        "iterative.dvc",
-        "iterative.vscode-dvc-pack",
         "jackiotyu.git-worktree-manager",
         "julialang.language-julia",
         "mechatroner.rainbow-csv",
@@ -32,5 +30,22 @@
         "tamasfe.even-better-toml",
         "yzhang.markdown-all-in-one",
         "ziyasal.vscode-open-in-github",
+        // MyTeXLife Exclusive
+        "james-yu.latex-workshop", // Latex
+        "mathematic.vscode-latex",
+        "jeffersonqin.latex-snippets-jeff",
+        "tecosaur.latex-utilities",
+        "valentjn.vscode-ltex", // Spell & Grammar check
+        "stkb.rewrap", // rewrap comments after n characters on one line
+        "vscode-icons-team.vscode-icons",
+        // Typst extensions
+        "nvarner.typst-lsp",
+        "myriad-dreamin.tinymist",
+        "oijaz.unicode-latex",
+        // DVC
+        "iterative.dvc", // data version control
+        "iterative.vscode-dvc-pack",
+        // Quarto
+        "quarto.quarto",
     ]
 }
