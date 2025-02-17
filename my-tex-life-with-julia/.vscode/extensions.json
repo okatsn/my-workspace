@@ -35,7 +35,8 @@
         "mathematic.vscode-latex",
         "jeffersonqin.latex-snippets-jeff",
         "tecosaur.latex-utilities",
-        "valentjn.vscode-ltex", // Spell & Grammar check
+        // Spell & Grammar check
+        "valentjn.vscode-ltex",
         "stkb.rewrap", // rewrap comments after n characters on one line
         "vscode-icons-team.vscode-icons",
         // Typst extensions
@@ -45,7 +46,5 @@
         // DVC
         "iterative.dvc", // data version control
         "iterative.vscode-dvc-pack",
-        // Quarto
-        "quarto.quarto",
     ]
 }
