@@ -18,6 +18,7 @@ fi
 
 node render.js
 cp -r .devcontainer "$newproj/.devcontainer"
+cp -r .vscode "$newproj/.vscode"
 cp data.json "$newproj/data.json" 
 
 cd ..

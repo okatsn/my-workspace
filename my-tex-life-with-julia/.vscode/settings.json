@@ -1,13 +1,13 @@
 {
-    // see this issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
+    // Latex settings
     "latex-workshop.formatting.latex": "latexindent",
+    // see this issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
     "latex-workshop.latexindent.args": [
         "-c",
         "%DIR%/",
         "%TMPFILE%",
         "-y=defaultIndent: '%INDENT%'"
     ],
-    // Latex settings
     "latex-workshop.linting.chktex.enabled": true,
     "latex-workshop.linting.chktex.exec.path": "chktex",
     "latex-workshop.latex.clean.subfolder.enabled": true,
@@ -42,4 +42,5 @@
     // "ltex.configurationTarget": {
     //     "dictionary": "workspaceExternalFile", // This setting allows Quick Fix (Ctrl+.) add words to "workspaceExternalFile"
     // },
+    "ltex.additionalRules.motherTongue": "en-US",
 }
