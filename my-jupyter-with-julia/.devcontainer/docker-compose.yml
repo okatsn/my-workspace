@@ -2,7 +2,6 @@
 # - assign a new image name
 # - make this file consistent with that in https://github.com/okatsn/MyTeXLife
 
-
 services:
   # The service name should be consistent with that in devcontainer.json
   devjj:
