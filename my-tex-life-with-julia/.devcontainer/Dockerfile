@@ -9,20 +9,6 @@
 # $ docker tag devjuliatex okatsn/my-tex-life-with-julia:latest
 # $ docker push okatsn/my-tex-life-with-julia:latest
 
-# # WARN: Try BOTH delete volumes and `docker builder prune` before rebuild. Ohterwise, the Project.toml won't be overwritten by Project_for_env.toml.
-# # Explain:
-# # If the volume mounted for julia already exists, anything modifying the volume won't work. For example, 
-#
-# # This works:
-# RUN cp /home/$NB_USER/.julia/environments/v1.10/Project.toml /home/Project2.toml
-#
-# # But the followings do nothing if volume not deleted and builder not pruned:
-# # (This doesn't work)
-# COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/v1.10/Project_for_env.toml
-#
-# # (This doesn't work either):
-# COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /tmp/Project.toml
-# RUN mv -f /tmp/Project.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 
 FROM okatsn/my-typst-space AS build0
 
