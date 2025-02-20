@@ -1,3 +1,15 @@
+- [Docker](#docker)
+  - [How to build the image solely from the Dockerfile:](#how-to-build-the-image-solely-from-the-dockerfile)
+    - [Explain](#explain)
+  - [How to use `my-julia-build` in another `Dockerfile`](#how-to-use-my-julia-build-in-another-dockerfile)
+    - [Import the image](#import-the-image)
+    - [Consistent environment variable](#consistent-environment-variable)
+    - [`COPY` the julia installation in the last stage](#copy-the-julia-installation-in-the-last-stage)
+    - [VSCODE environment](#vscode-environment)
+    - [Other KEYNOTE](#other-keynote)
+  - [Known Issue](#known-issue)
+    - [Copy `Project.toml`](#copy-projecttoml)
+- [Next TODOs](#next-todos)
 # Docker
 
 The content of this folder is migrated from [okatsn/my-julia-build](https://github.com/okatsn/my-julia-build); please refer to this archive for older history.
@@ -75,5 +87,32 @@ Add Named volume in your docker-compose.yml; please refer [okatsn/MyTeXLife] or 
 3. Those in `.devcontainer` is intended just for the convenience of building the image and open the container using VSCODE's interface. Without them, the building command instruction in Dockerfile should still work.
 4. The `devcontainer.json` is suggested by VSCODE. 
 
+## Known Issue
+
+### Copy `Project.toml`
+
+One may like to copy a custom `Project.toml`, saying `.devcontainer/Project_for_env.toml` for example, to initial julia project environment such as `~/.julia/environments/v1.xx`.
+This works when the julia depository has not been mounted to volume yet.
+
+Once the julia depository, `julia-depot:/home/jovyan/.julia`, has been mounted to a volume, commands in building stages won't change any of the contents in this directory unless you delete the volume or prune the builder before running Dockerfile. For example:
+
+```Dockerfile
+# This works since /home has not been mounted as volume before:
+RUN cp /home/$NB_USER/.julia/environments/v1.10/Project.toml /home/Project2.toml
+```
+
+```Dockerfile
+# (This doesn't work)
+COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/v1.10/Project_for_env.toml
+# (This doesn't work either):
+COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /tmp/Project.toml
+RUN mv -f /tmp/Project.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
+```
+
+To make the copy command working, try BOTH delete volumes and `docker builder prune` before rebuild since the mounted volume will not be modified (and should not) in the container building stage. 
+
+
+
 # Next TODOs
+
 - [ ] Find a way to synchronize all the `.env` files in different repos. For example, `okatsn/my-julia-build/.env` should describe the same environment variables as those in `okatsn/MyTeXLife/.devcontainer/.env`.

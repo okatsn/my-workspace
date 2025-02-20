@@ -9,24 +9,10 @@
 # $ docker tag devjuliatex okatsn/my-tex-life-with-julia:latest
 # $ docker push okatsn/my-tex-life-with-julia:latest
 
-# # WARN: Try BOTH delete volumes and `docker builder prune` before rebuild. Ohterwise, the Project.toml won't be overwritten by Project_for_env.toml.
-# # Explain:
-# # If the volume mounted for julia already exists, anything modifying the volume won't work. For example, 
-#
-# # This works:
-# RUN cp /home/$NB_USER/.julia/environments/v1.10/Project.toml /home/Project2.toml
-#
-# # But the followings do nothing if volume not deleted and builder not pruned:
-# # (This doesn't work)
-# COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/v1.10/Project_for_env.toml
-#
-# # (This doesn't work either):
-# COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /tmp/Project.toml
-# RUN mv -f /tmp/Project.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 
 FROM okatsn/my-typst-space AS build0
 
-FROM okatsn/my-julia-build:v1.10-LTS AS build-julia
+FROM okatsn/my-julia-build:v1.11-2025a AS build-julia
 
 FROM okatsn/my-quarto-build:v1.6 AS build-quarto
 
@@ -47,8 +33,6 @@ COPY --from=my-go-build /usr/local/go /usr/local/go
 ENV GOPATH=${HOME}/go  
 # Set GOPATH within user's home
 ENV PATH=/usr/local/go/bin:${GOPATH}/bin:${PATH}
-
-# KEYNOTE: The variable JULIA_PROJECT is defined in my-julia-build
 
 
 # # Install Zotero
@@ -99,8 +83,9 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 
 
 # # Julia part (Please refer the Dockerfile in okatsn/my-julia-build)
+# Noted that the following command makes no change IF you are rebuilding the image WITHOUT prune build and volumes.
+# Explain: Modification on a directory mounted as a volume will be overriden by the volume if the volume already exist. See explanlation in julia-debian-build/README.md
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
-COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
