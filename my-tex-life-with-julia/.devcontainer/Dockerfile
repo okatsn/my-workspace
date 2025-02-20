@@ -34,8 +34,6 @@ ENV GOPATH=${HOME}/go
 # Set GOPATH within user's home
 ENV PATH=/usr/local/go/bin:${GOPATH}/bin:${PATH}
 
-# KEYNOTE: The variable JULIA_PROJECT is defined in my-julia-build
-
 
 # # Install Zotero
 RUN curl -sL https://raw.githubusercontent.com/retorquere/zotero-deb/master/install.sh | bash
@@ -85,8 +83,9 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 
 
 # # Julia part (Please refer the Dockerfile in okatsn/my-julia-build)
+# Noted that the following command makes no change IF you are rebuilding the image WITHOUT prune build and volumes.
+# Explain: Modification on a directory mounted as a volume will be overriden by the volume if the volume already exist. See explanlation in julia-debian-build/README.md
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
-COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia

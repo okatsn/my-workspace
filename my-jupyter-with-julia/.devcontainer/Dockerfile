@@ -78,14 +78,12 @@ RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
 
 
 # # Julia part
+# Noted that the following command makes no change IF you are rebuilding the image WITHOUT prune build and volumes.
+# Explain: Modification on a directory mounted as a volume will be overriden by the volume if the volume already exist. See explanlation in julia-debian-build/README.md
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
 
 COPY --from=build-julia /opt/julia-okatsn /opt/julia-okatsn
 # TODO:  --chown=$NB_UID:$NB_GID is disabled because julia was installed by root and only root had the permissions. If everything is OK, modify the README of julia-debian-build accordingly
-
-# Optional: Use customized Project.toml for default julia environment.
-# The variable JULIA_PROJECT is defined in my-julia-build
-COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
