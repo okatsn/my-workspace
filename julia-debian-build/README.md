@@ -91,17 +91,15 @@ Add Named volume in your docker-compose.yml; please refer [okatsn/MyTeXLife] or 
 
 ### Copy `Project.toml`
 
-WARN: Try BOTH delete volumes and `docker builder prune` before rebuild. Ohterwise, the Project.toml won't be overwritten by Project_for_env.toml.
-Explain:
-If the volume mounted for julia already exists, anything modifying the volume won't work. For example, 
+One may like to copy a custom `Project.toml`, saying `.devcontainer/Project_for_env.toml` for example, to initial julia project environment such as `~/.julia/environments/v1.xx`.
+This works when the julia depository has not been mounted to volume yet.
 
+Once the julia depository, `julia-depot:/home/jovyan/.julia`, has been mounted to a volume, commands in building stages won't change any of the contents in this directory unless you delete the volume or prune the builder before running Dockerfile. For example:
 
 ```Dockerfile
-# This works:
+# This works since /home has not been mounted as volume before:
 RUN cp /home/$NB_USER/.julia/environments/v1.10/Project.toml /home/Project2.toml
 ```
-
-But the followings do nothing if volume not deleted and builder not pruned:
 
 ```Dockerfile
 # (This doesn't work)
@@ -111,5 +109,10 @@ COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /tmp/Project.tom
 RUN mv -f /tmp/Project.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 ```
 
+To make the copy command working, try BOTH delete volumes and `docker builder prune` before rebuild since the mounted volume will not be modified (and should not) in the container building stage. 
+
+
+
 # Next TODOs
+
 - [ ] Find a way to synchronize all the `.env` files in different repos. For example, `okatsn/my-julia-build/.env` should describe the same environment variables as those in `okatsn/MyTeXLife/.devcontainer/.env`.
