@@ -1,4 +1,4 @@
-FROM okatsn/my-julia-build:v1.10-LTS AS build-julia
+FROM okatsn/my-julia-build:v1.11-2025a AS build-julia
 FROM okatsn/my-quarto-build:v1.6 AS build-quarto
 FROM okatsn/my-typst-space:v2024d AS build0
 FROM okatsn/my-go-build:v2024 AS my-go-build
