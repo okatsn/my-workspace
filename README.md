@@ -22,6 +22,8 @@
     - [Docker rebuild error "connect: network is unreachable"](#docker-rebuild-error-connect-network-is-unreachable)
     - [Grant sudo for `jovyan`](#grant-sudo-for-jovyan)
     - [DVC files batch import using `xargs`](#dvc-files-batch-import-using-xargs)
+  - [Resources](#resources)
+    - [Tips and inspirations](#tips-and-inspirations)
 
 
 # README
@@ -445,3 +447,16 @@ If what you want to import is all in a specific directory, you can do the jobs u
 ```bash
 dvc list --dvc-only https://github.com/okatsn/FSFrictionExp_23.jl.git figures/ | xargs -I {} dvc import https://github.com/okatsn/FSFrictionExp_23.jl.git figures/{} -o latex_tectonophysics/
 ```
+
+
+## Resources
+
+### Tips and inspirations
+
+You can see how pandoc manage their images.
+Pandoc provide images from of very-core functionality to minimal-sized, and specific images such as [pandoc/typst](https://github.com/pandoc/dockerfiles/blob/main/ubuntu/typst/Dockerfile) and [pandoc/latex](https://github.com/pandoc/dockerfiles/blob/main/ubuntu/latex/Dockerfile).
+
+- [The repository for the dockerfiles](https://github.com/pandoc/dockerfiles/tree/main); please take a look on how they manage their multiple-stage building (the `FROM x AS y` and `FROM y AS z`).
+- The [core](https://github.com/pandoc/dockerfiles/blob/main/ubuntu/Dockerfile) and [static](https://github.com/pandoc/dockerfiles/blob/main/static/Dockerfile) Dockerfile.
+- [They use a shell script to manage the building process](https://github.com/pandoc/dockerfiles/blob/main/build.sh).
+- Also see how they [test](https://github.com/pandoc/dockerfiles/tree/main/test) the images.
