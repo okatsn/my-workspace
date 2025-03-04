@@ -1,4 +1,6 @@
 {
+    // Copilot settings
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
     // Latex settings
     "latex-workshop.formatting.latex": "latexindent",
     // see this issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
