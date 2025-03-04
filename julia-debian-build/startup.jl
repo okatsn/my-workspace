@@ -10,6 +10,8 @@
 #     When a container uses `startup.jl` of `okatsn/my-julia-space`, the packages (e.g., OhMyREPL)
 #     should also be added to the Project.toml in the `WORKSPACE_DIR` for `startup.jl` to work
 #     as expected.
+#
+# Also see: [Customizing your IJulia environment](https://julialang.github.io/IJulia.jl/v1.22/manual/usage/#Customizing-your-IJulia-environment) that uses [Revise.jl](https://quarto.org/docs/computations/julia.html#revise.jl).
 atreplinit() do repl
     try
         @eval using OhMyREPL, TerminalPager, OkStartUp
