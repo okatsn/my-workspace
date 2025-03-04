@@ -17,3 +17,11 @@ docker run okatsn/my-util-box "stitchmd --help"
 ```bash
 docker run -v "${PWD}":/workspace okatsn/my-util-box 'jq "." data.json'
 ```
+
+```bash
+docker run -v "${PWD}":/workspace okatsn/my-util-box 'mustache data.json template.mustache > output.txt'
+```
+
+```bash
+docker run -v "${PWD}":/workspace okatsn/my-util-box 'stitchmd summary.md'
+```
