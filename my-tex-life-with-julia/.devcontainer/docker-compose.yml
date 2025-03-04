@@ -41,7 +41,8 @@ services:
       - vscode-server:/home/jovyan/.vscode-server
       # # DVC credential cache directory (this makes DVC credential persistant)
       - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
-      - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
+      - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker.
+      - dind-certs:/certs/client:ro  # Mount the certificates from dind
     depends_on:
       # (Docker in Docker, DinD)
       dind:
@@ -53,7 +54,7 @@ services:
       - TZ=TW
     entrypoint: sh -c "sleep infinity"
     # entrypoint: ["zsh", "-c", "while sleep 1000; do :; done"]
-    
+
   # # Use a sibling container to run docker in a docker container (Docker in Docker, DinD)
   # - Set up `dind` where `docker` is inherently available, that can be used via tcp protocol by the service that depends on it.
   # Referring: https://gemini.google.com/app/3c8f232c01664a56
@@ -62,14 +63,18 @@ services:
     image: docker:dind
     privileged: true # dind needs privileged mode
     environment:
+      - DOCKER_HOST=tcp://dind:2376 --tlsverify --tlscacert=/certs/client/ca.pem --tlscert=/certs/client/cert.pem --tlskey=/certs/client/key.pem  # Use HTTPS with TLS verification
+      - DOCKER_TLS_VERIFY=1  # Enable TLS verification
+      - DOCKER_CERT_PATH=/certs/client  # Specify cert path
       # # When empty, it use http to connect with the other container
-      - DOCKER_TLS_CERTDIR=
+      # - DOCKER_TLS_CERTDIR=
       # # Use https to connect with the other container
-      # - DOCKER_TLS_CERTDIR=/certs
+      - DOCKER_TLS_CERTDIR=/certs
     volumes:
       # KEYNOTE: The Docker client in your dev container connects to the DinD Docker daemon (running in a separate container). When you use --volume "$PWD:/data" inside the dev container (where $PWD is “/workspace”), that path is being interpreted relative to the file system of the DinD container. To make uses of data and files in your working directory, you have to add the same bind mount for your workspace.
       - ../:/workspace
       - dind-data:/var/lib/docker
+      - dind-certs:/certs/client  #Create Volume for the Certs.
     deploy:
       resources:
         limits:
@@ -80,10 +85,10 @@ services:
           memory: 256M
     command: --host=tcp://0.0.0.0:2375
     # Add this to expose Docker API
-
 # KEYNOTE: Those defined volumes in service should be declared in the root level
 # Unbind vscode-server to volumes to ensure extensions in devcontainer.json to be installed on rebuild
 volumes:
   julia-depot:
   vscode-server:
   dind-data:
+  dind-certs:
