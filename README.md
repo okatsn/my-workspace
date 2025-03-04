@@ -308,9 +308,35 @@ Build container in VSCode based on `devcontainer.json` may fail with a short and
 Here is an [Example](https://github.com/microsoft/vscode-remote-release/issues/9461). 
 Switch the settings to your recent profile on another PC may solve the problem.
 
+#### Identify targets and remove them
+
+List all containers
+```bash
+docker ps -a
+```
+
+Remove the container of a certain ID:
+```bash
+docker rm 86d4e89a42e2
+```
+
+List all images and remove a certain one:
+```bash
+docker images
+docker rmi <image-id/name>
+```
+
+
+List and remove volumes:
+```bash
+docker volume ls
+docker volume rm <volume-name>
+```
+
+
 #### Clean volumes, containers and images
 
-Use the following command if it fails to build in one machine but success in the other with exactly the same script.
+Use the following command if it fails to build in one machine but success in another with exactly the same script.
 - `docker image prune`:  Clear images
 - `docker builder prune`:  Clear Build Cache
 - `docker volume prune`: Remove Unused Volumes
