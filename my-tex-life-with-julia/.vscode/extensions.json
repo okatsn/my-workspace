@@ -35,6 +35,8 @@
         "mathematic.vscode-latex",
         "jeffersonqin.latex-snippets-jeff",
         "tecosaur.latex-utilities",
+        "connor.bib-checker",
+        "raykr.zotex",
         // Spell & Grammar check
         "valentjn.vscode-ltex",
         "stkb.rewrap", // rewrap comments after n characters on one line
