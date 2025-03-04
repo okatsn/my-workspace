@@ -31,7 +31,10 @@ RUN go install go.abhg.dev/stitchmd@latest
 # Set working directory
 WORKDIR /workspace
 
-# Use ENTRYPOINT to make the container behave like a CLI tool
+# # Use ENTRYPOINT to make the container behave like a CLI tool
+# Set this if you want a interface such as docker run okatsn/my-util-box "ls -la" rather than docker run okatsn/my-util-box ls -la
 ENTRYPOINT ["sh", "-c"]
+
+
 # Default command (can be overridden)
 CMD ["echo 'Available commands: jq, stitchmd, go, unzip, mustache'"]
