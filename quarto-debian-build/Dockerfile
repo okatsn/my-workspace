@@ -21,7 +21,5 @@ RUN apt-get update \
 RUN curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb \
     && gdebi --non-interactive quarto-linux-amd64.deb
 
-RUN mkdir -p /home/$NB_USER/.julia/config
-COPY startup_ijulia.jl /home/$NB_USER/.julia/config/startup_ijulia.jl
 
 
