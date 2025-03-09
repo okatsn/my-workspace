@@ -7,6 +7,13 @@ FROM ubuntu:latest
 # Set noninteractive installation
 ENV DEBIAN_FRONTEND=noninteractive
 
+# KEYNOTE:
+# This Dockerfile aims for building a containerized utility box for arbitrary users. See README for more details.
+# How the Dockerfile is structured to handle permissions for arbitrary users:
+# 1. Install tools as root and place them in global paths like bin
+# 2. Create the appuser after installing the tools
+# 3. Set appuser as the default container user for security
+
 # Install basic utilities
 RUN apt-get update && apt-get install -y \
     curl \
@@ -17,23 +24,23 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy Go from builder and set up Go environment
+COPY --from=go-build /usr/local/go /usr/local/go
+ENV PATH=/usr/local/go/bin:${PATH}
+
+# Install tools globally (as root)
+RUN gem install mustache && \
+    go install go.abhg.dev/stitchmd@latest && \
+    cp $(go env GOPATH)/bin/stitchmd /usr/local/bin/
+
 # Create non-root user
 RUN groupadd -g 1002 appuser && \
     useradd -u 1002 -g 1002 -m appuser
 
-# Copy Go from builder and set up Go environment
-COPY --from=go-build /usr/local/go /usr/local/go
-ENV GOPATH=/home/appuser/go
-ENV PATH=/usr/local/go/bin:${GOPATH}/bin:${PATH}
-
-# Switch to appuser for installing user-specific packages
+# Switch to appuser for default operation
 USER appuser
-
-# Install mustache (ruby gem)
-RUN gem install --user-install mustache
-
-# Install stitchmd
-RUN go install go.abhg.dev/stitchmd@latest
+ENV GOPATH=/home/appuser/go
+ENV PATH=${GOPATH}/bin:${PATH}
 
 # Set working directory
 WORKDIR /workspace
