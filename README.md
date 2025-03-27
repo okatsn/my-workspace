@@ -3,6 +3,7 @@
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
+    - [Nodejs](#nodejs)
     - [Fonts](#fonts)
     - [Install DVC](#install-dvc)
     - [Install lefthook](#install-lefthook)
@@ -62,6 +63,13 @@ Configuration:
 - `git config --global user.email "YOUR_ADDRESS@Xmail.com"`
 
 ## Install others (optional)
+
+### Nodejs
+
+```bash
+sudo apt update
+sudo apt install nodejs
+```
 
 ### Fonts 
 

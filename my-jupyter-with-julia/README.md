@@ -20,5 +20,17 @@ creates `my-jupyter-with-julia/TEMP`, that you can:
 
 ```bash
 cp -r my-jupyter-with-julia/TEMP/. ../projects/MyProject/
+```
 
+Remeber to restore the current workspace.
+
+```bash
+rm -rv my-jupyter-with-julia/TEMP
+```
+
+
+```bash
+git restore my-jupyter-with-julia/data.json
+git restore my-jupyter-with-julia/.devcontainer/devcontainer.json
+git restore my-jupyter-with-julia/.devcontainer/docker-compose.yml
 ```
