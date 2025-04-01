@@ -16,8 +16,6 @@ FROM okatsn/my-julia-build:v1.11-2025a AS build-julia
 
 FROM okatsn/my-quarto-build:v1.6 AS build-quarto
 
-FROM okatsn/my-go-build:v2024 AS my-go-build
-
 
 FROM okatsn/my-tex-life:2024c
 # Docker image https://hub.docker.com/repository/docker/okatsn/my-tex-life/general built from https://github.com/okatsn/MyTeXLife
@@ -27,19 +25,12 @@ USER root
 
 # Under root user
 
-# Copy Go installation from the builder stage - still as root
-COPY --from=my-go-build /usr/local/go /usr/local/go
-# Set Go environment variables (although there is no "/go" in the container, this ENV should be defined to tell that it is the workspace for go.)
-ENV GOPATH=${HOME}/go  
-# Set GOPATH within user's home
-ENV PATH=/usr/local/go/bin:${GOPATH}/bin:${PATH}
 
 
 # # Install Zotero
 RUN curl -sL https://raw.githubusercontent.com/retorquere/zotero-deb/master/install.sh | bash
 RUN apt-get update && apt-get -y install \
     tree \
-    jq \
     zotero
 # Get the better-bibtex file
 COPY .devcontainer/get_zoteroaddons.sh /tmp/
@@ -120,13 +111,6 @@ USER $NB_USER
 
 # KEYNOTE: This seems to cause Permission denied error until you (firstly disable this line in order to successfully build the container) add and build IJulia in your container, and rebuild again. (The permission issue is related to conda)
 # RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
-
-
-# Install stitchmd:
-# A tool that stitches together several Markdown files into one large Markdown file, making it easier to maintain larger Markdown files.
-# See: https://github.com/abhinav/stitchmd?tab=readme-ov-file#installation
-RUN go install go.abhg.dev/stitchmd@latest
-
 
 
 
