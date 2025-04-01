@@ -13,6 +13,8 @@ docker tag jtexworkspace okatsn/my-tex-life-with-julia:latest
 # push it to dockerhub
 docker push okatsn/my-tex-life-with-julia:latest
 
+# CHECKPOINT: Make the tag version an optional variable.
+
 echo "Docker image built and pushed successfully."
 
 cd ..

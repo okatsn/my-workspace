@@ -98,6 +98,11 @@ RUN wget https://dvc.org/deb/dvc.list -O /etc/apt/sources.list.d/dvc.list \
 
 
 
+
+# This allow starship to create log. See comments in my-jupyter-with-julia/Dockerfile
+RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
+
+
 # WORKDIR $WORKSPACE_DIR
 USER $NB_USER
 # RUN julia -e '...' will fail if the permission settings (`chown`) have problems.
