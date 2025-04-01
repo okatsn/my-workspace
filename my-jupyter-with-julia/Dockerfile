@@ -137,7 +137,8 @@ RUN mamba install --quiet --yes \
 
 # Update pandoc to the latest
 # (this allows typst conversion e.g., `pandoc input.typ -o output.docx`)
-RUN conda install -y -c conda-forge pandoc
+# RUN conda install -y -c conda-forge pandoc
+# Use pandoc image directly instead. See stripcomments.sh
 
 
 
