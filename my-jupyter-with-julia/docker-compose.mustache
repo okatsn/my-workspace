@@ -67,7 +67,7 @@ services:
       # - DOCKER_TLS_CERTDIR=/certs
     volumes:
       # KEYNOTE: The Docker client in your dev container connects to the DinD Docker daemon (running in a separate container). When you use --volume "$PWD:/data" inside the dev container (where $PWD is “/workspace”), that path is being interpreted relative to the file system of the DinD container. To make uses of data and files in your working directory, you have to add the same bind mount for your workspace.
-      - ../:/workspace
+      - ../:/home/jovyan/workspace
       - dind-data:/var/lib/docker
     deploy:
       resources:
