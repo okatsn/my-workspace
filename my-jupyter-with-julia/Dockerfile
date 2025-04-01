@@ -40,8 +40,6 @@ RUN apt-get update && apt-get -y install \
     # RUN apt-get update && apt-get -y install \
     tree \
     # `tree` list the tree of file directory.
-    jq \ 
-    # load json data
     fontconfig \
     fonts-noto-cjk \
     fonts-noto-cjk-extra \
