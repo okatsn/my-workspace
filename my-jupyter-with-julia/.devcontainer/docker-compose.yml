@@ -19,13 +19,12 @@ services:
     
     # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
     container_name: jupyter-with-julia 
+    privileged: true  # Add this line to allow Docker operations (using `docker` via dind)
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ..:/home/jovyan/workspace
       # # Docker socket to access Docker server
       - /var/run/docker.sock:/var/run/docker.sock
-      # # DVC credential cache directory (this makes DVC credential persistant)
-      - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
       # # SSH directory
       - ~/.ssh:/home/jovyan/.ssh
       # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
@@ -38,16 +37,52 @@ services:
       # # - Named volumes is chosen because VSCode extensions of this environment is not expected to be shared with those in WSL.
       # # - Please refer to okatsn/MyTeXLife for more explanation
       - vscode-server:/home/jovyan/.vscode-server
-
-
+      # # DVC credential cache directory (this makes DVC credential persistant)
+      - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
+      - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
+    depends_on:
+      # (Docker in Docker, DinD)
+      dind:
+        condition: service_started  # Make this explicit
     environment:
+      # # Use http to connect with the other container
+      - DOCKER_HOST=tcp://dind:2375  # Add this to connect to DinD
       # Set time zone (GMT-8 is UTC+8):
       # - To print available time-zone names: ls /usr/share/zoneinfo
-      TZ: Etc/GMT-8
-      # entrypoint: ["zsh", "-c", "while sleep 1000; do :; done"]
+      - TZ=Etc/GMT-8
     entrypoint: sh -c "sleep infinity"
+
+    
+  # # Use a sibling container to run docker in a docker container (Docker in Docker, DinD)
+  # - Set up `dind` where `docker` is inherently available, that can be used via tcp protocol by the service that depends on it.
+  # Referring: https://gemini.google.com/app/3c8f232c01664a56
+  # KEYNOTE: there is no need to install docker in Dockerfile!
+  dind:
+    image: docker:dind
+    privileged: true # dind needs privileged mode
+    environment:
+      # # When empty, it use http to connect with the other container
+      - DOCKER_TLS_CERTDIR=
+      # # Use https to connect with the other container
+      # - DOCKER_TLS_CERTDIR=/certs
+    volumes:
+      # KEYNOTE: The Docker client in your dev container connects to the DinD Docker daemon (running in a separate container). When you use --volume "$PWD:/data" inside the dev container (where $PWD is “/workspace”), that path is being interpreted relative to the file system of the DinD container. To make uses of data and files in your working directory, you have to add the same bind mount for your workspace.
+      - ../:/workspace
+      - dind-data:/var/lib/docker
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G  # Give dind less, as it mostly manages other containers
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    command: --host=tcp://0.0.0.0:2375
+    # Add this to expose Docker API
+
 # KEYNOTE: Those defined volumes in service should be declared in the root level
 # Unbind vscode-server to volumes to ensure extensions in devcontainer.json to be installed on rebuild
 volumes:
   julia-depot:
   vscode-server:
+  dind-data:
