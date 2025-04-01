@@ -1,7 +1,6 @@
 FROM okatsn/my-julia-build:v1.11-2025a AS build-julia
 FROM okatsn/my-quarto-build:v1.6 AS build-quarto
 FROM okatsn/my-typst-space:v2024d AS build0
-FROM okatsn/my-go-build:v2024 AS my-go-build
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
 # # The list of available tags: https://quay.io/repository/jupyter/minimal-notebook?tab=tags
@@ -31,13 +30,6 @@ ARG SUB_PROJECT_DIR="$HOME/workspace/projects/"
 USER root
 # Root user is necessary for the following command that creates the julia/quarto... link
 
-# Copy Go installation from the builder stage - still as root
-COPY --from=my-go-build /usr/local/go /usr/local/go
-# Set Go environment variables (although there is no "/go" in the container, this ENV should be defined to tell that it is the workspace for go.)
-ENV GOPATH=${HOME}/go  
-# Set GOPATH within user's home
-ENV PATH=/usr/local/go/bin:${GOPATH}/bin:${PATH}
-
 
 RUN apt-get update && apt-get -y install \
     bash-completion \
@@ -48,8 +40,6 @@ RUN apt-get update && apt-get -y install \
     # RUN apt-get update && apt-get -y install \
     tree \
     # `tree` list the tree of file directory.
-    jq \ 
-    # load json data
     fontconfig \
     fonts-noto-cjk \
     fonts-noto-cjk-extra \
@@ -122,11 +112,6 @@ USER $NB_USER
 # Install font via conda.
 # RUN conda install font-ttf-noto-cjk font-ttf-noto-emoji -y
 
-# Install stitchmd:
-# A tool that stitches together several Markdown files into one large Markdown file, making it easier to maintain larger Markdown files.
-# See: https://github.com/abhinav/stitchmd?tab=readme-ov-file#installation
-RUN go install go.abhg.dev/stitchmd@latest
-
 # Build IJulia
 RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
 
@@ -150,7 +135,8 @@ RUN mamba install --quiet --yes \
 
 # Update pandoc to the latest
 # (this allows typst conversion e.g., `pandoc input.typ -o output.docx`)
-RUN conda install -y -c conda-forge pandoc
+# RUN conda install -y -c conda-forge pandoc
+# Use pandoc image directly instead. See stripcomments.sh
 
 
 

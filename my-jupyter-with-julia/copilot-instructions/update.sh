@@ -10,6 +10,6 @@ if [ "$1" = "--empty" ]; then
     echo "Instructions file has been emptied."
 else
     # Run the original command to update instructions
-    stitchmd -no-toc -o .github/copilot-instructions.md copilot-instructions/copilot-instructions.md
+    docker run --rm -v "${PWD}":/workspace okatsn/my-util-box 'stitchmd -no-toc -o .github/copilot-instructions.md copilot-instructions/copilot-instructions.md'
     echo "Output successfully built."
 fi
