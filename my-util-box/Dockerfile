@@ -33,6 +33,11 @@ RUN gem install mustache && \
     go install go.abhg.dev/stitchmd@latest && \
     cp $(go env GOPATH)/bin/stitchmd /usr/local/bin/
 
+# Install stitchmd:
+# A tool that stitches together several Markdown files into one large Markdown file, making it easier to maintain larger Markdown files.
+# See: https://github.com/abhinav/stitchmd?tab=readme-ov-file#installation
+# RUN go install go.abhg.dev/stitchmd@latest
+
 # Create non-root user
 RUN groupadd -g 1002 appuser && \
     useradd -u 1002 -g 1002 -m appuser
