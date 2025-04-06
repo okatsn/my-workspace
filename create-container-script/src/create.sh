@@ -1,5 +1,3 @@
-# filepath: /create-container-script/create-container-script/src/create.sh
-
 #!/bin/bash
 
 # Function to display usage information
@@ -30,6 +28,7 @@ done
 # Validate input
 if [[ -z "$container" ]]; then
   echo "Error: Container type must be specified."
+  sleep 5
   usage
 fi
 
@@ -39,17 +38,20 @@ create_project() {
   if [[ "$container" == "jupyter" ]]; then
     if [[ -d "./my-jupyter-with-julia/$proj_name" && "$force" == false ]]; then
       echo "Error: Project directory '$proj_name' already exists. Use --force to overwrite."
+      sleep 5
       exit 1
     fi
     . ./my-jupyter-with-julia/create_project.sh "$proj_name"
   elif [[ "$container" == "tex" ]]; then
     if [[ -d "./my-tex-life-with-julia/$proj_name" && "$force" == false ]]; then
       echo "Error: Project directory '$proj_name' already exists. Use --force to overwrite."
+      sleep 5
       exit 1
     fi
     . ./my-tex-life-with-julia/create_project.sh "$proj_name"
   else
     echo "Error: Unknown container type '$container'."
+    sleep 5
     exit 1
   fi
 }
