@@ -1,5 +1,5 @@
 {
     "REPO_B_NAME": "REPO_B",
     "REPO_B_OWNER": "okatsn",
-    "EVENT_TYPE": "push-from-repo-a"
+    "EVENT_TYPE": "trigger-from-repo-a"
 }

@@ -4,6 +4,26 @@
 
 ## Setup
 
+
+Modify [data.json](data.json).
+
+```bash
+cd trigger-github-repo
+```
+
+
+```bash
+node render.js
+```
+
+Restore changes
+
+```bash
+git restore .github_A/trigger_repo_b.yml 
+git restore .github_B/to_be_triggered_by_repo_a.yml 
+git restore data.json
+```
+
 ## Authentication
 
 To trigger a workflow in Repo B from Repo A, the action needs a token that has permissions in Repo B.
