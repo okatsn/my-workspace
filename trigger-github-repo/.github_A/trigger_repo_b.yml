@@ -15,7 +15,7 @@ jobs:
       - name: Dispatch repository event to Repo B
         uses: actions/github-script@v6 # Alternative: Using github-script
         with:
-          github-token: ${{ secrets.GEMS_AS_REPO_B }} # Use the PAT secret
+          github-token: ${{ secrets.REPO_B_PAT }} # Use the PAT secret
           script: |
             await github.rest.repos.createDispatchEvent({
               owner: 'okatsn', // Replace with actual owner
@@ -32,7 +32,7 @@ jobs:
       # - name: Dispatch repository event to Repo B
       #   uses: octokit/rest.js-action@v2
       #   with:
-      #     github_token: ${{ secrets.GEMS_AS_REPO_B }} # Use the PAT secret
+      #     github_token: ${{ secrets.REPO_B_PAT }} # Use the PAT secret
       #     method: POST
       #     url: /repos/{owner}/{repo}/dispatches
       #     owner: 'OWNER_OF_REPO_B' # Replace with the actual owner of Repo B
