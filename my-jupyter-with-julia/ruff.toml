@@ -1,0 +1,4 @@
+# This is for python linting and formatting. Here are some key points:
+# - [This video](https://youtu.be/PwGKhvqJCQM?si=eajRM31-rDC54erK&t=290) suggest to use a separate ruff.toml file and keep pyproject.toml minimal.
+# - Please read https://docs.astral.sh/ruff/configuration/ for complete configuration guide.
+# - Also read https://blog.kyomind.tw/ruff/ for the history and basics.

@@ -2,7 +2,7 @@
 
 services:
   myservice:
-    image: pbuild
+    image: gobuild
     build:
       context: .
       dockerfile: Dockerfile

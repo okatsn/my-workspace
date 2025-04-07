@@ -3,6 +3,8 @@
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
+    - [Nodejs](#nodejs)
+    - [Fonts](#fonts)
     - [Install DVC](#install-dvc)
     - [Install lefthook](#install-lefthook)
     - [Install pip](#install-pip)
@@ -18,8 +20,11 @@
     - [DVC](#dvc)
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
+    - [Docker rebuild error "connect: network is unreachable"](#docker-rebuild-error-connect-network-is-unreachable)
     - [Grant sudo for `jovyan`](#grant-sudo-for-jovyan)
     - [DVC files batch import using `xargs`](#dvc-files-batch-import-using-xargs)
+  - [Resources](#resources)
+    - [Tips and inspirations](#tips-and-inspirations)
 
 
 # README
@@ -58,6 +63,52 @@ Configuration:
 - `git config --global user.email "YOUR_ADDRESS@Xmail.com"`
 
 ## Install others (optional)
+
+### Nodejs
+
+```bash
+sudo apt update
+sudo apt install nodejs
+```
+
+### Fonts 
+
+Get the font:
+
+```
+wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/CascadiaMono.zip
+```
+
+```
+cd ~/.local/share/fonts
+```
+
+```
+unzip CascadiaMono -d CascadiaMono
+```
+
+
+Install:
+```
+sudo cp -r CascadiaMono /usr/share/fonts/truetype/
+```
+
+```
+fc-cache -fv
+```
+
+Uninstall:
+
+```
+sudo rm -rv /usr/share/fonts/truetype/CascadiaMono
+fc-cache -fv
+```
+
+Hint:
+
+- Use `fc-list` to list the installed fonts.
+- Remember to remove zip files in `~/.local/share/fonts/`
+- You might need to install `unzip` (`sudo apt install unzip`).
 
 ### Install DVC
 
@@ -267,7 +318,35 @@ Switch the settings to your recent profile on another PC may solve the problem.
 
 #### Clean volumes, containers and images
 
-Use the following command if it fails to build in one machine but success in the other with exactly the same script.
+##### Identify targets and remove them
+
+List all containers
+```bash
+docker ps -a
+```
+
+Remove the container of a certain ID:
+```bash
+docker rm 86d4e89a42e2
+```
+
+List all images and remove a certain one:
+```bash
+docker images
+docker rmi <image-id/name>
+```
+
+
+List and remove volumes:
+```bash
+docker volume ls
+docker volume rm <volume-name>
+```
+
+
+##### Remove them all
+
+Use the following command if it fails to build in one machine but success in another with exactly the same script.
 - `docker image prune`:  Clear images
 - `docker builder prune`:  Clear Build Cache
 - `docker volume prune`: Remove Unused Volumes
@@ -316,6 +395,23 @@ When you reset your WSL distro, you might encounter this kind of non-sense error
 [Clean volumes, containers and images](#clean-volumes-containers-and-images) and restart docker desktop might solve the problem.
 
 See [this post](https://stackoverflow.com/questions/45972812/are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa).
+
+### Docker rebuild error "connect: network is unreachable"
+
+The error message would be something like:
+
+```
+failed to solve: okatsn/my-quarto-build:v1.6: 
+failed to resolve source metadata for docker.io/okatsn/my-quarto-build:v1.6: 
+failed to authorize: 
+failed to fetch oauth token: 
+Post "https://auth.docker.io/token": 
+dial tcp [xxxx:xxxx:xxxx:xxxx:xxxx]:443: 
+connect: network is unreachable 
+```
+
+You may first connect your PC to another network or reconnect wifi before further actions before rebuild and reopen, even though any other network connection works fine.
+
 
 
 ### Grant sudo for `jovyan`
@@ -387,3 +483,16 @@ If what you want to import is all in a specific directory, you can do the jobs u
 ```bash
 dvc list --dvc-only https://github.com/okatsn/FSFrictionExp_23.jl.git figures/ | xargs -I {} dvc import https://github.com/okatsn/FSFrictionExp_23.jl.git figures/{} -o latex_tectonophysics/
 ```
+
+
+## Resources
+
+### Tips and inspirations
+
+You can see how pandoc manage their images.
+Pandoc provide images from of very-core functionality to minimal-sized, and specific images such as [pandoc/typst](https://github.com/pandoc/dockerfiles/blob/main/ubuntu/typst/Dockerfile) and [pandoc/latex](https://github.com/pandoc/dockerfiles/blob/main/ubuntu/latex/Dockerfile).
+
+- [The repository for the dockerfiles](https://github.com/pandoc/dockerfiles/tree/main); please take a look on how they manage their multiple-stage building (the `FROM x AS y` and `FROM y AS z`).
+- The [core](https://github.com/pandoc/dockerfiles/blob/main/ubuntu/Dockerfile) and [static](https://github.com/pandoc/dockerfiles/blob/main/static/Dockerfile) Dockerfile.
+- [They use a shell script to manage the building process](https://github.com/pandoc/dockerfiles/blob/main/build.sh).
+- Also see how they [test](https://github.com/pandoc/dockerfiles/tree/main/test) the images.

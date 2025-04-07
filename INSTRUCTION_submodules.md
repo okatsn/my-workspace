@@ -20,9 +20,11 @@ git submodule update --init
 
 ```bash
 # Add a submodule of name sub-something
-git submodule add https://github.com/okatsn/MyTeXLife.git sub-something
+git submodule add -b main https://github.com/okatsn/SomeProject.git optional-custom-project-name
 git commit -m "Add MyTeXLife as submodule sub-something."
 ```
+
+> `-b main` explicitly specify the branch to be tracked when you run `update --remote`.
 
 ### Keep submodules updated to remote
 

@@ -22,8 +22,9 @@ RUN apt-get update && apt-get -y install \
 # Install Julia 
 # SETME: Set the julia version here.
 # !!! note Also replace "v1.10" since there are probably hard codes elsewhere.
-ARG VARIANT="1.10.6" 
-ARG JULIA_PROJECT="v1.10"
+ARG VARIANT="1.11.3" 
+ARG JULIA_PROJECT="v1.11"
+ARG JULIA_PKG_DEVDIR="$HOME/.julia/dev/"
 # KEYNOTE: JULIA_PROJECT must match the [default LOAD_PATH pattern](https://docs.julialang.org/en/v1/base/constants/#Base.LOAD_PATH). Following default is less prone to error and minimize the effort of later-stage docker image building process.
 
 ARG OKATSN_JULIA_ENVS=/home/okatsn/.julia/environments
@@ -39,8 +40,8 @@ ARG OKATSN_JULIA_ENVS=/home/okatsn/.julia/environments
 
 
 
-# ENV JULIA_PATH /opt/julia-${VARIANT}
-ENV JULIA_PATH /opt/julia-okatsn
+# ENV JULIA_PATH=/opt/julia-${VARIANT}
+ENV JULIA_PATH=/opt/julia-okatsn
 # !!! note Also replace "julia-okatsn" since there are probably hard codes elsewhere.
 # ENV PATH $JULIA_PATH/bin:$PATH
 # - Install in JULIA_PATH 

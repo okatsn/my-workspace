@@ -1,0 +1,9 @@
+
+
+services:
+  myservice:
+    image: jtexworkspace
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: sh -c "sleep infinity"
