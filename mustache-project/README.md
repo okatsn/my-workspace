@@ -22,16 +22,19 @@ sudo apt install nodejs npm -y
 !!! note 
     Replace `mustache-project` to something like `my-tex-life-with-julia` .
 
-- Create and go to the project directory
-  ```bash
-  mkdir mustache-project
-  cd mustache-project
-  ```
-- Initiate a Node.js project of Mustache:
-  ```bash
-  npm init -y
-  npm install mustache
-  ```
+Create and go to the project directory
+
+```bash
+mkdir mustache-project
+cd mustache-project
+```
+
+Initiate a Node.js project of Mustache:
+
+```bash
+npm init -y
+npm install mustache
+```
 - Create the file `template.mustache`.
 - Create the files `render.js` script and `data.json` for variables.
 
