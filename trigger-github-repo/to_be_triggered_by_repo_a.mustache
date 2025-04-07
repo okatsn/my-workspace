@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show Payload (if sent)
+        {{=<% %>=}}
         run: |
           echo "Triggered by Repo A"
           echo "Payload:"
-          echo "$\{\{ github.event.client_payload \}\}"
+          echo "${{ github.event.client_payload }}"
+        <%={{ }}=%>

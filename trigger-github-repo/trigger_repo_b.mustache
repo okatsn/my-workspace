@@ -15,7 +15,9 @@ jobs:
       - name: Dispatch repository event to Repo B
         uses: actions/github-script@v6 # Alternative: Using github-script
         with:
-          github-token: $\{\{ secrets.REPO_B_PAT \}\} # Use the PAT secret
+        {{=<% %>=}}
+          github-token: ${{ secrets.REPO_B_PAT }} # Use the PAT secret
+        <%={{ }}=%>
           script: |
             await github.rest.repos.createDispatchEvent({
               owner: '{{REPO_B_OWNER}}', // Replace with actual owner

@@ -2,6 +2,8 @@
   - [Requirement](#requirement)
   - [To create a mustache project](#to-create-a-mustache-project)
   - [To use the mustache template](#to-use-the-mustache-template)
+  - [Other hints](#other-hints)
+    - [Escape the curl brackets](#escape-the-curl-brackets)
 
 
 # README
@@ -46,3 +48,18 @@ npm install mustache
 - Go to the project directory `cd mustache-project` (where there is `render.js`).
 - Set variables in `data.json`
 - Run `node render.js` in the directory of the Mustache project.
+
+## Other hints
+
+### Escape the curl brackets
+
+Use `{{=<% %>=}}` and `<%={{ }}=%>` to enclose the section that contains literal curly brackets.
+
+For example:
+
+```yaml
+with:
+{{=<% %>=}}
+  github-token: ${{ secrets.REPO_B_PAT }} # Use the PAT secret
+<%={{ }}=%>
+```
