@@ -1,0 +1,28 @@
+name: Trigger Repo B Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger-repo-b:
+    runs-on: ubuntu-latest
+    # Permissions block here is less critical now as we use a PAT for the cross-repo action.
+    # You might remove it or set minimal permissions if needed for other steps.
+    # permissions: {} # Or keep read permissions if needed elsewhere
+    steps:
+      - name: Dispatch repository event to Repo B
+        uses: actions/github-script@v6 # Alternative: Using github-script
+        with:
+          github-token: $\{\{ secrets.REPO_B_PAT \}\} # Use the PAT secret
+          script: |
+            await github.rest.repos.createDispatchEvent({
+              owner: '{{REPO_B_OWNER}}', // Replace with actual owner
+              repo: '{{REPO_B_NAME}}',     // Replace with actual repo name
+              event_type: '{{EVENT_TYPE}}',
+              client_payload: {
+                sha: context.sha, // Optional: Send extra data like the commit SHA
+                ref: context.ref
+              }
+            })
