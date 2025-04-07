@@ -1,0 +1,15 @@
+{
+  "name": "trigger-github-repo",
+  "version": "1.0.0",
+  "description": "## How it works",
+  "main": "render.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mustache": "^4.2.0"
+  }
+}
