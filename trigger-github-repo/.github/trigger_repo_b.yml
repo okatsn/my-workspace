@@ -1,0 +1,42 @@
+name: Trigger Repo B Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger-repo-b:
+    runs-on: ubuntu-latest
+    # Permissions block here is less critical now as we use a PAT for the cross-repo action.
+    # You might remove it or set minimal permissions if needed for other steps.
+    # permissions: {} # Or keep read permissions if needed elsewhere
+    steps:
+      - name: Dispatch repository event to Repo B
+        uses: actions/github-script@v6 # Alternative: Using github-script
+        with:
+          github-token: ${{ secrets.GEMS_AS_REPO_B }} # Use the PAT secret
+          script: |
+            await github.rest.repos.createDispatchEvent({
+              owner: 'okatsn', // Replace with actual owner
+              repo: 'GEMS-MagTIP',     // Replace with actual repo name
+              event_type: 'push-from-repo-a',
+              client_payload: {
+                sha: context.sha, // Optional: Send extra data like the commit SHA
+                ref: context.ref
+              }
+            })
+      # CHECKPOINT: https://gemini.google.com/app/c0bc4387be85eaa3
+      # Alternative: [peter-evans/repository-dispatch](https://github.com/peter-evans/repository-dispatch)
+      # Or using the original octokit/rest.js-action:
+      # - name: Dispatch repository event to Repo B
+      #   uses: octokit/rest.js-action@v2
+      #   with:
+      #     github_token: ${{ secrets.GEMS_AS_REPO_B }} # Use the PAT secret
+      #     method: POST
+      #     url: /repos/{owner}/{repo}/dispatches
+      #     owner: 'OWNER_OF_REPO_B' # Replace with the actual owner of Repo B
+      #     repo: 'REPO_B_NAME'     # Replace with the actual name of Repo B
+      #     event_type: 'push-from-repo-a' # You can choose any event type
+      #     # Optional: Send payload data
+      #     # client_payload: '{"sha": "${{ github.sha }}", "ref": "${{ github.ref }}"}'
