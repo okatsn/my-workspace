@@ -316,7 +316,9 @@ Build container in VSCode based on `devcontainer.json` may fail with a short and
 Here is an [Example](https://github.com/microsoft/vscode-remote-release/issues/9461). 
 Switch the settings to your recent profile on another PC may solve the problem.
 
-#### Identify targets and remove them
+#### Clean volumes, containers and images
+
+##### Identify targets and remove them
 
 List all containers
 ```bash
@@ -342,7 +344,7 @@ docker volume rm <volume-name>
 ```
 
 
-#### Clean volumes, containers and images
+##### Remove them all
 
 Use the following command if it fails to build in one machine but success in another with exactly the same script.
 - `docker image prune`:  Clear images
