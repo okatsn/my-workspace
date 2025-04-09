@@ -347,11 +347,29 @@ docker volume rm <volume-name>
 ##### Remove them all
 
 Use the following command if it fails to build in one machine but success in another with exactly the same script.
-- `docker image prune`:  Clear images
-- `docker builder prune`:  Clear Build Cache
-- `docker volume prune`: Remove Unused Volumes
-- `docker system prune -a --volumes`: Remove systemwide volumes. (DANGER!)
-- `docker container prune`: Remove all stopped container.
+
+```bash
+# Clear images
+docker image prune
+```
+```bash
+# Clear Build Cache
+docker builder prune
+```
+```bash
+# Remove Unused Volumes
+docker volume prune
+```
+```bash
+# Remove systemwide volumes. (DANGER!)
+docker system prune -a --volumes
+```
+```bash
+# Remove all stopped container.
+docker container prune
+```
+
+
 
 See references:
 - [docker system](https://docs.docker.com/reference/cli/docker/system/)
