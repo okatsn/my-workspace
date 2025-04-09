@@ -69,6 +69,7 @@ RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
 # - The starship issue occurred mysteriously at the merge of 888ad219ede72b7aadd464ede33039034b4e7edc.
 # - This issue never occurred before since I started using starship.
 RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
+RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
 
 
 
