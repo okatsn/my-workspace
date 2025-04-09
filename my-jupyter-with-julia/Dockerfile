@@ -34,10 +34,11 @@ USER root
 # # Fix permissions for directories that is going to be mounted as volume but not-yet created when building this image. For those mounted as volume but user might need their permissions, directories must be made first.
 #
 # - The starship cache: allow starship to create log. 
-# - pydrive2fs: persistent dvc remote credentials.
 RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
-RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
-
+# - pydrive2fs: persistent dvc remote credentials.
+# RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
+# KEYNOTE: this cannot solve the permission issue. Still only root can access pydrive2fs.
+# I've also tried named volume instead (e.g., - pydrive2fs-cache:/home/jovyan/.cache/pydrive2fs), but 1. not working 2. named volume does not align with my goal (one container one credential; it's much better for every container to mount the only credential on host.)
 
 RUN apt-get update && apt-get -y install \
     bash-completion \
