@@ -38,7 +38,7 @@ services:
       # # - Please refer to okatsn/MyTeXLife for more explanation
       - vscode-server:/home/jovyan/.vscode-server
       # # DVC credential cache directory (this makes DVC credential persistant)
-      - pydrive2fs-cache:/home/jovyan/.cache/pydrive2fs
+      - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
       - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
     depends_on:
       # (Docker in Docker, DinD)
@@ -86,4 +86,3 @@ volumes:
   julia-depot:
   vscode-server:
   dind-data:
-  pydrive2fs-cache:
