@@ -31,6 +31,14 @@ USER root
 # Root user is necessary for the following command that creates the julia/quarto... link
 
 
+# # Fix permissions for directories that is going to be mounted as volume but not-yet created when building this image. For those mounted as volume but user might need their permissions, directories must be made first.
+#
+# - The starship cache: allow starship to create log. 
+# - pydrive2fs: persistent dvc remote credentials.
+RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
+RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
+
+
 RUN apt-get update && apt-get -y install \
     bash-completion \
     #
@@ -62,15 +70,6 @@ COPY --from=build0 /bin/typst /bin
 COPY --chown=$NB_UID:$NB_GID .devcontainer/starship.toml /$HOME/.config/starship.toml
 RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
     && echo 'eval "$(starship init bash)"' >> ~/.bashrc
-
-
-# This allow starship to create log. After starship installation and before USER $NB_USER
-# KEYNOTE: 
-# - The starship issue occurred mysteriously at the merge of 888ad219ede72b7aadd464ede33039034b4e7edc.
-# - This issue never occurred before since I started using starship.
-RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
-RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
-
 
 
 # # Julia part
