@@ -148,6 +148,16 @@ ENV PATH=$PATH:$HOME/.local/bin
 # KEYNOTE: git auto-completion seems to be handled correctly in jupyter minimal notebook. For how to set git completion, you may refer to [the Dockerfile of MyTeXLife](https://github.com/okatsn/MyTeXLife/blob/fc00e3b840db2f63d8e3d67ac41065042f5b0602/.devcontainer/Dockerfile)
 RUN dvc completion -s bash | tee /etc/bash_completion.d/dvc
 
+
+
+# # Fix permissions for directories that is going to be mounted as volume but not-yet created when building this image. For those mounted as volume but user might need their permissions, directories must be made first.
+#
+# - The starship cache: allow starship to create log. 
+# - pydrive2fs: persistent dvc remote credentials.
+RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
+RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
+
+
 USER $NB_USER
 
 # You must start the container as NB_USER, because all apps are owned by NB_USER. For example, error will occur if a root user in Julia pkg REPL do `registry up`.
