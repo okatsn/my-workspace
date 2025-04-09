@@ -294,7 +294,11 @@ See also:
 
 ### Permission Denied on mounted volumes
 
-For example, if you mount the `~/.ssh` in host to `/home/jovyan/.ssh` in container, "Permission denied" error will occur IF **the default user of host** (e.g., `okatsn`) do not have permissions. Many of these issues can be solved by executing the following code on **host**:
+For example, if you mount `.cache/pydrive2fs` as volume, you might got permission error if the permission for `.cache/pydrive2fs` was only granted to root mysteriously.
+
+For example, if you mount the `~/.ssh` in host to `/home/jovyan/.ssh` in container, "Permission denied" error will occur IF **the default user of host** (e.g., `okatsn`) do not have permissions. 
+
+These issues can be solved by executing the following code on **host**:
 
 ```bash
 sudo chown -R okatsn:okatsn /home/okatsn/

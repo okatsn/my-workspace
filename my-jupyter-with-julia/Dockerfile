@@ -37,8 +37,9 @@ USER root
 RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
 # - pydrive2fs: persistent dvc remote credentials.
 # RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
-# KEYNOTE: this cannot solve the permission issue. Still only root can access pydrive2fs.
-# I've also tried named volume instead (e.g., - pydrive2fs-cache:/home/jovyan/.cache/pydrive2fs), but 1. not working 2. named volume does not align with my goal (one container one credential; it's much better for every container to mount the only credential on host.)
+# KEYNOTE: this cannot solve the permission issue. Still only root can access pydrive2fs. 
+# - I've also tried named volume instead (e.g., - pydrive2fs-cache:/home/jovyan/.cache/pydrive2fs), but 1. not working 2. named volume does not align with my goal (one container one credential; it's much better for every container to mount the only credential on host.)
+# - Currently, in host (WSL) run `sudo chown -R okatsn:okatsn /home/okatsn/` can solve this issue.
 
 RUN apt-get update && apt-get -y install \
     bash-completion \
