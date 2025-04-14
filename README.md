@@ -4,6 +4,7 @@
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
     - [Nodejs](#nodejs)
+    - [Unzip](#unzip)
     - [Fonts](#fonts)
     - [Install DVC](#install-dvc)
     - [Install lefthook](#install-lefthook)
@@ -74,6 +75,13 @@ sudo apt update
 sudo apt install nodejs
 ```
 
+### Unzip
+
+```bash
+sudo apt-get update
+sudo apt-get install unzip
+```
+
 ### Fonts 
 
 Get the font:
@@ -84,9 +92,6 @@ wget -P ~/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/do
 
 ```
 cd ~/.local/share/fonts
-```
-
-```
 unzip CascadiaMono -d CascadiaMono
 ```
 
