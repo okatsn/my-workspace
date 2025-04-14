@@ -21,6 +21,7 @@
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
     - [Docker rebuild error "connect: network is unreachable"](#docker-rebuild-error-connect-network-is-unreachable)
+    - [The command 'docker' could not be found in this WSL 2 distro](#the-command-docker-could-not-be-found-in-this-wsl-2-distro)
     - [Grant sudo for `jovyan`](#grant-sudo-for-jovyan)
     - [DVC files batch import using `xargs`](#dvc-files-batch-import-using-xargs)
   - [Resources](#resources)
@@ -39,7 +40,9 @@ wsl --set-default Ubuntu-24.04
 ```
 
 > 💡Useful tips:
+> 
 > - If connection problem occurs (e.g., Failed to fetch ...; the connection to server was reset ...), run `wsl --shutdown` and try again.
+> - Install WSL first, type `wsl` in windows terminal to configure default user settings, **BEFORE** install and start [Docker Desktop](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe), to prevent [potential user confliction issue](https://github.com/microsoft/WSL/issues/9018).
 
 Confirm the followings:
 - `wsl -l -v`: Check if your Ubuntu-24.04 distribution uses WSL 2.
@@ -435,6 +438,24 @@ connect: network is unreachable
 You may first connect your PC to another network or reconnect wifi before further actions before rebuild and reopen, even though any other network connection works fine.
 
 
+### The command 'docker' could not be found in this WSL 2 distro
+
+After update of VSCode, command `docker` suddenly unavailable in wsl, while direct call of `docker.exe` still available (e.g., `docker.exe ps -a`).
+
+You can find explanation for this error in the following threads:
+
+- https://stackoverflow.com/questions/72483632/ubuntu-error-the-command-docker-could-not-be-found-in-this-wsl-2-distro
+- https://github.com/docker/for-win/issues/13088
+
+After hours of trial and error, I recognized that the quickest way to solve this problem might be just uninstall Docker Desktop and WSL and reinstall them, if everything is already backuped:
+
+```
+wsl --shutdown
+wsl --unregister Ubuntu-24.04
+```
+
+Uninstall Docker Desktop and 
+[Install WSL](#install-wsl) and install [Docker Desktop](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe) again.
 
 ### Grant sudo for `jovyan`
 
