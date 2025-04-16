@@ -3,7 +3,19 @@ ARG NB_GID="to be replaced by that in docker-compose.yml"
 
 ARG NB_UID="to be replaced by that in docker-compose.yml"
 
+# SETME:
+ARG QUARTO_VER="1.6.43"
+ARG QUARTO_URL="https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb"
+ARG QUARTO_FILE="quarto-${QUARTO_VER}-linux-amd64.deb"
+# # or the latest:
+# ARG QUARTO_URL="https://quarto.org/download/latest/quarto-linux-amd64.deb"
+# ARG QUARTO_FILE="quarto-linux-amd64.deb"
+
 FROM debian:${DEBIAN_VERSION}
+
+# Re-declare ARGs after FROM to make them available
+ARG QUARTO_URL
+ARG QUARTO_FILE
 
 USER root
 RUN apt-get update \
@@ -18,8 +30,10 @@ RUN apt-get update \
 # - https://www.r-bloggers.com/2022/07/how-to-set-up-quarto-with-docker-part-1-static-content/
 # - https://docs.posit.co/resources/install-quarto/#quarto-deb-file-install
 
-RUN curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb \
-    && gdebi --non-interactive quarto-linux-amd64.deb
+
+RUN echo "QUARTO_URL: ${QUARTO_URL}" \
+    && curl -LO ${QUARTO_URL} \
+    && gdebi --non-interactive ${QUARTO_FILE}
 
 
 
