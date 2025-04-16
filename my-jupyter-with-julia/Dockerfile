@@ -53,7 +53,9 @@ RUN apt-get update && apt-get -y install \
     fontconfig \
     fonts-noto-cjk \
     fonts-noto-cjk-extra \
-    fonts-noto-color-emoji
+    fonts-noto-color-emoji \
+    # 中文類楷體
+    fonts-arphic-ukai
 
 ## Install fonts that supports smcp
 RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.zip -O /tmp/temp123.zip  \
