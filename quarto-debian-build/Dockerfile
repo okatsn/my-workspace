@@ -13,6 +13,10 @@ ARG QUARTO_FILE="quarto-${QUARTO_VER}-linux-amd64.deb"
 
 FROM debian:${DEBIAN_VERSION}
 
+# Re-declare ARGs after FROM to make them available
+ARG QUARTO_URL
+ARG QUARTO_FILE
+
 USER root
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -27,7 +31,8 @@ RUN apt-get update \
 # - https://docs.posit.co/resources/install-quarto/#quarto-deb-file-install
 
 
-RUN curl -LO ${QUARTO_URL} \
+RUN echo "QUARTO_URL: ${QUARTO_URL}" \
+    && curl -LO ${QUARTO_URL} \
     && gdebi --non-interactive ${QUARTO_FILE}
 
 
