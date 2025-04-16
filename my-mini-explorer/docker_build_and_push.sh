@@ -1,19 +1,44 @@
-#!/bin/sh
+#!/bin/bash
 
-echo "Dockerfile modified. Building and pushing Docker image..."
+set -e
 
-# Navigate to the directory
-cd ./my-mini-explorer || exit 1
+IMAGE_NAME="okatsn/my-mini-explorer"
+BUILD_IMAGE=true
+TAGS=()
 
-# Build the Docker image
-docker-compose --env-file ../my-build.env build --no-cache
+# Parse arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --no-build) BUILD_IMAGE=false; shift ;;
+        *) TAGS+=("$1"); shift ;;
+    esac
+done
 
-# Tag the image
-docker tag dvcbuild okatsn/my-mini-explorer:latest
+# Check if any tags were provided
+if [ ${#TAGS[@]} -eq 0 ]; then
+  echo "Usage: $0 [--no-build] <tag1> [tag2 ...]"
+  sleep 5
+  exit 1
+fi
 
-# Push the image to Docker Hub
-docker push okatsn/my-mini-explorer:latest
+# Build the image if BUILD_IMAGE is true
+if [ "$BUILD_IMAGE" = true ]; then
+  echo "Building Docker image with tag: $IMAGE_NAME:temp"
+  # Build with docker-compose
+  docker-compose --env-file ../my-build.env build --no-cache
+  docker tag dvcbuild "$IMAGE_NAME:temp"
+else
+  echo "Skipping build step (--no-build specified)."
+  echo "Assuming image $IMAGE_NAME:temp already exists locally..."
+fi
 
-echo "Docker image built and pushed successfully."
+# Tag and push all specified tags
+for TAG in "${TAGS[@]}"; do
+  echo "Tagging image as: $IMAGE_NAME:$TAG"
+  docker tag "$IMAGE_NAME:temp" "$IMAGE_NAME:$TAG"
 
-cd ..
+  echo "Pushing Docker image: $IMAGE_NAME:$TAG"
+  docker push "$IMAGE_NAME:$TAG"
+done
+
+echo "Docker image processed successfully for tags: ${TAGS[*]}"
