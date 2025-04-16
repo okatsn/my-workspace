@@ -4,8 +4,8 @@ ARG NB_GID="to be replaced by that in docker-compose.yml"
 ARG NB_UID="to be replaced by that in docker-compose.yml"
 
 # SETME:
-ARG QUARTO_VER = "1.6.43"
-ARG QUARTO_URL = "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb"
+ARG QUARTO_VER="1.6.43"
+ARG QUARTO_URL="https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb"
 # # or the latest:
 # ARG QUARTO_URL = "https://quarto.org/download/latest/quarto-linux-amd64.deb"
 
