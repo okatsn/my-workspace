@@ -1,5 +1,4 @@
 # Stage 1: Build Julia and related configurations
-# SETME: The base image
 # - A Ubuntu basis for `build-julia`
 # FROM ubuntu:focal-20200703 AS build-julia
 # # this version of ubuntu is sticked to https://hub.docker.com/r/jupyter/base-notebook/dockerfile that https://hub.docker.com/r/jupyter/minimal-notebook/dockerfile uses.
