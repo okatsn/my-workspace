@@ -1,5 +1,4 @@
 # Stage 1: Build Julia and related configurations
-# SETME: The base image
 # - A Ubuntu basis for `build-julia`
 # FROM ubuntu:focal-20200703 AS build-julia
 # # this version of ubuntu is sticked to https://hub.docker.com/r/jupyter/base-notebook/dockerfile that https://hub.docker.com/r/jupyter/minimal-notebook/dockerfile uses.
@@ -22,7 +21,7 @@ RUN apt-get update && apt-get -y install \
 # Install Julia 
 # SETME: Set the julia version here.
 # !!! note Also replace "v1.10" since there are probably hard codes elsewhere.
-ARG VARIANT="1.11.3" 
+ARG VARIANT="1.11.5" 
 ARG JULIA_PROJECT="v1.11"
 ARG JULIA_PKG_DEVDIR="$HOME/.julia/dev/"
 # KEYNOTE: JULIA_PROJECT must match the [default LOAD_PATH pattern](https://docs.julialang.org/en/v1/base/constants/#Base.LOAD_PATH). Following default is less prone to error and minimize the effort of later-stage docker image building process.

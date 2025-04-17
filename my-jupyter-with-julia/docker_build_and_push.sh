@@ -1,18 +1,49 @@
-echo "Dockerfile modified. Building and pushing Docker image..."
+#!/bin/bash
 
+set -e
 
-# These commands should be executed in WSL at the directory of my-quarto-build
+IMAGE_NAME="okatsn/my-jupyter-with-julia"
+BUILD_IMAGE=true
+TAGS=()
+
+# Parse arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --no-build) BUILD_IMAGE=false; shift ;;
+        *) TAGS+=("$1"); shift ;;
+    esac
+done
+
+# Check if any tags were provided
+if [ ${#TAGS[@]} -eq 0 ]; then
+  echo "Usage: $0 [--no-build] <tag1> [tag2 ...]"
+  sleep 5
+  exit 1
+fi
+
+# Navigate to the directory
 cd ./my-jupyter-with-julia || exit 1
 
-# bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
-docker-compose --env-file ../my-build.env build --no-cache
+# Build the image if BUILD_IMAGE is true
+if [ "$BUILD_IMAGE" = true ]; then
+  echo "Building Docker image with tag: $IMAGE_NAME:temp"
+  # Build with docker-compose
+  docker-compose --env-file ../my-build.env build --no-cache
+  docker tag juliaworkspace "$IMAGE_NAME:temp"
+else
+  echo "Skipping build step (--no-build specified)."
+  echo "Assuming image $IMAGE_NAME:temp already exists locally..."
+fi
 
-# tag the image 
-docker tag juliaworkspace okatsn/my-jupyter-with-julia:latest
+# Tag and push all specified tags
+for TAG in "${TAGS[@]}"; do
+  echo "Tagging image as: $IMAGE_NAME:$TAG"
+  docker tag "$IMAGE_NAME:temp" "$IMAGE_NAME:$TAG"
 
-# push it to dockerhub
-docker push okatsn/my-jupyter-with-julia:latest
+  echo "Pushing Docker image: $IMAGE_NAME:$TAG"
+  docker push "$IMAGE_NAME:$TAG"
+done
 
-echo "Docker image built and pushed successfully."
+echo "Docker image processed successfully for tags: ${TAGS[*]}"
 
 cd ..

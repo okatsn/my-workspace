@@ -1,52 +1,53 @@
 // This is a list for extensions that will appear on EXTENSIONS/RECOMMENED tab.
 {
-        "recommendations": [
-                "adamvoss.vscode-languagetool",
-                "bierner.markdown-mermaid",
-                "christian-kohler.path-intellisense",
-                "codezombiech.gitignore",
-                "colinfang.markdown-julia",
-                "donjayamanne.git-extension-pack",
-                "donjayamanne.githistory",
-                "eamodio.gitlens",
-                "felipecaputo.git-project-manager",
-                "GitHub.copilot",
-                "GitHub.copilot-chat",
-                "Gruntfuggly.todo-tree",
-                "imgildev.vscode-mustache-snippets",
-                "jackiotyu.git-worktree-manager",
-                "julialang.language-julia",
-                "mechatroner.rainbow-csv",
-                "mhutchie.git-graph",
-                "ms-azuretools.vscode-docker",
-                "ms-vscode.live-server",
-                "oderwat.indent-rainbow",
-                "quarto.quarto",
-                "redhat.vscode-yaml",
-                "shd101wyy.markdown-preview-enhanced",
-                "streetsidesoftware.code-spell-checker",
-                "TakumiI.markdowntable",
-                "renathossain.markdown-runner", // "copy" button for code block
-                "tamasfe.even-better-toml",
-                "yzhang.markdown-all-in-one",
-                "ziyasal.vscode-open-in-github",
-                // MyTeXLife Exclusive
-                "james-yu.latex-workshop", // Latex
-                "mathematic.vscode-latex",
-                "jeffersonqin.latex-snippets-jeff",
-                "tecosaur.latex-utilities",
-                "connor.bib-checker",
-                "raykr.zotex",
-                // Spell & Grammar check
-                "valentjn.vscode-ltex",
-                "stkb.rewrap", // rewrap comments after n characters on one line
-                "vscode-icons-team.vscode-icons",
-                // Typst extensions
-                "nvarner.typst-lsp",
-                "myriad-dreamin.tinymist",
-                "oijaz.unicode-latex",
-                // DVC
-                "iterative.dvc", // data version control
-                "iterative.vscode-dvc-pack",
-        ]
+    "recommendations": [
+        "adamvoss.vscode-languagetool",
+        "bierner.markdown-mermaid",
+        "christian-kohler.path-intellisense",
+        "codezombiech.gitignore",
+        "colinfang.markdown-julia",
+        "donjayamanne.git-extension-pack",
+        "donjayamanne.githistory",
+        "eamodio.gitlens",
+        "felipecaputo.git-project-manager",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "Gruntfuggly.todo-tree",
+        "imgildev.vscode-mustache-snippets",
+        "jackiotyu.git-worktree-manager",
+        "julialang.language-julia",
+        "mechatroner.rainbow-csv",
+        "mhutchie.git-graph",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.live-server",
+        "oderwat.indent-rainbow",
+        "quarto.quarto",
+        "redhat.vscode-yaml",
+        "shd101wyy.markdown-preview-enhanced",
+        "streetsidesoftware.code-spell-checker",
+        "TakumiI.markdowntable",
+        "renathossain.markdown-runner", // "copy" button for code block
+        "tamasfe.even-better-toml",
+        "yzhang.markdown-all-in-one",
+        "ziyasal.vscode-open-in-github",
+        "ciiqr.reindent",
+        // MyTeXLife Exclusive
+        "james-yu.latex-workshop", // Latex
+        "mathematic.vscode-latex",
+        "jeffersonqin.latex-snippets-jeff",
+        "tecosaur.latex-utilities",
+        "connor.bib-checker",
+        "raykr.zotex",
+        // Spell & Grammar check
+        "valentjn.vscode-ltex",
+        "stkb.rewrap", // rewrap comments after n characters on one line
+        "vscode-icons-team.vscode-icons",
+        // Typst extensions
+        "nvarner.typst-lsp",
+        "myriad-dreamin.tinymist",
+        "oijaz.unicode-latex",
+        // DVC
+        "iterative.dvc", // data version control
+        "iterative.vscode-dvc-pack",
+    ]
 }

@@ -3,8 +3,8 @@
 # However, I cannot reproduce the error again. I'm not sure the permission denied error is solved by using the following building command, or by remove all the my-tex-life-with-julia--related containers, images and volumes.
 # 
 # Building command: 
-# # SETME: `devjuliatex` and `my-tex-life-with-julia` can be replaced by arbitrary names.
-# # SETME: Remember to change the tag name before build and push.
+# # `devjuliatex` and `my-tex-life-with-julia` can be replaced by arbitrary names.
+# # Remember to change the tag name before build and push.
 # $ docker build -t devjuliatex -f .devcontainer/Dockerfile .
 # $ docker tag devjuliatex okatsn/my-tex-life-with-julia:latest
 # $ docker push okatsn/my-tex-life-with-julia:latest
