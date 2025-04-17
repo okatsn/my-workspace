@@ -35,6 +35,7 @@ else
 fi
 
 # Build the docker command.  We use pandoc/core.
+# # KEYNOTE: the working directory (where pandoc/core start) is `/data`.
 docker run --rm \
   --volume "$(pwd):/data" \
   --workdir /data \

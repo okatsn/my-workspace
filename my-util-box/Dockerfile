@@ -21,6 +21,11 @@ RUN apt-get update && apt-get install -y \
     jq \
     unzip \
     ruby \
+    # PDF utilities
+    qpdf \
+    ghostscript \
+    pdftk-java \
+    # Clean
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
