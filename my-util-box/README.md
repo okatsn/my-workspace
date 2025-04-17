@@ -43,3 +43,13 @@ cd my-util-box
 docker run --rm -v ${PWD}:/workspace --user "$(id -u):$(id -g)" okatsn/my-util-box 'stitchmd -no-toc -o output.md test.md'
 cd ..
 ```
+
+## PDF combine
+
+### using QPdf
+
+```bash
+cd my-util-box
+docker run --rm -v ${PWD}:/workspace --user "$(id -u):$(id -g)" okatsn/my-util-box 'qpdf --empty --pages doc_1.pdf doc_2.pdf -- doc_12.pdf'
+cd ..
+```
