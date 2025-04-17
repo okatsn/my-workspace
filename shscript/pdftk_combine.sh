@@ -41,7 +41,8 @@ docker run --rm \
   --volume "$(pwd):/workspace" \
   --workdir /workspace \
   --user "$(id -u):$(id -g)" \
-  okatsn/my-util-box "qpdf --empty --pages $pages_arg -- \"$output_file\""
+  okatsn/my-util-box "pdftk $pages_arg output $output_file"
+  
 #   okatsn/my-util-box "ls -la"
 
 echo "Combined PDFs into: $output_file"
