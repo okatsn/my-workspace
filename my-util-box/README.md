@@ -53,3 +53,12 @@ cd my-util-box
 docker run --rm -v ${PWD}:/workspace --user "$(id -u):$(id -g)" okatsn/my-util-box 'qpdf --empty --pages doc_1.pdf doc_2.pdf -- doc_12.pdf'
 cd ..
 ```
+
+
+### Convert to WORD (Not working)
+
+https://github.com/unoconv/unoserver-docker
+
+```bash
+docker run --rm -it -v ${PWD}:/home/worker/ ghcr.io/unoconv/unoserver-docker unoconvert apply-combined.pdf apply-combined.doc
+```
