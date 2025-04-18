@@ -21,10 +21,6 @@ RUN apt-get update && apt-get install -y \
     jq \
     unzip \
     ruby \
-    # PDF utilities
-    qpdf \
-    ghostscript \
-    pdftk-java \
     # Clean
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -46,6 +42,40 @@ RUN gem install mustache && \
 # Create non-root user
 RUN groupadd -g 1002 appuser && \
     useradd -u 1002 -g 1002 -m appuser
+
+
+
+
+
+# # For document processing
+# If fonts in PDF is missing, converting the output PDF to WORD might result in inconsistent font.
+RUN apt-get update && apt-get -y install \
+    fontconfig \
+    fonts-noto-cjk \
+    fonts-noto-cjk-extra \
+    fonts-noto-color-emoji \
+    # 中文類楷體
+    fonts-arphic-ukai \
+    # PDF utilities
+    qpdf \
+    ghostscript \
+    pdftk-java \
+    # Clean
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
+## Install fonts that supports smcp
+RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.zip -O /tmp/temp123.zip  \
+    && unzip /tmp/temp123.zip -d /tmp/temp123  \
+    && mkdir -p /usr/share/fonts/opentype/source-serif-pro \
+    && cp /tmp/temp123/source-serif-release/OTF/*.otf /usr/share/fonts/opentype/source-serif-pro/ \
+    && fc-cache -fv \
+    && rm -rv /tmp/temp123 \
+    && rm -rv /tmp/temp123.zip
+
+
+
 
 # Switch to appuser for default operation
 USER appuser
