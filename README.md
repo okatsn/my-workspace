@@ -37,6 +37,7 @@ Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as def
 ```bash
 wsl --update
 wsl --install -d Ubuntu-24.04
+# `-d` for `--distribution`
 wsl --set-default Ubuntu-24.04
 ```
 
@@ -48,6 +49,8 @@ wsl --set-default Ubuntu-24.04
 Confirm the followings:
 - `wsl -l -v`: Check if your Ubuntu-24.04 distribution uses WSL 2.
 - `wsl --set-version Ubuntu-24.04 2`: Set WSL version to `2` if it is not.
+
+Also see: [Reinstall WSL](#re-install-wsl)
 
 ## Install, configure and update `git`
 
@@ -452,15 +455,21 @@ You can find explanation for this error in the following threads:
 - https://stackoverflow.com/questions/72483632/ubuntu-error-the-command-docker-could-not-be-found-in-this-wsl-2-distro
 - https://github.com/docker/for-win/issues/13088
 
-After hours of trial and error, I recognized that the quickest way to solve this problem might be just uninstall Docker Desktop and WSL and reinstall them, if everything is already backuped:
+After hours of trial and error, I recognized that the quickest way to solve this problem might be reinstalling WSL, if everything is already backuped:
 
-```
-wsl --shutdown
-wsl --unregister Ubuntu-24.04
-```
+#### Re-install WSL
 
-Uninstall Docker Desktop and 
-[Install WSL](#install-wsl) and install [Docker Desktop](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe) again.
+1. First, Quit Docker Desktop
+2. Shutdown and unregister the one with problem:
+   ```
+   wsl --shutdown
+   wsl --unregister Ubuntu-24.04
+   ```
+3. [Install WSL](#install-wsl) again.
+   > [Reinstall Docker Desktop](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe) may or may not be required.
+4. In terminal, initiate WSL by simply type `wsl` in windows terminal.
+   > ⚠️ If Docker Desktop is running, you might failed in setting up the default user.
+
 
 ### Grant sudo for `jovyan`
 
