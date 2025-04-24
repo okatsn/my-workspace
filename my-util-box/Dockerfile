@@ -36,7 +36,11 @@ ENV PATH=/usr/local/go/bin:${PATH}
 # Install tools globally (as root)
 RUN gem install mustache && \
     go install go.abhg.dev/stitchmd@latest && \
-    cp $(go env GOPATH)/bin/stitchmd /usr/local/bin/
+    # https://github.com/mikefarah/yq
+    go install github.com/mikefarah/yq/v4@latest && \ 
+    cp $(go env GOPATH)/bin/stitchmd /usr/local/bin/ && \
+    cp $(go env GOPATH)/bin/yq /usr/local/bin/
+
 
 # Install stitchmd:
 # A tool that stitches together several Markdown files into one large Markdown file, making it easier to maintain larger Markdown files.
