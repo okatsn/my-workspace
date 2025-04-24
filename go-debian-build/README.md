@@ -11,6 +11,10 @@ FROM okatsn/my-go-build:latest AS my-go-build
 
 ```Dockerfile
 # Under root user
+USER root
+
+# Sometimes this is required
+RUN mkdir -p /home/$NB_USER/.cache/go-build && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/go-build
 
 # Copy Go installation from the builder stage - still as root
 COPY --from=my-go-build /usr/local/go /usr/local/go
