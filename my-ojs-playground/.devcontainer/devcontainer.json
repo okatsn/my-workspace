@@ -47,4 +47,5 @@
     "postCreateCommand": "pnpm install"
     // Uncomment to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
     // "remoteUser": "root" // Only uncomment if you have a strong reason to run as root
+    // KEYNOTE: When you then run the container and mount your local project directory (.:/app) as a volume, this volume mount hides whatever was in /app from the image layer. This means the node_modules directory installed during the build time would be hidden by your mounted code, and the dependencies wouldn't be available to your project.
 }

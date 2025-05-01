@@ -28,7 +28,7 @@ cd ./my-ojs-playground || exit 1
 if [ "$BUILD_IMAGE" = true ]; then
   echo "Building Docker image with tag: $IMAGE_NAME:temp"
   # Build with docker-compose
-  docker-compose --env-file ../my-build.env build --no-cache
+  docker-compose build --no-cache
   docker tag ojsworkspace "$IMAGE_NAME:temp"
 else
   echo "Skipping build step (--no-build specified)."
