@@ -1,4 +1,8 @@
 {
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#389826",
+        "titleBar.inactiveBackground": "#389826",
+    },
     // Copilot settings
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
     // Latex settings
