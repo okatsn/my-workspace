@@ -31,21 +31,30 @@ services:
     # This synchronizes your code between the host and the container.
     # Ensure permissions are handled correctly by running as the 'node' user in the Dockerfile.
     volumes:
+      # Mount the local project directory into the container's /app directory (WORKDIR)
+      # This is your workspace inside the Dev Container.
       - .:/app
-      # Optional: Mount your local Starship config if you want to override the one in the image
-      # - ~/.config/starship.toml:/home/node/.config/starship.toml:ro
-      # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
-      # # Docker socket to access Docker server
-      - /var/run/docker.sock:/var/run/docker.sock
+
+      # Mount the Docker socket from the host to allow Docker operations inside the container (optional)
+      # Only needed if you plan to run Docker commands from within the dev container.
+      # - /var/run/docker.sock:/var/run/docker.sock
+
       # # SSH directory
-      - ~/.ssh:/home/jovyan/.ssh
-      # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
-      # - ~/.ssh:/tmp/.ssh:ro
+      # Allows using your host SSH keys for operations within the container.
+      - ~/.ssh:/home/node/.ssh
+
       # # Git config
-      - ~/.gitconfig:/home/jovyan/.gitconfig
-      - vscode-server:/home/jovyan/.vscode-server
+      # Allows using your host Git configuration within the container.
+      - ~/.gitconfig:/home/node/.gitconfig
+
+      # VS Code server files are handled automatically by Dev Containers when using docker-compose.
+      # You do NOT need to explicitly mount a volume for vscode-server here.
+      # - vscode-server:/home/node/.vscode-server
+      # Mount DVC credential cache directory from host to the 'node' user's home
       # # DVC credential cache directory (this makes DVC credential persistant)
-      - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
+      - ~/.cache/pydrive2fs:/home/node/.cache/pydrive2fs
+
+    # Set environment variables (e.g., timezone)
     environment:
       - TZ=Etc/GMT-8 # Example: Set timezone
 
@@ -53,8 +62,6 @@ services:
     # This allows you to attach to the container and run commands like `pnpm dev`.
     entrypoint: sh -c "sleep infinity"
 
-    
-# KEYNOTE: Those defined volumes in service should be declared in the root level
-# Unbind vscode-server to volumes to ensure extensions in devcontainer.json to be installed on rebuild
-volumes:
-  vscode-server:
+# No root-level volumes declaration needed for the mounts defined above
+# because we are directly mapping host paths or relying on Dev Containers.
+# The vscode-server volume declaration is removed as Dev Containers handles it.
