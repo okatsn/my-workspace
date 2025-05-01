@@ -1,29 +1,19 @@
-// Instruction
-// - For "name", make it unique among existing container
-// - For all others, make it the same/consistent with that in https://github.com/okatsn/MyTeXLife
 {
-    "name": "MyJupyterNotebookWithJulia", 
+    "name": "MyOJSPlayground",
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
     // the service in docker-compose.yml 
-    "service": "devjj", 
+    "service": "devojs",
     "shutdownAction": "stopCompose",
-    "workspaceFolder": "/home/jovyan/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
+    "workspaceFolder": "/app", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
         "vscode": {
             "settings": {
-                "python.terminal.activateEnvironment": false,
                 "gitProjectManager.baseProjectsFolders": [
-                    "~/.julia/dev",
                     // KEYNOTE: it is allows GPM (felipecaputo.git-project-manager) to open repo in the "projects" in a new window
-                    "~/workspace"
+                    "~/app"
                 ],
-                // SECTION: Quarto
-                "python.defaultInterpreterPath": "/opt/conda/bin/python", // this is for quarto to correctly work with VSCode. This path is obtained from `quarto check jupyter`.
-                "quarto.usePipQuarto": false,
-                // SECTION: JULIA Exclusive
-                "julia.environmentPath": "~/workspace", // KEYNOTE: it is expected to be WORKSPACE_DIR  defined in Dockerfile
                 // General settings
                 "files.eol": "\n",
                 "editor.formatOnSave": true,
