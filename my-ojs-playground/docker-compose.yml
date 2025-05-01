@@ -1,0 +1,9 @@
+
+
+services:
+  myservice:
+    image: juliaworkspace
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: sh -c "sleep infinity"
