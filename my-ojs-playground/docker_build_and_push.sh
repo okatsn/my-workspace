@@ -2,7 +2,7 @@
 
 set -e
 
-IMAGE_NAME="okatsn/my-jupyter-with-julia"
+IMAGE_NAME="okatsn/my-ojs-playground"
 BUILD_IMAGE=true
 TAGS=()
 
@@ -22,14 +22,14 @@ if [ ${#TAGS[@]} -eq 0 ]; then
 fi
 
 # Navigate to the directory
-cd ./my-jupyter-with-julia || exit 1
+cd ./my-ojs-playground || exit 1
 
 # Build the image if BUILD_IMAGE is true
 if [ "$BUILD_IMAGE" = true ]; then
   echo "Building Docker image with tag: $IMAGE_NAME:temp"
   # Build with docker-compose
   docker-compose --env-file ../my-build.env build --no-cache
-  docker tag juliaworkspace "$IMAGE_NAME:temp"
+  docker tag ojsworkspace "$IMAGE_NAME:temp"
 else
   echo "Skipping build step (--no-build specified)."
   echo "Assuming image $IMAGE_NAME:temp already exists locally..."

@@ -2,7 +2,7 @@
 
 services:
   myservice:
-    image: juliaworkspace
+    image: ojsworkspace
     build:
       context: .
       dockerfile: Dockerfile

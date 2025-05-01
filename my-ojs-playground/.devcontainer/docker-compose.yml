@@ -14,7 +14,7 @@ services:
       dockerfile: .devcontainer/Dockerfile
 
     # Assign a name to the resulting image
-    image: observable-framework-image
+    image: ojsworkspace
 
     # Ensure init process runs for proper signal handling (good practice)
     init: true

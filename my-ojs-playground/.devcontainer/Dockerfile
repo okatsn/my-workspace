@@ -1,3 +1,3 @@
-FROM okatsn/my-jupyter-with-julia:latest
+FROM okatsn/my-ojs-playground:latest
 
-USER $NB_USER
+USER node
