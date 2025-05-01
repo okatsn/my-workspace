@@ -1,25 +1,50 @@
+// .devcontainer/devcontainer.json
 {
     "name": "MyOJSPlayground",
     "dockerComposeFile": [
         "docker-compose.yml"
     ],
-    // the service in docker-compose.yml 
+    // The service in docker-compose.yml that VS Code should connect to
     "service": "devojs",
     "shutdownAction": "stopCompose",
-    "workspaceFolder": "/app", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
+    // The workspace folder inside the container
+    // Must match the volume mount destination for your project and the WORKDIR in Dockerfile
+    "workspaceFolder": "/app",
+    // Specifies the user that VS Code and the terminal should run as in the container.
+    // This should match the non-root user we set up in the Dockerfile.
+    "remoteUser": "node",
+    // Configure VS Code specific settings, extensions, etc.
     "customizations": {
         "vscode": {
             "settings": {
+                // Settings for the Git Project Manager extension
+                // Use the absolute path to your workspace folder inside the container
                 "gitProjectManager.baseProjectsFolders": [
-                    // KEYNOTE: it is allows GPM (felipecaputo.git-project-manager) to open repo in the "projects" in a new window
-                    "~/app"
+                    "/app"
                 ],
-                // General settings
+                // General VS Code settings
                 "files.eol": "\n",
                 "editor.formatOnSave": true,
-                "dev.containers.cacheVolume": true
+                // Add other settings here as needed
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "/bin/bash"
+                    }
+                }
+                // "dev.containers.cacheVolume": true
+                // KEYNOTE: This setting is deprecated in newer versions of the VS Code Dev Containers feature.
             }
         }
-    }
-    // "postCreateCommand": "",
+    },
+    // Forward the port that the Observable Framework development server runs on
+    "forwardPorts": [
+        3000
+    ],
+    // Commands to run after the container is created and the workspace is mounted.
+    // Use this to install project dependencies.
+    // Runs as the remoteUser ('node').
+    "postCreateCommand": "pnpm install"
+    // Uncomment to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+    // "remoteUser": "root" // Only uncomment if you have a strong reason to run as root
 }
