@@ -1,28 +1,40 @@
-# # Instruction
-# - assign a new image name
-# - make this file consistent with that in https://github.com/okatsn/MyTeXLife
+# docker-compose.yml
+# This file defines a service to build and run the Observable Framework tutorial container.
 
 services:
-  # The service name should be consistent with that in devcontainer.json
+  # Service name for this container setup
   devojs:
+    # Build configuration
     build:
+      # Context is the directory containing the Dockerfile and your project files.
+      # Assuming the Dockerfile is in .devcontainer/ and this docker-compose.yml
+      # is in the project root, the context is the project root.
       context: ..
-      #     That is out of /.devcontainer
-      # context: .
-      #     That is /.devcontainer
+      # Specify the path to the Dockerfile relative to the context.
       dockerfile: .devcontainer/Dockerfile
 
-    # Better not to have duplicate image name
-    image: playojs 
-    init: true 
-    # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
-    
-    # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
+    # Assign a name to the resulting image
+    image: observable-framework-image
+
+    # Ensure init process runs for proper signal handling (good practice)
+    init: true
+
+    # Assign a specific container name (optional but helpful)
     container_name: my-ojs-playground
-    privileged: true  # Add this line to allow Docker operations (using `docker` via dind)
+
+    # Map host port 3000 to container port 3000
+    # This allows you to access the Observable Framework dev server from your host browser.
+    ports:
+      - "3000:3000"
+
+    # Mount the current directory (your project root) into the container's /app directory.
+    # This synchronizes your code between the host and the container.
+    # Ensure permissions are handled correctly by running as the 'node' user in the Dockerfile.
     volumes:
+      - .:/app
+      # Optional: Mount your local Starship config if you want to override the one in the image
+      # - ~/.config/starship.toml:/home/node/.config/starship.toml:ro
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
-      - ..:/home/jovyan/workspace
       # # Docker socket to access Docker server
       - /var/run/docker.sock:/var/run/docker.sock
       # # SSH directory
@@ -35,9 +47,10 @@ services:
       # # DVC credential cache directory (this makes DVC credential persistant)
       - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
     environment:
-      # Set time zone (GMT-8 is UTC+8):
-      # - To print available time-zone names: ls /usr/share/zoneinfo
-      - TZ=Etc/GMT-8
+      - TZ=Etc/GMT-8 # Example: Set timezone
+
+    # Keep the container running indefinitely after startup, waiting for user interaction.
+    # This allows you to attach to the container and run commands like `pnpm dev`.
     entrypoint: sh -c "sleep infinity"
 
     
