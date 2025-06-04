@@ -4,7 +4,7 @@ FROM okatsn/my-typst-space:v2025a AS build0
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
 # # The list of available tags: https://quay.io/repository/jupyter/minimal-notebook?tab=tags
-FROM quay.io/jupyter/minimal-notebook:2024-07-15
+FROM quay.io/jupyter/minimal-notebook:2025-05-30
 
 # Referring [User-related configurations](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#user-related-configurations)
 # ENV CHOWN=yes
@@ -130,6 +130,7 @@ RUN mamba install --quiet --yes \
     dvc \
     dvc-gdrive \
     dvc-webdav \
+    dvc-ssh \
     # ipywidgets=8.0 \
     # invoke=2.0 \
     # pre-commit=3.1 \
@@ -139,8 +140,7 @@ RUN mamba install --quiet --yes \
     # dvc-gdrive=2.19 \
     # # DVC-S3 uses S3 protocol, such as for Amazon S3
     # jupyter_contrib_nbextensions=0.7 \
-    && mamba clean --all -f -y \
-    && npm cache clean --force
+    && mamba clean --all -f -y
 
 # Update pandoc to the latest
 # (this allows typst conversion e.g., `pandoc input.typ -o output.docx`)
