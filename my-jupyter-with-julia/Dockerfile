@@ -140,8 +140,7 @@ RUN mamba install --quiet --yes \
     # dvc-gdrive=2.19 \
     # # DVC-S3 uses S3 protocol, such as for Amazon S3
     # jupyter_contrib_nbextensions=0.7 \
-    && mamba clean --all -f -y \
-    && npm cache clean --force
+    && mamba clean --all -f -y
 
 # Update pandoc to the latest
 # (this allows typst conversion e.g., `pandoc input.typ -o output.docx`)
