@@ -26,7 +26,7 @@ services:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ..:/home/jovyan/workspace
       {{^dind}}
-      # # Docker socket to access Docker server (keep this in the case WITH NO DinD)
+      # # Docker socket to access Docker server
       - /var/run/docker.sock:/var/run/docker.sock
       {{/dind}}
       # # SSH directory
