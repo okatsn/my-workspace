@@ -48,23 +48,26 @@ RUN apt-get update && apt-get -y install \
     # - `apt-cache search fonts | grep noto` to see available fonts.
     # - See also https://samwhelp.github.io/note-about-ubuntu/read/adjustment/env/font.html
     # RUN apt-get update && apt-get -y install \
-    tree \
+    tree 
     # `tree` list the tree of file directory.
-    fontconfig \
-    fonts-noto-cjk \
-    fonts-noto-cjk-extra \
-    fonts-noto-color-emoji \
-    # 中文類楷體
-    fonts-arphic-ukai
+    
+# # Install fonts
+# RUN apt-get update && apt-get -y install \
+#     fontconfig \
+#     fonts-noto-cjk \
+#     fonts-noto-cjk-extra \
+#     fonts-noto-color-emoji \
+#     # 中文類楷體
+#     fonts-arphic-ukai
 
-## Install fonts that supports smcp
-RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.zip -O /tmp/temp123.zip  \
-    && unzip /tmp/temp123.zip -d /tmp/temp123  \
-    && mkdir -p /usr/share/fonts/opentype/source-serif-pro \
-    && cp /tmp/temp123/source-serif-release/OTF/*.otf /usr/share/fonts/opentype/source-serif-pro/ \
-    && fc-cache -fv \
-    && rm -rv /tmp/temp123 \
-    && rm -rv /tmp/temp123.zip
+# ## Install fonts that supports smcp
+# RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.zip -O /tmp/temp123.zip  \
+#     && unzip /tmp/temp123.zip -d /tmp/temp123  \
+#     && mkdir -p /usr/share/fonts/opentype/source-serif-pro \
+#     && cp /tmp/temp123/source-serif-release/OTF/*.otf /usr/share/fonts/opentype/source-serif-pro/ \
+#     && fc-cache -fv \
+#     && rm -rv /tmp/temp123 \
+#     && rm -rv /tmp/temp123.zip
 
 ## Install typst
 COPY --from=build0 /bin/typst /bin
