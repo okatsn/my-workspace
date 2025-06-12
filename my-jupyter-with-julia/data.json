@@ -2,5 +2,6 @@
     "devcontainer_name": "MyJupyterNotebookWithJulia",
     "service": "devjj",
     "image": "jujulia",
-    "docker_compose_name": "jupyter-with-julia"
+    "docker_compose_name": "jupyter-with-julia",
+    "dind": false
 }
