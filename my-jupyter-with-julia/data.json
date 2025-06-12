@@ -3,5 +3,5 @@
     "service": "devjj",
     "image": "jujulia",
     "docker_compose_name": "jupyter-with-julia",
-    "dind": false
+    "dind": true
 }
