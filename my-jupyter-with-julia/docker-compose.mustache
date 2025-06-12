@@ -42,7 +42,7 @@ services:
       - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
     depends_on:
       # (Docker in Docker, DinD)
-      dind:
+      dind-{{service}}:
         condition: service_started  # Make this explicit
     environment:
       # # Use http to connect with the other container
@@ -57,7 +57,7 @@ services:
   # - Set up `dind` where `docker` is inherently available, that can be used via tcp protocol by the service that depends on it.
   # Referring: https://gemini.google.com/app/3c8f232c01664a56
   # KEYNOTE: there is no need to install docker in Dockerfile!
-  dind:
+  dind-{{service}}:
     image: docker:dind
     privileged: true # dind needs privileged mode
     environment:
