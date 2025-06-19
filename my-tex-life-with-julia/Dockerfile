@@ -10,7 +10,7 @@
 # $ docker push okatsn/my-tex-life-with-julia:latest
 
 
-FROM okatsn/my-typst-space:2024d AS build0
+FROM okatsn/my-typst-space:v2025a AS build0
 
 FROM okatsn/my-julia-build:v1.11-2025a AS build-julia
 
