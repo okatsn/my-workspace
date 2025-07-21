@@ -156,6 +156,11 @@ USER root
 # Install UV
 # See [How to create a python project using UV](https://youtu.be/PwGKhvqJCQM?si=DzCSBuMeVWuaYNCx&t=396)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+# CHECKPOINT: How to use UV and multi-stage build of UV:
+# - How to use it in the current `my-jupyter-with-julia` from [Step 2: Manage a Python Project](https://gemini.google.com/app/163205d2b0d67349)
+# - Additional resource:
+#   - [uv 容器化實作：使用官方 image 建立 Dockerfile](https://blog.kyomind.tw/uv-dockerfile/#%E5%BE%9E-Poetry-%E5%88%B0-uv%EF%BC%9ADockerfile-%E5%AF%AB%E6%B3%95%E5%A4%A7%E4%B8%8D%E5%90%8C)
+#   - [Official multi-stage Dockerfile of uv aiming for production application](https://github.com/astral-sh/uv-docker-example/blob/main/multistage.Dockerfile)
 ENV PATH=$PATH:$HOME/.local/bin
 
 
