@@ -6,10 +6,11 @@ Concise steps to tune input, UI, dev tools, and basic security. Follow the workf
 1. Disable IBus emoji shortcut (optional): `ibus-setup` → Emoji → clear shortcut.
 2. Adjust text scaling: Settings → Accessibility → Large Text (or install Tweaks for fine control).
 3. Enable firewall: `sudo ufw enable` → check with `sudo ufw status`.
-4. Install tools: `sudo apt install -y htop net-tools gnome-tweaks rkhunter chkrootkit`.
-5. Run baseline checks: `htop`, `sudo netstat -tulnp`, `sudo rkhunter --check`, `sudo chkrootkit`.
-6. Inspect startup + auth logs: `systemctl list-unit-files --state=enabled`, `grep "Failed password" /var/log/auth.log`.
-7. Open project folder in VS Code: `code .`.
+4. Attach Ubuntu Pro (free ≤5 machines) & enable Livepatch (if you have a token): `sudo pro attach <TOKEN>` → `sudo pro enable livepatch`. (https://ubuntu.com/pro/dashboard)
+5. Install tools: `sudo apt install -y htop net-tools gnome-tweaks rkhunter chkrootkit`.
+6. Run baseline checks: `htop`, `sudo netstat -tulnp`, `sudo rkhunter --check`, `sudo chkrootkit`.
+7. Inspect startup + auth logs: `systemctl list-unit-files --state=enabled`, `grep "Failed password" /var/log/auth.log`.
+8. Open project folder in VS Code: `code .`.
 
 ---
 
@@ -79,6 +80,27 @@ grep "Failed password" /var/log/auth.log | tail -n 20
 ```
 Repeated attempts from same IP may signal brute force.
 
+### 4.7 Ubuntu Pro (ESM + Livepatch)
+Extends security coverage to Universe packages (ESM) and applies critical kernel patches without reboot (Livepatch). Free for personal use (up to 5 machines).
+
+Benefits (condensed):
+- ESM: Canonical patches thousands of Universe packages (extends supported lifetime to 10y).
+- Livepatch: Kernel CVE fixes without reboot → less downtime, fewer delayed updates.
+
+Commands:
+```bash
+pro status                      # or: sudo pro status (shows entitlements)
+sudo pro attach <TOKEN>         # attach subscription (get token from ubuntu.com/pro)
+sudo pro enable livepatch       # enable kernel livepatching
+sudo pro refresh                # refresh contract data
+sudo pro detach --assume-yes    # (optional) remove subscription
+```
+Verification:
+```bash
+pro status | grep -E 'esm|livepatch'
+```
+Livepatch active line should show: enabled / running.
+
 ## 5. Command Reference (Copy/Paste Block)
 ```bash
 # IBus preference
@@ -111,6 +133,12 @@ sudo chkrootkit
 # Startup + auth
 systemctl list-unit-files --state=enabled
 grep "Failed password" /var/log/auth.log
+
+# Ubuntu Pro
+pro status
+sudo pro attach <TOKEN>
+sudo pro enable livepatch
+pro status | grep -E 'esm|livepatch'
 ```
 
 ---
