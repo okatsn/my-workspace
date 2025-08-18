@@ -23,8 +23,6 @@ services:
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ..:/home/jovyan/workspace
-      # # Docker socket to access Docker server
-      - /var/run/docker.sock:/var/run/docker.sock
       # # SSH directory
       - ~/.ssh:/home/jovyan/.ssh
       # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
@@ -42,7 +40,7 @@ services:
       - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
     depends_on:
       # (Docker in Docker, DinD)
-      dind:
+      dind-devjj:
         condition: service_started  # Make this explicit
     environment:
       # # Use http to connect with the other container
@@ -52,12 +50,11 @@ services:
       - TZ=Etc/GMT-8
     entrypoint: sh -c "sleep infinity"
 
-    
   # # Use a sibling container to run docker in a docker container (Docker in Docker, DinD)
   # - Set up `dind` where `docker` is inherently available, that can be used via tcp protocol by the service that depends on it.
   # Referring: https://gemini.google.com/app/3c8f232c01664a56
   # KEYNOTE: there is no need to install docker in Dockerfile!
-  dind:
+  dind-devjj:
     image: docker:dind
     privileged: true # dind needs privileged mode
     environment:
