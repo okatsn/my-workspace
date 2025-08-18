@@ -2,5 +2,5 @@
     "devcontainer_name": "MyTeXLifeWithJulia",
     "service": "devtj",
     "image": "texjuliadev",
-    "docker_compose_name": "tex-with-julia"
+    "dind": false
 }
