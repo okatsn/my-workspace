@@ -3,5 +3,5 @@
     "service": "devtj",
     "image": "texjuliadev",
     "docker_compose_name": "texlife-with-julia",
-    "dind": false
+    "dind": true
 }

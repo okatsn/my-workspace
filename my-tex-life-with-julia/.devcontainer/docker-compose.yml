@@ -18,13 +18,11 @@ services:
     # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
     
     # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
-    container_name: tex-with-julia 
+    container_name: texlife-with-julia 
     privileged: true  # Add this line to allow Docker operations (using `docker` via dind)
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
-      - ../:/workspace
-      # # Docker socket to access Docker server
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ..:/workspace
       # # SSH directory
       - ~/.ssh:/home/jovyan/.ssh
       # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
@@ -44,21 +42,22 @@ services:
       - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
     depends_on:
       # (Docker in Docker, DinD)
-      dind:
+      dind-devtj:
         condition: service_started  # Make this explicit
     environment:
       # # Use http to connect with the other container
       - DOCKER_HOST=tcp://dind:2375  # Add this to connect to DinD
-      # Set time zone
-      - TZ=TW
+      # Set time zone (GMT-8 is UTC+8):
+      # - To print available time-zone names: ls /usr/share/zoneinfo
+      - TZ=Etc/GMT-8
     entrypoint: sh -c "sleep infinity"
     # entrypoint: ["zsh", "-c", "while sleep 1000; do :; done"]
-    
+
   # # Use a sibling container to run docker in a docker container (Docker in Docker, DinD)
   # - Set up `dind` where `docker` is inherently available, that can be used via tcp protocol by the service that depends on it.
   # Referring: https://gemini.google.com/app/3c8f232c01664a56
   # KEYNOTE: there is no need to install docker in Dockerfile!
-  dind:
+  dind-devtj:
     image: docker:dind
     privileged: true # dind needs privileged mode
     environment:
