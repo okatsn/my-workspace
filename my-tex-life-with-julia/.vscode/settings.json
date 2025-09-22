@@ -5,23 +5,6 @@
     },
     // Copilot settings
     // "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    // Latex settings
-    "latex-workshop.formatting.latex": "latexindent",
-    // see this issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
-    "latex-workshop.formatting.latexindent.args": [
-        "-c",
-        "%DIR%/",
-        "%TMPFILE%",
-        "-y=defaultIndent: '%INDENT%'"
-    ],
-    "latex-workshop.linting.chktex.enabled": true,
-    "latex-workshop.linting.chktex.exec.path": "chktex",
-    "latex-workshop.latex.clean.subfolder.enabled": true,
-    "latex-workshop.latex.autoClean.run": "onBuilt",
-    "editor.formatOnSave": true,
-    "files.associations": {
-        "*.tex": "latex"
-    },
     "cSpell.customDictionaries": {
         "project-words": {
             "name": "project-words",
@@ -39,14 +22,31 @@
     //     ],
     // },
     // !!! note "workspaceExternalFile"
-    //     - "workspaceExternalFile" refers "/workspace/ltex-dictionary/externalFile.txt", no matter whether you have set it in "ltex.dictionary" 
+    //     - "workspaceExternalFile" refers "/workspace/ltex-dictionary/externalFile.txt", no matter whether you have set it in "ltex.dictionary"
     //     - In that "externalFile.txt", you can specify the relative path to other dictionary such as "ltex.dictionary.en-US.txt"
     //
-    // For more information, please refer: 
+    // For more information, please refer:
     // https://valentjn.github.io/ltex/settings.html#ltexdictionary
     // https://valentjn.github.io/ltex/vscode-ltex/setting-scopes-files.html#external-setting-files
     // "ltex.configurationTarget": {
     //     "dictionary": "workspaceExternalFile", // This setting allows Quick Fix (Ctrl+.) add words to "workspaceExternalFile"
     // },
     "ltex.additionalRules.motherTongue": "en-US",
+    // Latex settings
+    "latex-workshop.formatting.latex": "latexindent",
+    // see this issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
+    "latex-workshop.formatting.latexindent.args": [
+        "-c",
+        "%DIR%/",
+        "%TMPFILE%",
+        "-y=defaultIndent: '%INDENT%'"
+    ],
+    "latex-workshop.linting.chktex.enabled": true,
+    "latex-workshop.linting.chktex.exec.path": "chktex",
+    "latex-workshop.latex.clean.subfolder.enabled": true,
+    "latex-workshop.latex.autoClean.run": "onBuilt",
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "*.tex": "latex"
+    },
 }
