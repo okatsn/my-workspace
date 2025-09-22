@@ -32,9 +32,9 @@
     //     "dictionary": "workspaceExternalFile", // This setting allows Quick Fix (Ctrl+.) add words to "workspaceExternalFile"
     // },
     "ltex.additionalRules.motherTongue": "en-US",
-    // Latex settings
+    // SECTION: LATEX
     "latex-workshop.formatting.latex": "latexindent",
-    // see this issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
+    // See LaTeX Workshop formatting issue: https://tex.stackexchange.com/questions/726921/latex-workshop-formatting-issue-latex-formatter-is-set-to-none-after-updati
     "latex-workshop.formatting.latexindent.args": [
         "-c",
         "%DIR%/",
@@ -43,6 +43,8 @@
     ],
     "latex-workshop.linting.chktex.enabled": true,
     "latex-workshop.linting.chktex.exec.path": "chktex",
+    "latex-utilities.message.update.show": false,
+    "latex-workshop.view.pdf.viewer": "tab",
     "latex-workshop.latex.clean.subfolder.enabled": true,
     "latex-workshop.latex.autoClean.run": "onBuilt",
     "editor.formatOnSave": true,
