@@ -4,7 +4,7 @@ newproj=$1
 
 # Navigate to the directory
 cd ./my-tex-life-with-julia || { echo "Error: Failed to change directory. Your current directory seems to be incorrect. The terminal will be closed soon."; sleep 5; exit 1; }
-# Attempt to create the directory. 
+# Attempt to create the directory.
 # If target directory already exists, exit and raise error to prevent the later unintended `cp` behaviors.
 if mkdir "$newproj"; then
   echo "Directory '$newproj' created successfully."
@@ -19,6 +19,7 @@ fi
 node render.js
 cp -r .devcontainer "$newproj/.devcontainer"
 cp -r .vscode "$newproj/.vscode"
-cp data.json "$newproj/data.json" 
+cp data.json "$newproj/data.json"
+cp create_template.sh "$newproj/create_template.sh"
 
 cd ..
