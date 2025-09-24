@@ -52,17 +52,17 @@ create_main_tex() {
 	local file="manuscript/main.tex"
 	# Keep minimal viable example; includes config + one chapter file.
 	local content
-	content="% This is main.tex, the simplest LaTeX document\n"
+	content="% This is main.tex\n"
 	content+="\\documentclass{article}\n"
 	content+="% Bring in configuration macros\n"
 	content+="\\input{./config.tex}\n\n"
 	content+="\\begin{document}\n\n"
 	content+="\\title{Title Placeholder}\n\\author{Author Name}\n\\date{\\today}\n\n"
 	content+="\\maketitle\n\n"
-	content+="\\tableofcontents\n\n"
 	content+="% Include chapter sections\n"
 	content+="\\input{../chapters/sec_1.tex}\n\n"
 	content+="% ... add more chapter inputs here ...\n\n"
+	content+="\bibliography{main} % refers to main.bib \n\n"
 	content+="\\end{document}\n"
 	create_file_if_missing "$file" "$content"
 }
@@ -81,13 +81,13 @@ create_bib() {
 
 create_chapter_section() {
 	local file="chapters/sec_1.tex"
-	local content="% sec_1.tex includes a single content file as an example\n\\input{../contents/content_1.tex}\n"
+	local content="% sec_1.tex includes content files\n\\input{../contents/content_1.tex}\n"
 	create_file_if_missing "$file" "$content"
 }
 
 create_content_example() {
 	local file="contents/content_1.tex"
-	local content="% Example content file referenced in sec_1.tex\n\\section{Introduction}\nSample content referencing \\variableFoobar.\n"
+	local content="% Example content file referenced in sec_1.tex.\n % Write in pure texts as possible.\n"
 	create_file_if_missing "$file" "$content"
 }
 
