@@ -77,7 +77,7 @@ create_main_tex() {
 
 % ... add more chapter inputs here ...
 
-\bibliography{main} % refers to main.bib
+% \bibliography{main} % refers to main.bib
 
 \end{document}
 EOF
