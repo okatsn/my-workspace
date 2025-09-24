@@ -128,6 +128,14 @@ main() {
 	create_chapter_section
 	create_content_example
 
+	# Add DVC stage for expanding LaTeX files
+	dvc stage add -n expand_to_output \
+	              -d contents \
+	              -d chapters \
+	              -d manuscript/main.tex \
+	              -o manuscript/output.tex \
+	              '. expand_output.sh'
+
 	echo "Done. Review the generated files and start writing!"
 }
 
