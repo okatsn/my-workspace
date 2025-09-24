@@ -75,8 +75,10 @@ create_main_tex() {
 % Include chapter sections
 \input{../chapters/sec_1.tex}
 
+This document includes a reference \cite{placeholder2025}.
 % ... add more chapter inputs here ...
 
+\bibliographystyle{plain}
 \bibliography{main} % refers to main.bib
 
 \end{document}
@@ -92,7 +94,15 @@ EOF
 
 create_bib() {
 	create_file_if_missing_from_stdin "manuscript/main.bib" <<'EOF'
-% main.bib -- add your bibliography entries here
+@article{placeholder2025,
+  title   = {Placeholder Article},
+  author  = {Placeholder Author},
+  journal = {Placeholder Journal},
+  year    = {2025},
+  volume  = {1},
+  number  = {1},
+  pages   = {1--10}
+}
 EOF
 }
 
@@ -112,6 +122,25 @@ Sample content referencing \variableFoobar.
 EOF
 }
 
+create_compile_script() {
+	create_file_if_missing_from_stdin "manuscript/compile.sh" <<'EOF'
+#!/usr/bin/env bash
+
+# Compile LaTeX document with bibliography support
+# Usage: ./compile.sh <document.tex>
+
+set -euo pipefail
+
+DOCFILE="$1"
+
+xelatex -synctex=1 -interaction=nonstopmode -file-line-error "$DOCFILE"
+DOCFILE_BASE="${DOCFILE%.*}" # Remove extension to get base filename for bibtex
+bibtex "$DOCFILE_BASE"
+xelatex -synctex=1 -interaction=nonstopmode -file-line-error "$DOCFILE"
+xelatex -synctex=1 -interaction=nonstopmode -file-line-error "$DOCFILE"
+EOF
+}
+
 main() {
 	ensure_no_args "$@"
 
@@ -127,6 +156,29 @@ main() {
 	create_bib
 	create_chapter_section
 	create_content_example
+	create_compile_script
+
+	# Add DVC stage for expanding LaTeX files
+	dvc stage add -n expand_to_output \
+	              -d contents \
+	              -d chapters \
+	              -d manuscript/main.tex \
+	              -o manuscript/output.tex \
+	              '. expand_output.sh'
+    dvc stage add -n compile \
+                  -d manuscript/main.tex \
+                  -d manuscript/output.tex \
+                  -o manuscript/main.pdf \
+                  -o manuscript/output.pdf \
+                  -o manuscript/main.aux \
+                  -o manuscript/output.aux \
+                  -o manuscript/main.bbl \
+                  -o manuscript/output.bbl \
+                  -o manuscript/main.blg \
+                  -o manuscript/output.blg \
+                  -o manuscript/main.synctex.gz \
+                  -o manuscript/output.synctex.gz \
+                  'cd manuscript/ && . compile.sh main.tex && . compile.sh output.tex'
 
 	echo "Done. Review the generated files and start writing!"
 }
