@@ -75,9 +75,11 @@ create_main_tex() {
 % Include chapter sections
 \input{../chapters/sec_1.tex}
 
+This document includes a reference \cite{placeholder2025}.
+
 % ... add more chapter inputs here ...
 
-% \bibliography{main} % refers to main.bib
+\bibliography{main} % refers to main.bib
 
 \end{document}
 EOF
@@ -92,7 +94,15 @@ EOF
 
 create_bib() {
 	create_file_if_missing_from_stdin "manuscript/main.bib" <<'EOF'
-% main.bib -- add your bibliography entries here
+@article{placeholder2025,
+  title   = {Placeholder Article},
+  author  = {Placeholder Author},
+  journal = {Placeholder Journal},
+  year    = {2025},
+  volume  = {1},
+  number  = {1},
+  pages   = {1--10}
+}
 EOF
 }
 
