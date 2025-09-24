@@ -30,18 +30,6 @@ make_dir() {
 	fi
 }
 
-create_file_if_missing() {
-	# Create a file with provided (single-line) content only if it does not already exist.
-	local file_path="$1"
-	local content="$2"
-	if [ -f "$file_path" ]; then
-		echo "File exists (skip): $file_path"
-	else
-		printf '%s' "$content" > "$file_path"
-		echo "Created file: $file_path"
-	fi
-}
-
 create_file_if_missing_from_stdin() {
 	# Create a file from stdin (heredoc) if it does not already exist.
 	local file_path="$1"
