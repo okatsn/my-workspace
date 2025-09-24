@@ -31,64 +31,95 @@ make_dir() {
 }
 
 create_file_if_missing() {
-	# Create a file with provided content only if it does not already exist.
+	# Create a file with provided (single-line) content only if it does not already exist.
 	local file_path="$1"
 	local content="$2"
 	if [ -f "$file_path" ]; then
 		echo "File exists (skip): $file_path"
 	else
-		printf "%s" "$content" > "$file_path"
+		printf '%s' "$content" > "$file_path"
+		echo "Created file: $file_path"
+	fi
+}
+
+create_file_if_missing_from_stdin() {
+	# Create a file from stdin (heredoc) if it does not already exist.
+	local file_path="$1"
+	if [ -f "$file_path" ]; then
+		echo "File exists (skip): $file_path"
+	else
+		cat > "$file_path"
 		echo "Created file: $file_path"
 	fi
 }
 
 create_readme() {
-	local file="README.md"
-	local content="Following the practice below to safely share the entire script:\n\n- write your manuscript in *chapter* files\n- include tex files of *chapter* in \`main.tex\`\n- (optional) include *contents* files in a *chapter* file to better organize your idea.\n- To create the \`output.tex\`: \`latexpand -o output.tex main.tex\`\n- share \`output.tex\` rather than \`main.tex\`\n\n"
-	create_file_if_missing "$file" "$content"
+	create_file_if_missing_from_stdin "README.md" <<'EOF'
+Following the practice below to safely share the entire script:
+
+- write your manuscript in *chapter* files
+- include tex files of *chapter* in `main.tex`
+- (optional) include *contents* files in a *chapter* file to better organize your idea.
+- To create the `output.tex`: `latexpand -o output.tex main.tex`
+- share `output.tex` rather than `main.tex`
+
+EOF
 }
 
 create_main_tex() {
-	local file="manuscript/main.tex"
-	# Keep minimal viable example; includes config + one chapter file.
-	local content
-	content="% This is main.tex\n"
-	content+="\\documentclass{article}\n"
-	content+="% Bring in configuration macros\n"
-	content+="\\input{./config.tex}\n\n"
-	content+="\\begin{document}\n\n"
-	content+="\\title{Title Placeholder}\n\\author{Author Name}\n\\date{\\today}\n\n"
-	content+="\\maketitle\n\n"
-	content+="% Include chapter sections\n"
-	content+="\\input{../chapters/sec_1.tex}\n\n"
-	content+="% ... add more chapter inputs here ...\n\n"
-	content+="\bibliography{main} % refers to main.bib \n\n"
-	content+="\\end{document}\n"
-	create_file_if_missing "$file" "$content"
+	create_file_if_missing_from_stdin "manuscript/main.tex" <<'EOF'
+% This is main.tex, the simplest LaTeX document
+\documentclass{article}
+% Bring in configuration macros
+\input{./config.tex}
+
+\begin{document}
+
+\title{Title Placeholder}
+\author{Author Name}
+\date{\today}
+
+\maketitle
+
+
+% Include chapter sections
+\input{../chapters/sec_1.tex}
+
+% ... add more chapter inputs here ...
+
+\bibliography{main} % refers to main.bib
+
+\end{document}
+EOF
 }
 
 create_config_tex() {
-	local file="manuscript/config.tex"
-	local content="% Example macro configuration file\n\\def\\variableFoobar {Foobar2000}\n"
-	create_file_if_missing "$file" "$content"
+	create_file_if_missing_from_stdin "manuscript/config.tex" <<'EOF'
+% Example macro configuration file
+\def\variableFoobar {Foobar2000}
+EOF
 }
 
 create_bib() {
-	local file="manuscript/main.bib"
-	local content="% main.bib -- add your bibliography entries here\n"
-	create_file_if_missing "$file" "$content"
+	create_file_if_missing_from_stdin "manuscript/main.bib" <<'EOF'
+% main.bib -- add your bibliography entries here
+EOF
 }
 
 create_chapter_section() {
-	local file="chapters/sec_1.tex"
-	local content="% sec_1.tex includes content files\n\\input{../contents/content_1.tex}\n"
-	create_file_if_missing "$file" "$content"
+	create_file_if_missing_from_stdin "chapters/sec_1.tex" <<'EOF'
+% sec_1.tex includes content files
+\input{../contents/content_1.tex}
+EOF
 }
 
 create_content_example() {
-	local file="contents/content_1.tex"
-	local content="% Example content file referenced in sec_1.tex.\n % Write in pure texts as possible.\n"
-	create_file_if_missing "$file" "$content"
+	create_file_if_missing_from_stdin "contents/content_1.tex" <<'EOF'
+% Example content file referenced in sec_1.tex
+% Write in pure text as possible.
+\section{Introduction}
+Sample content referencing \variableFoobar.
+EOF
 }
 
 main() {
