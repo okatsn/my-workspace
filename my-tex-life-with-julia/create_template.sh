@@ -62,6 +62,8 @@ Following the practice below to safely share the entire script:
 - (optional) include *contents* files in a *chapter* file to better organize your idea.
 - To create the `output.tex`: `latexpand -o output.tex main.tex`
 - share `output.tex` rather than `main.tex`
+- Render the `output.tex`.
+- Put figures in *manuscript*: `latexpand` simply expand latex code, which means when you include a figure in *chapter* files, use `Fig.eps` (to be read by `output.tex`), not `../manuscript/Fig.eps`.
 
 EOF
 }
