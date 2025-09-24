@@ -76,9 +76,9 @@ create_main_tex() {
 \input{../chapters/sec_1.tex}
 
 This document includes a reference \cite{placeholder2025}.
-
 % ... add more chapter inputs here ...
 
+\bibliographystyle{plain}
 \bibliography{main} % refers to main.bib
 
 \end{document}
