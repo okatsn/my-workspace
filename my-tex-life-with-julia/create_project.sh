@@ -21,5 +21,6 @@ cp -r .devcontainer "$newproj/.devcontainer"
 cp -r .vscode "$newproj/.vscode"
 cp data.json "$newproj/data.json"
 cp create_template.sh "$newproj/create_template.sh"
+cp expand_output.sh "$newproj/expand_output.sh"
 
 cd ..
