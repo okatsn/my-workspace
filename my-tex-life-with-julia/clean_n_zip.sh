@@ -20,14 +20,18 @@ find -type f -name '*.blg' -exec rm {} \;
 find -type f -name 'main.*' -exec rm {} \;
 find -type f -name '*.sh' -exec rm {} \;
 find -type f -name '*.dvc' -exec rm {} \;
-# Remove all .tex files except manuscript.tex
-find -type f -name '*.tex' ! -name 'manuscript.tex' -exec rm {} \;
+# Remove TOML files
+find -type f -name '*.toml' -exec rm {} \;
+# Remove all .tex files except `-name <file>`
+find -type f -name '*.tex' ! -name 'output.tex' -exec rm {} \;
+find -type f -name '*.pdf' ! -name 'output.pdf' -exec rm {} \;
 
 
 rm .gitignore
 
-cd ..
-zip -9 -r latex-manuscript.zip latex-manuscript
+zip -9 -r ../latex-manuscript.zip .
 # the compression level from -0 (no compression) to -9 (highest compression).
+# instead of `zip -r latex-manuscript`, `zip -r .` make files in the root.
 
+cd ..
 rm -rv latex-manuscript
