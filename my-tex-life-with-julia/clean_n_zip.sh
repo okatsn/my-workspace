@@ -16,6 +16,14 @@ trap 'rc=$?; if [ "$rc" -ne 0 ]; then
   fi
 fi' EXIT
 
+# Check for exactly one argument
+if [ "$#" -ne 1 ]; then
+	echo "Error: This script requires exactly one argument (document folder path)" >&2
+	echo "Usage: $0 <document-folder>" >&2
+	sleep 5
+	exit 1
+fi
+
 # Work in a temporary directory
 DOCFILE="$1"
 # Create the working directory; on failure print an error, wait 5s, then exit
@@ -28,7 +36,6 @@ fi
 cp -r $DOCFILE/. latex-manuscript/
 
 cd latex-manuscript
-
 
 # Remove auxiliary files before zipping (to avoid journal system to compile wrongly):
 find -type f -name '*.aux' -exec rm {} \;
