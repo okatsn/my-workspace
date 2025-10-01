@@ -16,6 +16,10 @@ find -type f -name '*.blg' -exec rm {} \;
 find -type f -name 'main.*' -exec rm {} \;
 find -type f -name '*.sh' -exec rm {} \;
 find -type f -name '*.dvc' -exec rm {} \;
+# Remove all .tex files except manuscript.tex
+find -type f -name '*.tex' ! -name 'manuscript.tex' -exec rm {} \;
+
+
 rm .gitignore
 
 cd ..
