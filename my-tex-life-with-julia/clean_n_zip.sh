@@ -20,7 +20,6 @@ fi' EXIT
 if [ "$#" -ne 1 ]; then
 	echo "Error: This script requires exactly one argument (document folder path)" >&2
 	echo "Usage: $0 <document-folder>" >&2
-	sleep 5
 	exit 1
 fi
 
