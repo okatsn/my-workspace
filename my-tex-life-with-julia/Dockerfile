@@ -44,7 +44,7 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 #
 # KEYNOTE: How to use
 # - Open Zotero ($ zotero)
-# - Use VSCode addon XING.zotero-cite "Zotero Cite: Cite and Create Bibliograph for Pandoc/LaTeX." (it creates main.bib for main.tex for example), or use raykr.zotex "Zotex: Cite and Create Bibliograph for LaTeX."
+# - Use VSCode addon XING.zotero-cite "Zotero Cite: Cite and Create Bibliograph for Pandoc/LaTeX." (it creates bibtex.bib for main.tex for example), or use raykr.zotex "Zotex: Cite and Create Bibliograph for LaTeX."
 
 
 

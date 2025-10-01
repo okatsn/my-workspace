@@ -79,7 +79,7 @@ This document includes a reference \cite{placeholder2025}.
 % ... add more chapter inputs here ...
 
 \bibliographystyle{plain}
-\bibliography{main} % refers to main.bib
+\bibliography{bibtex} % refers to bibtex.bib
 
 \end{document}
 EOF
@@ -93,7 +93,7 @@ EOF
 }
 
 create_bib() {
-	create_file_if_missing_from_stdin "manuscript/main.bib" <<'EOF'
+	create_file_if_missing_from_stdin "manuscript/bibtex.bib" <<'EOF'
 @article{placeholder2025,
   title   = {Placeholder Article},
   author  = {Placeholder Author},
