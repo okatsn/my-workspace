@@ -14,8 +14,6 @@ cp -r manuscript/. latex-manuscript/
 cd latex-manuscript
 
 
-. compile.sh output.tex
-
 # Remove auxiliary files before zipping (to avoid journal system to compile wrongly):
 find -type f -name '*.aux' -exec rm {} \;
 find -type f -name '*.blg' -exec rm {} \;
