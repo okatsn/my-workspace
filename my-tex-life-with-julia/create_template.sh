@@ -179,6 +179,10 @@ main() {
                   -o manuscript/main.synctex.gz \
                   -o manuscript/manuscript.synctex.gz \
                   'cd manuscript/ && . compile.sh main.tex && . compile.sh manuscript.tex'
+	dvc stage add -n clean_n_zip \
+	              -d manuscript/manuscript.pdf \
+				  -o latex-manuscript.zip \
+				  '. clean_n_zip.sh'
 
 	echo "Done. Review the generated files and start writing!"
 }
