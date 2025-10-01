@@ -1,8 +1,8 @@
 # CHECKPOINT: When I'm trying to build a new container base on it (saying `FROM okatsn/my-tex-life-with-julia`), permission error occurred when the docker-compose.yml of the new container also create/attach the volume of .vscode-server.
 # The error is fixed when I build the image again using the following command instead; previously, the image was build using docker-compose.yml.
 # However, I cannot reproduce the error again. I'm not sure the permission denied error is solved by using the following building command, or by remove all the my-tex-life-with-julia--related containers, images and volumes.
-# 
-# Building command: 
+#
+# Building command:
 # # `devjuliatex` and `my-tex-life-with-julia` can be replaced by arbitrary names.
 # # Remember to change the tag name before build and push.
 # $ docker build -t devjuliatex -f .devcontainer/Dockerfile .
@@ -30,6 +30,7 @@ USER root
 # # Install Zotero
 RUN curl -sL https://raw.githubusercontent.com/retorquere/zotero-deb/master/install.sh | bash
 RUN apt-get update && apt-get -y install \
+    zip \
     tree \
     zotero
 # Get the better-bibtex file
@@ -38,7 +39,7 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
     . /tmp/get_zoteroaddons.sh
 # TODO: Install Zotero and BibTeX (cannot be done in Dockerfile)
 # KEYNOTE: . /tmp/get_zoteroaddons.sh is prefered than sh /tmp/get_zoteroaddons.sh, where in the later sh might not be available. See https://stackoverflow.com/a/34217720
-# - Download Better BibTeX: https://github.com/retorquere/zotero-better-bibtex/releases/latest 
+# - Download Better BibTeX: https://github.com/retorquere/zotero-better-bibtex/releases/latest
 # - $ zotero          // open zotero (a window of zotero app should pop out)
 # - In Zotero app, click Tools > Add-ons > ⚙️ (setting icon) > Install Add-on from file... and click on the zotero-better-bibtex-6.7.143.xpi you just downloaded.
 #
@@ -97,6 +98,9 @@ RUN wget https://dvc.org/deb/dvc.list -O /etc/apt/sources.list.d/dvc.list \
     && dvc completion -s bash | tee /etc/bash_completion.d/dvc
 
 
+#  Cleans up the package list cache, which is no longer needed after installation and helps reduce the final image size.
+RUN rm -rf /var/lib/apt/lists/*
+
 
 
 # This allow starship to create log. See comments in my-jupyter-with-julia/Dockerfile
@@ -115,7 +119,7 @@ USER $NB_USER
 #     jlpkg add Pkg && \
 
 # KEYNOTE: This seems to cause Permission denied error until you (firstly disable this line in order to successfully build the container) add and build IJulia in your container, and rebuild again. (The permission issue is related to conda)
-# RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
+# RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");'
 
 
 
