@@ -2,6 +2,7 @@
 set -euo pipefail
 
 # Work in a temporary directory
+DOCFILE="$1"
 # Create the working directory; on failure print an error, wait 5s, then exit
 if ! mkdir latex-manuscript/; then
 	echo "Error: failed to create directory 'latex-manuscript/'" >&2
@@ -9,7 +10,7 @@ if ! mkdir latex-manuscript/; then
 	sleep 5
 	exit 1
 fi
-cp -r manuscript/. latex-manuscript/
+cp -r $DOCFILE/. latex-manuscript/
 
 cd latex-manuscript
 
