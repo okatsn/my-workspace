@@ -48,10 +48,10 @@ Following the practice below to safely share the entire script:
 - write your manuscript in *chapter* files
 - include tex files of *chapter* in `main.tex`
 - (optional) include *contents* files in a *chapter* file to better organize your idea.
-- To create the `output.tex`: `latexpand -o output.tex main.tex`
-- share `output.tex` rather than `main.tex`
-- Render the `output.tex`.
-- Put figures in *manuscript*: `latexpand` simply expand latex code, which means when you include a figure in *chapter* files, use `Fig.eps` (to be read by `output.tex`), not `../manuscript/Fig.eps`.
+- To create the `manuscript.tex`: `latexpand -o manuscript.tex main.tex`
+- share `manuscript.tex` rather than `main.tex`
+- Render the `manuscript.tex`.
+- Put figures in *manuscript*: `latexpand` simply expand latex code, which means when you include a figure in *chapter* files, use `Fig.eps` (to be read by `manuscript.tex`), not `../manuscript/Fig.eps`.
 
 EOF
 }
@@ -163,22 +163,22 @@ main() {
 	              -d contents \
 	              -d chapters \
 	              -d manuscript/main.tex \
-	              -o manuscript/output.tex \
+	              -o manuscript/manuscript.tex \
 	              '. expand_output.sh'
     dvc stage add -n compile \
                   -d manuscript/main.tex \
-                  -d manuscript/output.tex \
+                  -d manuscript/manuscript.tex \
                   -o manuscript/main.pdf \
-                  -o manuscript/output.pdf \
+                  -o manuscript/manuscript.pdf \
                   -o manuscript/main.aux \
-                  -o manuscript/output.aux \
+                  -o manuscript/manuscript.aux \
                   -o manuscript/main.bbl \
-                  -o manuscript/output.bbl \
+                  -o manuscript/manuscript.bbl \
                   -o manuscript/main.blg \
-                  -o manuscript/output.blg \
+                  -o manuscript/manuscript.blg \
                   -o manuscript/main.synctex.gz \
-                  -o manuscript/output.synctex.gz \
-                  'cd manuscript/ && . compile.sh main.tex && . compile.sh output.tex'
+                  -o manuscript/manuscript.synctex.gz \
+                  'cd manuscript/ && . compile.sh main.tex && . compile.sh manuscript.tex'
 
 	echo "Done. Review the generated files and start writing!"
 }

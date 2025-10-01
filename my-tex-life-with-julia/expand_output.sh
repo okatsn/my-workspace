@@ -1,13 +1,13 @@
 cd manuscript/
 
-latexpand -o output.tex main.tex
+latexpand -o manuscript.tex main.tex
 
-latexindent --output=output.tex output.tex
+latexindent --output=manuscript.tex manuscript.tex
 
-cp output.tex ../ref-output.tex
+cp manuscript.tex ../ref-manuscript.tex
 
-latexpand --keep-comments -o ../ref-output-wc.tex main.tex
+latexpand --keep-comments -o ../ref-manuscript-wc.tex main.tex
 
 cd ..
 
-latexindent --output=ref-output-wc.tex ref-output-wc.tex
+latexindent --output=ref-manuscript-wc.tex ref-manuscript-wc.tex
