@@ -2,7 +2,13 @@
 set -euo pipefail
 
 # Work in a temporary directory
-mkdir latex-manuscript/
+# Create the working directory; on failure print an error, wait 5s, then exit
+if ! mkdir latex-manuscript/; then
+	echo "Error: failed to create directory 'latex-manuscript/'" >&2
+	# wait so the user can see the message (ShellGuide: wait 5 seconds on custom errors)
+	sleep 5
+	exit 1
+fi
 cp -r manuscript/. latex-manuscript/
 
 cd latex-manuscript
