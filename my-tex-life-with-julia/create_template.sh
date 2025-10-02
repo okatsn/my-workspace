@@ -164,7 +164,7 @@ main() {
 	              -d chapters \
 	              -d manuscript/main.tex \
 	              -o manuscript/manuscript.tex \
-	              '. expand_output.sh'
+	              '. expand_output.sh manuscript'
     dvc stage add -n compile \
                   -d manuscript/main.tex \
                   -d manuscript/manuscript.tex \
