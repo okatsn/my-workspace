@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# This is `expand_output.sh` (FIXED version)
 set -e
 
 # Pause before exit when the script fails so the caller can see the error.
@@ -25,11 +26,15 @@ fi
 # Work in a temporary directory
 DOCFILE="$1"
 
+# KEYNOTE: use `cd` is crucial; `latexpand "$DOCFILE/main.tex"` cannot find input files in a parent directories like ../chapters/*.tex
 cd $DOCFILE/
 
+echo "Expanding main.tex into manuscript.tex..."
 latexpand -o manuscript.tex main.tex
 
 latexindent --output=manuscript.tex manuscript.tex
+
+echo "Creating reference files for local use..."
 
 cp manuscript.tex ../ref-manuscript.tex
 
@@ -38,3 +43,5 @@ latexpand --keep-comments -o ../ref-manuscript-wc.tex main.tex
 cd ..
 
 latexindent --output=ref-manuscript-wc.tex ref-manuscript-wc.tex
+
+echo "Expansion complete. 'output.tex' is now ready for compilation and submission."
