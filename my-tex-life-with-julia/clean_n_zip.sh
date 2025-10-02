@@ -42,6 +42,7 @@ find -type f -name '*.blg' -exec rm {} \;
 find -type f -name 'main.*' -exec rm {} \;
 find -type f -name '*.sh' -exec rm {} \;
 find -type f -name '*.dvc' -exec rm {} \;
+find -type f -name '*:Zone.Identifier ' -exec rm {} \;
 # Remove TOML files
 find -type f -name '*.toml' -exec rm {} \;
 # Remove all .tex files except `-name <file>`
