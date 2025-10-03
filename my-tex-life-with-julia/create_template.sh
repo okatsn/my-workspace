@@ -48,10 +48,10 @@ Following the practice below to safely share the entire script:
 - write your manuscript in *chapter* files
 - include tex files of *chapter* in `main.tex`
 - (optional) include *contents* files in a *chapter* file to better organize your idea.
-- To create the `output.tex`: `latexpand -o output.tex main.tex`
-- share `output.tex` rather than `main.tex`
-- Render the `output.tex`.
-- Put figures in *manuscript*: `latexpand` simply expand latex code, which means when you include a figure in *chapter* files, use `Fig.eps` (to be read by `output.tex`), not `../manuscript/Fig.eps`.
+- To create the `manuscript.tex`: `latexpand -o manuscript.tex main.tex`
+- share `manuscript.tex` rather than `main.tex`
+- Render the `manuscript.tex`.
+- Put figures in *manuscript*: `latexpand` simply expand latex code, which means when you include a figure in *chapter* files, use `Fig.eps` (to be read by `manuscript.tex`), not `../manuscript/Fig.eps`.
 
 EOF
 }
@@ -79,7 +79,7 @@ This document includes a reference \cite{placeholder2025}.
 % ... add more chapter inputs here ...
 
 \bibliographystyle{plain}
-\bibliography{main} % refers to main.bib
+\bibliography{bibtex} % refers to bibtex.bib
 
 \end{document}
 EOF
@@ -93,7 +93,7 @@ EOF
 }
 
 create_bib() {
-	create_file_if_missing_from_stdin "manuscript/main.bib" <<'EOF'
+	create_file_if_missing_from_stdin "manuscript/bibtex.bib" <<'EOF'
 @article{placeholder2025,
   title   = {Placeholder Article},
   author  = {Placeholder Author},
@@ -138,6 +138,8 @@ DOCFILE_BASE="${DOCFILE%.*}" # Remove extension to get base filename for bibtex
 bibtex "$DOCFILE_BASE"
 xelatex -synctex=1 -interaction=nonstopmode -file-line-error "$DOCFILE"
 xelatex -synctex=1 -interaction=nonstopmode -file-line-error "$DOCFILE"
+# latexpand --keep-comments --expand-bbl "$DOCFILE_BASE.bbl" -o "manuscript.tex" "$DOCFILE"
+# # `--expand-bbl` yields a single-file main.tex with \bibitems embedded; bbl file should exist.
 EOF
 }
 
@@ -163,22 +165,26 @@ main() {
 	              -d contents \
 	              -d chapters \
 	              -d manuscript/main.tex \
-	              -o manuscript/output.tex \
-	              '. expand_output.sh'
+	              -o manuscript/manuscript.tex \
+	              '. expand_output.sh manuscript'
     dvc stage add -n compile \
                   -d manuscript/main.tex \
-                  -d manuscript/output.tex \
+                  -d manuscript/manuscript.tex \
                   -o manuscript/main.pdf \
-                  -o manuscript/output.pdf \
+                  -o manuscript/manuscript.pdf \
                   -o manuscript/main.aux \
-                  -o manuscript/output.aux \
+                  -o manuscript/manuscript.aux \
                   -o manuscript/main.bbl \
-                  -o manuscript/output.bbl \
+                  -o manuscript/manuscript.bbl \
                   -o manuscript/main.blg \
-                  -o manuscript/output.blg \
+                  -o manuscript/manuscript.blg \
                   -o manuscript/main.synctex.gz \
-                  -o manuscript/output.synctex.gz \
-                  'cd manuscript/ && . compile.sh main.tex && . compile.sh output.tex'
+                  -o manuscript/manuscript.synctex.gz \
+                  'cd manuscript/ && . compile.sh main.tex && . compile.sh manuscript.tex'
+	dvc stage add -n clean_n_zip manuscript \
+	              -d manuscript/manuscript.pdf \
+				  -o latex-manuscript.zip \
+				  '. clean_n_zip.sh'
 
 	echo "Done. Review the generated files and start writing!"
 }

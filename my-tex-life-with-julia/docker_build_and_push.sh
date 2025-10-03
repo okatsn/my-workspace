@@ -2,6 +2,21 @@
 
 set -e
 
+# Pause before exit when the script fails so the caller can see the error.
+# - Uses an EXIT trap to catch any non-zero exit (including explicit `exit 1`).
+# - If running interactively it prompts the user to press Enter. In CI or
+#   non-interactive environments it sleeps for 5 seconds instead.
+trap 'rc=$?; if [ "$rc" -ne 0 ]; then
+  echo "\nERROR: script exited with code $rc at $(date)" >&2
+  # If running in CI or not attached to a terminal, avoid waiting for input.
+  if [ -n "$CI" ] || [ ! -t 1 ]; then
+    echo "Non-interactive or CI environment detected; sleeping 5s before exit..." >&2
+    sleep 5
+  else
+    read -rp "Press Enter to exit..."
+  fi
+fi' EXIT
+
 IMAGE_NAME="okatsn/my-tex-life-with-julia"
 BUILD_IMAGE=true
 TAGS=()
@@ -27,8 +42,8 @@ cd ./my-tex-life-with-julia || exit 1
 # Build the image if BUILD_IMAGE is true
 if [ "$BUILD_IMAGE" = true ]; then
   echo "Building Docker image with tag: $IMAGE_NAME:temp"
-  # Build with docker-compose
-  docker-compose --env-file ../my-build.env build --no-cache
+  # Build with docker compose
+  docker compose --env-file ../my-build.env build --no-cache
   docker tag jtexworkspace "$IMAGE_NAME:temp"
 else
   echo "Skipping build step (--no-build specified)."
