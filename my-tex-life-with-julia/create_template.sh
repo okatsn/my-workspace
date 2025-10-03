@@ -138,7 +138,7 @@ DOCFILE_BASE="${DOCFILE%.*}" # Remove extension to get base filename for bibtex
 bibtex "$DOCFILE_BASE"
 xelatex -synctex=1 -interaction=nonstopmode -file-line-error "$DOCFILE"
 xelatex -synctex=1 -interaction=nonstopmode -file-line-error "$DOCFILE"
-# latexpand --keep-comments --expand-bbl "$DOCFILE_BASE.bbl" -o "output.tex" "$DOCFILE"
+# latexpand --keep-comments --expand-bbl "$DOCFILE_BASE.bbl" -o "manuscript.tex" "$DOCFILE"
 # # `--expand-bbl` yields a single-file main.tex with \bibitems embedded; bbl file should exist.
 EOF
 }

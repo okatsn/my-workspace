@@ -44,4 +44,4 @@ cd ..
 
 latexindent --output=ref-manuscript-wc.tex ref-manuscript-wc.tex
 
-echo "Expansion complete. 'output.tex' is now ready for compilation and submission."
+echo "Expansion complete. 'manuscript.tex' is now ready for compilation and submission."

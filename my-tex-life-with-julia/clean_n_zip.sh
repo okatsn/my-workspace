@@ -46,8 +46,8 @@ find -type f -name '*:Zone.Identifier' -exec rm {} \;
 # Remove TOML files
 find -type f -name '*.toml' -exec rm {} \;
 # Remove all .tex files except `-name <file>`
-find -type f -name '*.tex' ! -name 'output.tex' -exec rm {} \;
-find -type f -name '*.pdf' ! -name 'output.pdf' -exec rm {} \;
+find -type f -name '*.tex' ! -name 'manuscript.tex' -exec rm {} \;
+find -type f -name '*.pdf' ! -name 'manuscript.pdf' -exec rm {} \;
 
 
 rm .gitignore
