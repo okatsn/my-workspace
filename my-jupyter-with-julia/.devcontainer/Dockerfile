@@ -14,8 +14,8 @@ RUN apt-get update && \
     fonts-noto-cjk-extra \
     fonts-noto-color-emoji \
     # PDF utilities
-    ghostscript && \ 
-    fc-cache -f -v 
+    ghostscript && \
+    fc-cache -f -v
 
 
 ## Install fonts that supports smcp
@@ -27,5 +27,7 @@ RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.
     && rm -rv /tmp/temp123 \
     && rm -rv /tmp/temp123.zip
 
+# # For `npx degit`; it costs around 366 MB.
+# RUN apt update && apt -y install npm
 
 USER $NB_USER
