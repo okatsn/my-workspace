@@ -64,6 +64,9 @@ In this case, both the `Dockerfile` in `my-julia-build` and `my-tex-life` ([okat
 
 ```Dockerfile
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
+# Project.toml and startup.jl was copied to /tmp/ for downstream stages to use.
+# The reason why they are not copied to `.julia/environments` or `.julia/config` directly is that
+# copying will fail when `.julia` is mounted as volume.
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /tmp/julia /tmp/julia
 
 # --chown=$NB_UID:$NB_GID is disabled because julia was installed by root and only root had the permissions.
@@ -72,10 +75,6 @@ COPY --from=build-julia /opt/julia-okatsn /opt/julia-okatsn
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
 
-# Switch to $NB_USER
-USER $NB_USER
-# Build IJulia
-RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");'
 ```
 
 ### VSCODE environment

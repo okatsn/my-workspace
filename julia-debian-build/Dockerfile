@@ -105,10 +105,6 @@ RUN mkdir -p /tmp/julia
 RUN echo "JULIA_PROJECT=${JULIA_PROJECT}" > /tmp/julia/julia.env
 COPY Project.toml /tmp/julia/Project.toml
 COPY startup.jl /tmp/julia/startup.jl
-COPY init_julia.sh /tmp/julia/init_julia.sh
 
-USER root
-# Make the script executable
-RUN chmod +x /tmp/julia/init_julia.sh
 
 # End of Stage "my-julia-build"
