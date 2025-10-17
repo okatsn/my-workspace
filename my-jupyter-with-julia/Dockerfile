@@ -1,4 +1,4 @@
-FROM okatsn/my-julia-build:v1.11-2025b AS build-julia
+FROM okatsn/my-julia-build:v1.12-2025c AS build-julia
 FROM okatsn/my-quarto-build:v1.6-2025a AS build-quarto
 FROM okatsn/my-typst-space:v2025a AS build0
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
@@ -16,14 +16,14 @@ FROM quay.io/jupyter/minimal-notebook:2025-05-30
 
 
 ARG HOME="/home/$NB_USER"
-# KEYNOTE: the tailing "/" matters. 
+# KEYNOTE: the tailing "/" matters.
 
 ARG VSCODE_PATH="$HOME/.vscode-server/"
 ARG WORKSPACE_DIR="$HOME/workspace/"
 ARG JULIA_PKG_DEVDIR="$HOME/.julia/dev/"
 # just let it be default. See [JULIA_PKG_DEVDIR](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_PKG_DEVDIR). Be aware that some tests will depend on JULIA_PKG_DEVDIR.
-ARG SUB_PROJECT_DIR="$HOME/workspace/projects/" 
-# KEYNOTE: also check 
+ARG SUB_PROJECT_DIR="$HOME/workspace/projects/"
+# KEYNOTE: also check
 # - "gitProjectManager.baseProjectsFolders" in devcontainer.json that if GPM can get JULIA_PKG_DEVDIR and SUB_PROJECT_DIR
 # - docker-compose.yml for defining volumes.
 
@@ -33,11 +33,11 @@ USER root
 
 # # Fix permissions for directories that is going to be mounted as volume but not-yet created when building this image. For those mounted as volume but user might need their permissions, directories must be made first.
 #
-# - The starship cache: allow starship to create log. 
+# - The starship cache: allow starship to create log.
 RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
 # - pydrive2fs: persistent dvc remote credentials.
 # RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
-# KEYNOTE: this cannot solve the permission issue. Still only root can access pydrive2fs. 
+# KEYNOTE: this cannot solve the permission issue. Still only root can access pydrive2fs.
 # - I've also tried named volume instead (e.g., - pydrive2fs-cache:/home/jovyan/.cache/pydrive2fs), but 1. not working 2. named volume does not align with my goal (one container one credential; it's much better for every container to mount the only credential on host.)
 # - Currently, in host (WSL) run `sudo chown -R okatsn:okatsn /home/okatsn/` can solve this issue.
 
@@ -48,9 +48,9 @@ RUN apt-get update && apt-get -y install \
     # - `apt-cache search fonts | grep noto` to see available fonts.
     # - See also https://samwhelp.github.io/note-about-ubuntu/read/adjustment/env/font.html
     # RUN apt-get update && apt-get -y install \
-    tree 
-    # `tree` list the tree of file directory.
-    
+    tree
+# `tree` list the tree of file directory.
+
 # # Install fonts
 # RUN apt-get update && apt-get -y install \
 #     fontconfig \
@@ -100,7 +100,7 @@ COPY --from=build-quarto /opt/quarto /opt/quarto
 RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 
 # [There is no "Jupyter path"](https://github.com/quarto-dev/quarto-cli/discussions/9432)
-# and it is currently no need to set QUARTO_PYTHON 
+# and it is currently no need to set QUARTO_PYTHON
 # Quarto CLI (e.g., `quarto preview ...`, `quarto render ...`) works when this container is built; however, additional VSCode settings needs to be correctly specified otherwise VSCode quarto extension won't work properly (cannot find Jupyter  pre-installed in minimal-notebook). See the settings in devcontainer.json
 # ENV QUARTO_PYTHON=/opt/conda/bin/jupyter
 
@@ -125,7 +125,7 @@ USER $NB_USER
 # RUN conda install font-ttf-noto-cjk font-ttf-noto-emoji -y
 
 # Build IJulia
-RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
+RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");'
 
 # Referring: https://github.com/okatsn/MyJuliaSpace/blob/master/.devcontainer/Dockerfile
 # Also see: https://dvc.org/doc/install/linux#install-with-pip

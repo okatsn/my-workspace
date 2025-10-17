@@ -18,11 +18,11 @@ RUN apt-get update && apt-get -y install \
     curl \
     tar
 
-# Install Julia 
+# Install Julia
 # SETME: Set the julia version here.
 # !!! note Also replace "v1.10" since there are probably hard codes elsewhere.
-ARG VARIANT="1.11.5" 
-ARG JULIA_PROJECT="v1.11"
+ARG VARIANT="1.12.0"
+ARG JULIA_PROJECT="v1.12"
 ARG JULIA_PKG_DEVDIR="$HOME/.julia/dev/"
 # KEYNOTE: JULIA_PROJECT must match the [default LOAD_PATH pattern](https://docs.julialang.org/en/v1/base/constants/#Base.LOAD_PATH). Following default is less prone to error and minimize the effort of later-stage docker image building process.
 
@@ -43,9 +43,9 @@ ARG OKATSN_JULIA_ENVS=/home/okatsn/.julia/environments
 ENV JULIA_PATH=/opt/julia-okatsn
 # !!! note Also replace "julia-okatsn" since there are probably hard codes elsewhere.
 # ENV PATH $JULIA_PATH/bin:$PATH
-# - Install in JULIA_PATH 
+# - Install in JULIA_PATH
 # - the executable is $JULIA_PATH/bin/julia
-# - Add $JULIA_PATH/bin to PATH is not required if a link from /usr/local/bin/julia to $JULIA_PATH/bin/julia is established (i.e., `ln -fs $JULIA_PATH/bin/julia /usr/local/bin/julia`). 
+# - Add $JULIA_PATH/bin to PATH is not required if a link from /usr/local/bin/julia to $JULIA_PATH/bin/julia is established (i.e., `ln -fs $JULIA_PATH/bin/julia /usr/local/bin/julia`).
 
 # Set environment variables
 ENV JULIA_PKG_DEVDIR=${JULIA_PKG_DEVDIR}
@@ -55,7 +55,7 @@ RUN mkdir $JULIA_PATH \
     && curl -L https://julialang-s3.julialang.org/bin/linux/x64/`echo ${VARIANT} | cut -d. -f 1,2`/julia-${VARIANT}-linux-x86_64.tar.gz | tar zxf - -C $JULIA_PATH --strip=1 \
     && ln -fs $JULIA_PATH/bin/julia /usr/local/bin/julia
 
-# # For Julia installed under /opt/julia-${VARIANT}/bin/julia, 
+# # For Julia installed under /opt/julia-${VARIANT}/bin/julia,
 # # the following command set `/usr/local/bin/julia` as a link to /opt/julia-${VARIANT}/bin/julia, that in bash type `julia` starts the julia REPL.
 #
 # You can also refer this: https://github.com/docker-library/julia/blob/154363df0b038fb8a5e74bb97bbed3fb8faea7ca/1.9/bullseye/Dockerfile
