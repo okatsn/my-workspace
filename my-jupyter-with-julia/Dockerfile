@@ -108,9 +108,6 @@ USER $NB_USER
 # Install font via conda.
 # RUN conda install font-ttf-noto-cjk font-ttf-noto-emoji -y
 
-# Build IJulia
-RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");'
-
 # Referring: https://github.com/okatsn/MyJuliaSpace/blob/master/.devcontainer/Dockerfile
 # Also see: https://dvc.org/doc/install/linux#install-with-pip
 RUN mamba install --quiet --yes \
