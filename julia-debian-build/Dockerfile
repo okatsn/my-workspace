@@ -26,20 +26,17 @@ ARG JULIA_PROJECT="v1.12"
 ARG JULIA_PKG_DEVDIR="$HOME/.julia/dev/"
 # KEYNOTE: JULIA_PROJECT must match the [default LOAD_PATH pattern](https://docs.julialang.org/en/v1/base/constants/#Base.LOAD_PATH). Following default is less prone to error and minimize the effort of later-stage docker image building process.
 
-ARG OKATSN_JULIA_ENVS=/home/okatsn/.julia/environments
-# # Don't add `@`, @v1.10 will create a folder "@v1.10".
 
 # # [JULIA_PROJECT has the same effect as `--project` option](https://docs.julialang.org/en/v1/manual/environment-variables/#JULIA_PROJECT).
 # # Both JULIA_PROJECT and JULIA_LOAD_PATH seems to be set in order to start julia using my Project.toml
 # # See https://stackoverflow.com/questions/53613663/what-is-in-julia-project-command-line-option
 # # CHECKPOINT: However, set JULIA_PROJECT and JULIA_LOAD_PATH seems to be prone to error or unexpected results; I continuously encounter error and give up.
-# ENV JULIA_PROJECT=${JULIA_PROJECT}
-# ENV JULIA_LOAD_PATH=${OKATSN_JULIA_ENVS}/${JULIA_PROJECT}
 
 
 
 
 # ENV JULIA_PATH=/opt/julia-${VARIANT}
+ENV JULIA_PROJECT=${JULIA_PROJECT}
 ENV JULIA_PATH=/opt/julia-okatsn
 # !!! note Also replace "julia-okatsn" since there are probably hard codes elsewhere.
 # ENV PATH $JULIA_PATH/bin:$PATH
@@ -85,18 +82,33 @@ RUN julia -e 'using Pkg; Pkg.update()' \
 # - Thus, it is prone to error or effortless if the layer of building IJulia is in the stage other than the final stage when trying to build a multi-stage Docker image, because each stage is a different machine/system.
 # - Copy only the Project.toml instead of add packages and move them to a new machine.
 
-# For OhMyREPL
-ARG TARGET_PROJECTTOML=${OKATSN_JULIA_ENVS}/${JULIA_PROJECT}/Project.toml
-RUN mkdir -p /home/okatsn/.julia/config && \
-    mkdir -p ${OKATSN_JULIA_ENVS}/${JULIA_PROJECT} && \
-    rm -f $TARGET_PROJECTTOML
+# (LEGACY) For OhMyREPL
+# ARG OKATSN_JULIA_ENVS=/home/okatsn/.julia/environments
+# # Don't add `@`, @v1.10 will create a folder "@v1.10".
+# ARG TARGET_PROJECTTOML=${OKATSN_JULIA_ENVS}/${JULIA_PROJECT}/Project.toml
+# RUN mkdir -p /home/okatsn/.julia/config && \
+#     mkdir -p ${OKATSN_JULIA_ENVS}/${JULIA_PROJECT} && \
+#     rm -f $TARGET_PROJECTTOML
 
-COPY startup.jl /home/okatsn/.julia/config/startup.jl
-COPY Project.toml $TARGET_PROJECTTOML
+# COPY startup.jl /home/okatsn/.julia/config/startup.jl
+# COPY Project.toml $TARGET_PROJECTTOML
 # # KEYNOTE: For OhMyREPL etc.
 # - RUN mkdir -p /home/$NB_USER/.julia/config && cp .devcontainer/startup.jl "$_" # This mkdir all necessary paths and copy files to there in one line. It worked in bash but failed in Dockerfile.
 # - Use $HOME instead of /home/$NB_USER will fail! Since $HOME is not recognized as absolute directory!
 # - COPY startup.jl in the end to avoid permission error
+#
+# # KEYNOTE: COPYing startup.jl and Project.toml only works for the first build. If the destination is already mounted to a volume in the context of rebuild a container, as you mounted a volume, it essentially covers up whatever was in that directory in the image, making the COPY command seem like it had no effect.
 
+
+# Copy essential files to a temporary location inside the image
+RUN mkdir -p /tmp/julia
+RUN echo "JULIA_PROJECT=${JULIA_PROJECT}" > /tmp/julia/julia.env
+COPY Project.toml /tmp/julia/Project.toml
+COPY startup.jl /tmp/julia/startup.jl
+COPY init_julia.sh /tmp/julia/init_julia.sh
+
+USER root
+# Make the script executable
+RUN chmod +x /tmp/julia/init_julia.sh
 
 # End of Stage "my-julia-build"

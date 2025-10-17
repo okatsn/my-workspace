@@ -51,23 +51,6 @@ RUN apt-get update && apt-get -y install \
     tree
 # `tree` list the tree of file directory.
 
-# # Install fonts
-# RUN apt-get update && apt-get -y install \
-#     fontconfig \
-#     fonts-noto-cjk \
-#     fonts-noto-cjk-extra \
-#     fonts-noto-color-emoji \
-#     # 中文類楷體
-#     fonts-arphic-ukai
-
-# ## Install fonts that supports smcp
-# RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.zip -O /tmp/temp123.zip  \
-#     && unzip /tmp/temp123.zip -d /tmp/temp123  \
-#     && mkdir -p /usr/share/fonts/opentype/source-serif-pro \
-#     && cp /tmp/temp123/source-serif-release/OTF/*.otf /usr/share/fonts/opentype/source-serif-pro/ \
-#     && fc-cache -fv \
-#     && rm -rv /tmp/temp123 \
-#     && rm -rv /tmp/temp123.zip
 
 ## Install typst
 COPY --from=build0 /bin/typst /bin
@@ -83,7 +66,7 @@ RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
 # Noted that the following command makes no change IF you are rebuilding the image WITHOUT prune build and volumes.
 # Explain: Modification on a directory mounted as a volume will be overriden by the volume if the volume already exist. See explanlation in julia-debian-build/README.md
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
-
+COPY --from=build-julia --chown=$NB_UID:$NB_GID /tmp/julia /tmp/julia
 COPY --from=build-julia /opt/julia-okatsn /opt/julia-okatsn
 # TODO:  --chown=$NB_UID:$NB_GID is disabled because julia was installed by root and only root had the permissions. If everything is OK, modify the README of julia-debian-build accordingly
 
