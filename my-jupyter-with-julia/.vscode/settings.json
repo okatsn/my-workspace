@@ -3,6 +3,7 @@
         "titleBar.activeBackground": "#9558b2",
         "titleBar.inactiveBackground": "#9558b2",
     },
+    "julia.NumThreads": 1,
     // Quarto
     // These settings are critical for quarto to work correctly with jupyter of my-workspace/my-jupyter-with-julia. Please refer to .devcontainer/devcontainer.json therein.
     "python.defaultInterpreterPath": "/opt/conda/bin/python", // this is for quarto to correctly work with VSCode. This path is obtained from `quarto check jupyter`.
