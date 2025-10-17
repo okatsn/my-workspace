@@ -24,8 +24,8 @@ fi
 # Build the image if BUILD_IMAGE is true
 if [ "$BUILD_IMAGE" = true ]; then
   echo "Building Docker image with tag: $IMAGE_NAME:temp"
-  # Build with docker-compose
-  docker-compose --env-file ../my-build.env build --no-cache
+  # Build with docker compose
+  docker compose --env-file ../my-build.env build --no-cache
   docker tag dvcbuild "$IMAGE_NAME:temp"
 else
   echo "Skipping build step (--no-build specified)."
