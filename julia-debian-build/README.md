@@ -23,7 +23,7 @@ cd ./julia-debian-build
 # bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
 docker-compose --env-file ../my-build.env build --no-cache
 
-# tag the image 
+# tag the image
 docker tag jbuild okatsn/my-julia-build:latest
 
 # push it to dockerhub
@@ -34,7 +34,7 @@ docker push okatsn/my-julia-build:latest
 Why not use devcontainer.json to build (saying `$ docker-compose -f .devcontainer/docker-compose.yml build`)?
 - Building image from devcontainer.json creates some additional files, such as those in `/home/okatsn/.vscode-server` and `/home/okatsn/.vscode-server-insiders`
 - If there are other container (saying the-target) that was directly built upon this image, and it also has `/home/okatsn/.vscode-server` but should with different content, the files in source (my-julia-build) is kept, and those in the target are discarded. This is not what we want.
-- References: 
+- References:
     - https://github.com/andferrari/julia_notebook/blob/master/Dockerfile
     - https://github.com/marius311/CMBLensing.jl/blob/master/Dockerfile
     - https://github.com/MalteBoehm/julia_docker-compose_template/blob/main/Dockerfile
@@ -49,14 +49,14 @@ Why not use devcontainer.json to build (saying `$ docker-compose -f .devcontaine
 
 The environment variables such as `NB_UID` and `NB_GID` are defined in the `.env` file which are included as arguments for `Dockerfile` in the `docker-compose.yml`.
 
-These variables should be consistent with your final-stage image. For example: 
+These variables should be consistent with your final-stage image. For example:
 
 ```Dockerfile
 FROM okatsn/my-julia-build:v1.10-2024a AS build-julia
 FROM okatsn/my-tex-life:v2024a1
 ```
 
-In this case, both the `Dockerfile` in `my-julia-build` and `my-tex-life` ([okatsn/MyTeXLife](https://github.com/okatsn/MyTeXLife.git)) have 
+In this case, both the `Dockerfile` in `my-julia-build` and `my-tex-life` ([okatsn/MyTeXLife](https://github.com/okatsn/MyTeXLife.git)) have
 `NB_GID` and `NB_UID` described in their `.env` file. You have to make sure they are consistent because they are critical in setting the ownership of files/applications.
 
 
@@ -64,8 +64,10 @@ In this case, both the `Dockerfile` in `my-julia-build` and `my-tex-life` ([okat
 
 ```Dockerfile
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
+COPY --from=build-julia --chown=$NB_UID:$NB_GID /tmp/julia /tmp/julia
 
-COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
+# --chown=$NB_UID:$NB_GID is disabled because julia was installed by root and only root had the permissions.
+COPY --from=build-julia /opt/julia-okatsn /opt/julia-okatsn
 
 # Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
 RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
@@ -73,7 +75,7 @@ RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
 # Switch to $NB_USER
 USER $NB_USER
 # Build IJulia
-RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");' 
+RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");'
 ```
 
 ### VSCODE environment
@@ -85,7 +87,7 @@ Add Named volume in your docker-compose.yml; please refer [okatsn/MyTeXLife] or 
 1. The building of `my-julia-build` is controlled by `docker-compose.yml`.
 2. Please follow the instruction in Dockerfile.
 3. Those in `.devcontainer` is intended just for the convenience of building the image and open the container using VSCODE's interface. Without them, the building command instruction in Dockerfile should still work.
-4. The `devcontainer.json` is suggested by VSCODE. 
+4. The `devcontainer.json` is suggested by VSCODE.
 
 ## Known Issue
 
@@ -109,7 +111,7 @@ COPY --chown=$NB_UID:$NB_GID .devcontainer/Project_for_env.toml /tmp/Project.tom
 RUN mv -f /tmp/Project.toml /home/$NB_USER/.julia/environments/${JULIA_PROJECT}/Project.toml
 ```
 
-To make the copy command working, try BOTH delete volumes and `docker builder prune` before rebuild since the mounted volume will not be modified (and should not) in the container building stage. 
+To make the copy command working, try BOTH delete volumes and `docker builder prune` before rebuild since the mounted volume will not be modified (and should not) in the container building stage.
 
 
 
