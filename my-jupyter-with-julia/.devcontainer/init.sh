@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-# The version is the first argument
+# The version is the first argument, referring `ls -la ~/.julia/environments/` (e.g., "v1.12")
 VERSION="$1"
 
 JULIA_ENV_DIR="$HOME/.julia/environments/$VERSION"
