@@ -52,5 +52,8 @@
         // DVC
         "iterative.dvc", // data version control
         "iterative.vscode-dvc-pack",
+        // Graphviz/Dotfile Preview
+        "wuzhiguo.callviz", // simple
+        "tintinweb.graphviz-interactive-preview", //full of features
     ]
 }
