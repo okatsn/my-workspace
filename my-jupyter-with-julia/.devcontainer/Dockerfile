@@ -27,7 +27,10 @@ RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.
     && rm -rv /tmp/temp123 \
     && rm -rv /tmp/temp123.zip
 
+# RUN apt update && apt -y install
 # # For `npx degit`; it costs around 366 MB.
-# RUN apt update && apt -y install npm
+# npm \
+# # Install imagemagick that allows png-jpg conversion
+# imagemagick
 
 USER $NB_USER
