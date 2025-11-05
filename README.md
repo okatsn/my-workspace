@@ -42,7 +42,7 @@ wsl --set-default Ubuntu-24.04
 ```
 
 > 💡Useful tips:
-> 
+>
 > - If connection problem occurs (e.g., Failed to fetch ...; the connection to server was reset ...), run `wsl --shutdown` and try again.
 > - Install WSL first, type `wsl` in windows terminal to configure default user settings, **BEFORE** install and start [Docker Desktop](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe), to prevent [potential user confliction issue](https://github.com/microsoft/WSL/issues/9018).
 
@@ -54,13 +54,13 @@ Also see: [Reinstall WSL](#re-install-wsl)
 
 ## Install, configure and update `git`
 
-VSCode extensions such as `mhutchie.git-graph` use `git`. 
+VSCode extensions such as `mhutchie.git-graph` use `git`.
 Here is how to install `git`:
 - `sudo apt-get update`
 - `sudo apt-get install git`
 > 💡 These are exactly the same commands to update Git in linux.
 
-ONLY IF the it was not the latest `git` being installed, try either the followings: 
+ONLY IF the it was not the latest `git` being installed, try either the followings:
 - `sudo apt-get dist-upgrade`
 - `sudo add-apt-repository ppa:git-core/ppa`
 > It's usually recommended to run `sudo apt-get update` before running `sudo apt-get dist-upgrade`.
@@ -85,7 +85,7 @@ sudo apt-get update
 sudo apt-get install unzip
 ```
 
-### Fonts 
+### Fonts
 
 Get the font:
 
@@ -135,7 +135,7 @@ sudo snap install --classic lefthook
 ```
 2. Create `lefthook.yml`.
 3. Stage files
-4. Run 
+4. Run
    - It will run `pre-commit` before actually commit (`git commit -m "Commit message"`).
    - You can also run on demand: `lefthook run pre-commit`
 
@@ -163,7 +163,7 @@ sudo apt install git-filter-repo
 
 You can use this package to remove files totally from the history.
 
-For example: 
+For example:
 
 ```
 git-filter-repo --invert-paths --path path/to/file/or/directory
@@ -177,7 +177,7 @@ Make sure your remote is missing
 git remote -v
 ```
 
-Add the remote back 
+Add the remote back
 ```
 git remote add origin https://github.com/okatsn/HelloWorld.git
 ```
@@ -211,7 +211,7 @@ cd <repository-name>
 git log --all -- path/to/file
 ```
 
-Some instructions of this section is ChatGPT's advices. 
+Some instructions of this section is ChatGPT's advices.
 Please refer [git-filter-repo(1) Manual Page](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html), [newren/git-filter-repo](https://github.com/newren/git-filter-repo) and [How to remove file from Git history?](https://stackoverflow.com/questions/43762338/how-to-remove-file-from-git-history)
 
 ## This repository contains submodules
@@ -220,7 +220,7 @@ Please refer [git-filter-repo(1) Manual Page](https://htmlpreview.github.io/?htt
 Referring [How can I change the location of docker images when using Docker Desktop on WSL2 with Windows 10 Home?](https://stackoverflow.com/questions/62441307/how-can-i-change-the-location-of-docker-images-when-using-docker-desktop-on-wsl2)
 > A similar ref.: https://needlify.com/post/how-to-move-wsl-distributions-including-docker-images-to-new-locations-on-windows-6412384cbd14c
 
-In windows Terminal, 
+In windows Terminal,
 list all the distributions:
 ```
 wsl --list -v
@@ -259,7 +259,7 @@ Using `dive` to inspect what modifications were made in one layer:
 Example
 ```bash
 cd ./python-debian-build
-docker-compose --env-file ../my-build.env build --no-cache
+docker compose --env-file ../my-build.env build --no-cache
 dive pbuild
 ```
 
@@ -307,7 +307,7 @@ See also:
 
 For example, if you mount `.cache/pydrive2fs` as volume, you might got permission error if the permission for `.cache/pydrive2fs` was only granted to root mysteriously.
 
-For example, if you mount the `~/.ssh` in host to `/home/jovyan/.ssh` in container, "Permission denied" error will occur IF **the default user of host** (e.g., `okatsn`) do not have permissions. 
+For example, if you mount the `~/.ssh` in host to `/home/jovyan/.ssh` in container, "Permission denied" error will occur IF **the default user of host** (e.g., `okatsn`) do not have permissions.
 
 These issues can be solved by executing the following code on **host**:
 
@@ -328,7 +328,7 @@ Hints for trouble shooting this kind of issues:
 #### build
 
 Build container in VSCode based on `devcontainer.json` may fail with a short and ambiguous message on different user settings.
-Here is an [Example](https://github.com/microsoft/vscode-remote-release/issues/9461). 
+Here is an [Example](https://github.com/microsoft/vscode-remote-release/issues/9461).
 Switch the settings to your recent profile on another PC may solve the problem.
 
 #### Clean volumes, containers and images
@@ -404,7 +404,7 @@ If you encounter authorization issues when trying to grant DVC permissions to ac
 
 Please refer https://dvc.org/doc/user-guide/data-management/remote-storage/google-drive#authorization
 
-Here are an example workflow: 
+Here are an example workflow:
 - Save `default.json` file in the machine where DVC can access your Google Drive. This file locates at `~/.cache/pydrive2fs/xxxxxxxx-xxxxxxxxxxxxxxx.apps.googleusercontent.com/default.json`.
 - In the new machine, `dvc status -c` to print messages as follows and confirm that it prints identical  `xxxxxxxx-xxxxxxxxxxxxxxx` part.
   ```
@@ -434,13 +434,13 @@ See [this post](https://stackoverflow.com/questions/45972812/are-you-trying-to-m
 The error message would be something like:
 
 ```
-failed to solve: okatsn/my-quarto-build:v1.6: 
-failed to resolve source metadata for docker.io/okatsn/my-quarto-build:v1.6: 
-failed to authorize: 
-failed to fetch oauth token: 
-Post "https://auth.docker.io/token": 
-dial tcp [xxxx:xxxx:xxxx:xxxx:xxxx]:443: 
-connect: network is unreachable 
+failed to solve: okatsn/my-quarto-build:v1.6:
+failed to resolve source metadata for docker.io/okatsn/my-quarto-build:v1.6:
+failed to authorize:
+failed to fetch oauth token:
+Post "https://auth.docker.io/token":
+dial tcp [xxxx:xxxx:xxxx:xxxx:xxxx]:443:
+connect: network is unreachable
 ```
 
 You may first connect your PC to another network or reconnect wifi before further actions before rebuild and reopen, even though any other network connection works fine.
@@ -473,7 +473,7 @@ After hours of trial and error, I recognized that the quickest way to solve this
 
 ### Grant sudo for `jovyan`
 
-To use sudo, not only `GRANT_SUDO` has to be "yes", but also user to be `root`. See 
+To use sudo, not only `GRANT_SUDO` has to be "yes", but also user to be `root`. See
 - https://github.com/jupyter/docker-stacks/issues/949
 - https://stackoverflow.com/questions/78460730/what-is-the-password-for-jovyan-user-in-jupyter-lab-docker-container and links therein: https://github.com/jupyter/docker-stacks/issues/408#issuecomment-1588023099
 
@@ -481,7 +481,7 @@ You can set user in `docker-composer.yml` at:
 
 ```
 services:
-  yourcontainername: 
+  yourcontainername:
     user: root
     environment:
       GRANT_SUDO: "yes"
@@ -490,7 +490,7 @@ services:
 or in `devcontainer.json`, set `"remoteUser": "root",`, such that when you open an integrated terminal in VS Code within the Dev Container you'll be logged in as the root user.
 However, the problem is if the the terminal user is root, many things go wrong due to permission mismatch, including that GIT will be unavailable when the folder is opened in this DevContainer (GIT authentication is granted in WSL for user `okatsn`, and in DevContainer `jovyan` should have the same UID as `okatsn` for user to work smoothly in the containerized workspace).
 
-To sum up, there seems to be no way to grant sudo to `jovyan` AND log in as `jovyan` in a `jupyter/minimal-notebook` based containerized workspace; 
+To sum up, there seems to be no way to grant sudo to `jovyan` AND log in as `jovyan` in a `jupyter/minimal-notebook` based containerized workspace;
 you have to install those only `root` can install in Dockerfile and rebuild.
 
 ### DVC files batch import using `xargs`

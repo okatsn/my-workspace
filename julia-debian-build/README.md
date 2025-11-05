@@ -21,7 +21,7 @@ The content of this folder is migrated from [okatsn/my-julia-build](https://gith
 cd ./julia-debian-build
 
 # bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
-docker-compose --env-file ../my-build.env build --no-cache
+docker compose --env-file ../my-build.env build --no-cache
 
 # tag the image
 docker tag jbuild okatsn/my-julia-build:latest
@@ -31,7 +31,7 @@ docker push okatsn/my-julia-build:latest
 ```
 
 ### Explain
-Why not use devcontainer.json to build (saying `$ docker-compose -f .devcontainer/docker-compose.yml build`)?
+Why not use devcontainer.json to build (saying `$ docker compose -f .devcontainer/docker-compose.yml build`)?
 - Building image from devcontainer.json creates some additional files, such as those in `/home/okatsn/.vscode-server` and `/home/okatsn/.vscode-server-insiders`
 - If there are other container (saying the-target) that was directly built upon this image, and it also has `/home/okatsn/.vscode-server` but should with different content, the files in source (my-julia-build) is kept, and those in the target are discarded. This is not what we want.
 - References:

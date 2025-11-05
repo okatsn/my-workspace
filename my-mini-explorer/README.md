@@ -1,7 +1,7 @@
 # My Mini Explorer
 
-!!!note 
-    After dive into the image, it turns out the DVC installation involves modifications of multiple files/folders across the system, seeming to make dvc works seamlessly with such as sftp, git and so on. 
+!!!note
+    After dive into the image, it turns out the DVC installation involves modifications of multiple files/folders across the system, seeming to make dvc works seamlessly with such as sftp, git and so on.
     Thus, it is impractical to identify all the modifications to be `COPY`ed.
 
 This is a minimal machine for file editing and exploration with DVC utilities.
@@ -13,9 +13,9 @@ This is a minimal machine for file editing and exploration with DVC utilities.
 ```bash
 cd ./my-mini-explorer
 
-docker-compose --env-file ../my-build.env build --no-cache
+docker compose --env-file ../my-build.env build --no-cache
 
-# tag the image 
+# tag the image
 docker tag dvcbuild okatsn/my-mini-explorer:latest
 
 # push it to dockerhub
