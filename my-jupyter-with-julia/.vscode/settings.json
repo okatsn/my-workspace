@@ -1,7 +1,7 @@
 {
     "workbench.colorCustomizations": {
-        "titleBar.activeBackground": "#9558b2",
-        "titleBar.inactiveBackground": "#9558b2",
+        "titleBar.activeBackground": "#CB3C33",
+        "titleBar.inactiveBackground": "#CB3C33",
     },
     "julia.NumThreads": 1,
     // Quarto
