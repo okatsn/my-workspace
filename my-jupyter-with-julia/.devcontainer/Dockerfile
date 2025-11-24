@@ -31,6 +31,7 @@ RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.
 # # For `npx degit`; it costs around 366 MB.
 # npm \
 # # Install imagemagick that allows png-jpg conversion
+# # - Rotate image in-place: `mogrify -rotate 90 sancen-1-photo-4.png`
 # imagemagick
 
 USER $NB_USER
