@@ -14,8 +14,12 @@ RUN apt-get update && \
     fonts-noto-cjk-extra \
     fonts-noto-color-emoji \
     # PDF utilities
-    ghostscript && \
-    fc-cache -f -v
+    ghostscript \
+    # # git-crypt
+    # git-crypt \
+    # gnupg \
+    # Final clean
+    && fc-cache -f -v
 
 
 ## Install fonts that supports smcp
