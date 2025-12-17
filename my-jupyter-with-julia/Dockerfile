@@ -64,7 +64,7 @@ RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
 
 # # Julia part
 # Noted that the following command makes no change IF you are rebuilding the image WITHOUT prune build and volumes.
-# Explain: Modification on a directory mounted as a volume will be overriden by the volume if the volume already exist. See explanlation in julia-debian-build/README.md
+# Explain: Modification on a directory mounted as a volume will be overriden by the volume if the volume already exist. See explanation in julia-debian-build/README.md
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
 COPY --from=build-julia --chown=$NB_UID:$NB_GID /tmp/julia /tmp/julia
 
