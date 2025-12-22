@@ -3,6 +3,9 @@
         "titleBar.activeBackground": "#CB3C33",
         "titleBar.inactiveBackground": "#CB3C33",
     },
+    // Julia
+    "julia.executablePath": "/usr/local/bin/julia",
+    "julia.languageServerExecutablePath": "/usr/local/bin/julia",
     "julia.NumThreads": 1,
     // Quarto
     // These settings are critical for quarto to work correctly with jupyter of my-workspace/my-jupyter-with-julia. Please refer to .devcontainer/devcontainer.json therein.
