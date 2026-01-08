@@ -1,4 +1,4 @@
-FROM okatsn/my-julia-build:v1.12-2025d AS build-julia
+FROM okatsn/my-julia-build:v1.12-2026a AS build-julia
 FROM okatsn/my-quarto-build:v1.6-2025a AS build-quarto
 FROM okatsn/my-typst-space:v2025a AS build0
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
