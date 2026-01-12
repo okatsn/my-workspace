@@ -1,10 +1,6 @@
-# Example: In my-workspace run `. my-jupyter-with-julia/create_project.sh HelloWorld`
+# Example: In my-jupyter-with-julia run `. create_project.sh HelloWorld`
 
 newproj=$1
-
-# Navigate to the directory
-cd ./my-jupyter-with-julia || { echo "Error: Failed to change directory. Your current directory seems to be incorrect. The terminal will be closed soon."; sleep 5; exit 1; }
-
 
 # Attempt to create the directory.
 # If target directory already exists, exit and raise error to prevent the later unintended `cp` behaviors.
@@ -24,5 +20,3 @@ cp -r .vscode "$newproj/.vscode"
 cp data.json "$newproj/data.json"
 # Helper scripts
 cp -r helper/ "$newproj/helper"
-
-cd ..
