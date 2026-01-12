@@ -12,25 +12,26 @@ To build user's workspace, modify [my-jupyter-with-julia/data.json](data.json) a
 
 ```bash
 # After set up my-jupyter-with-julia/data.json
-
-. my-jupyter-with-julia/create_project.sh TEMP
+cd my-jupyter-with-julia
+. create_project.sh TEMP
 ```
 
-creates `my-jupyter-with-julia/TEMP`, that you can:
+creates `TEMP` in the current directory, that you can:
 
 ```bash
-cp -r my-jupyter-with-julia/TEMP/. ../projects/MyProject/
+cp -r TEMP/. ../../projects/MyProject/
 ```
 
 Remeber to restore the current workspace.
 
 ```bash
-rm -rv my-jupyter-with-julia/TEMP
+rm -rv TEMP
 ```
 
 
 ```bash
-git restore my-jupyter-with-julia/data.json
-git restore my-jupyter-with-julia/.devcontainer/devcontainer.json
-git restore my-jupyter-with-julia/.devcontainer/docker-compose.yml
+git restore data.json
+git restore .devcontainer/devcontainer.json
+git restore .devcontainer/docker-compose.yml
+cd ..
 ```

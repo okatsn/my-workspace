@@ -17,6 +17,7 @@ For more information, see the comments in Dockerfile.
 
 Option 1:
 - Modify the contents in `data.json`.
+- `cd my-tex-life-with-julia` to navigate to the directory.
 - `. create_project.sh HelloWorld` in bash.
 - Copy all the contents in the HelloWorld folder to the directory of your project.
 
@@ -32,25 +33,26 @@ To build user's workspace, modify [my-tex-life-with-julia/data.json](data.json) 
 
 ```bash
 # After set up my-tex-life-with-julia/data.json
-
-. my-tex-life-with-julia/create_project.sh TEMP
+cd my-tex-life-with-julia
+. create_project.sh TEMP
 ```
 
-creates `my-tex-life-with-julia/TEMP`, that you can:
+creates `TEMP` in the current directory, that you can:
 
 ```bash
-cp -r my-tex-life-with-julia/TEMP/. ../projects/MyProject/
+cp -r TEMP/. ../../projects/MyProject/
 ```
 
 Remeber to restore the current workspace.
 
 ```bash
-rm -rv my-tex-life-with-julia/TEMP
+rm -rv TEMP
 ```
 
 
 ```bash
-git restore my-tex-life-with-julia/data.json
-git restore my-tex-life-with-julia/.devcontainer/devcontainer.json
-git restore my-tex-life-with-julia/.devcontainer/docker-compose.yml
+git restore data.json
+git restore .devcontainer/devcontainer.json
+git restore .devcontainer/docker-compose.yml
+cd ..
 ```
