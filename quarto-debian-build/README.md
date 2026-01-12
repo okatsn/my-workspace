@@ -4,8 +4,8 @@
 ## How to build the image solely from the Dockerfile:
 
 ```bash
-# These commands should be executed in WSL at the directory of my-quarto-build
-cd ./quarto-debian-build
+# These commands should be executed in WSL in the quarto-debian-build directory
+cd quarto-debian-build
 
 # bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
 docker compose --env-file ../my-build.env build --no-cache
