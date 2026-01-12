@@ -21,9 +21,6 @@ if [ ${#TAGS[@]} -eq 0 ]; then
   exit 1
 fi
 
-# Navigate to the directory
-cd ./my-jupyter-with-julia || exit 1
-
 # Build the image if BUILD_IMAGE is true
 if [ "$BUILD_IMAGE" = true ]; then
   echo "Building Docker image with tag: $IMAGE_NAME:temp"
@@ -45,5 +42,3 @@ for TAG in "${TAGS[@]}"; do
 done
 
 echo "Docker image processed successfully for tags: ${TAGS[*]}"
-
-cd ..

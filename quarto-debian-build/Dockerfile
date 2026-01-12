@@ -4,7 +4,7 @@ ARG NB_GID="to be replaced by that in docker-compose.yml"
 ARG NB_UID="to be replaced by that in docker-compose.yml"
 
 # SETME:
-ARG QUARTO_VER="1.6.43"
+ARG QUARTO_VER="1.8.26"
 ARG QUARTO_URL="https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb"
 ARG QUARTO_FILE="quarto-${QUARTO_VER}-linux-amd64.deb"
 # # or the latest:
@@ -26,7 +26,7 @@ RUN apt-get update \
     && apt-get clean && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 # Install quarto
-# See: 
+# See:
 # - https://www.r-bloggers.com/2022/07/how-to-set-up-quarto-with-docker-part-1-static-content/
 # - https://docs.posit.co/resources/install-quarto/#quarto-deb-file-install
 

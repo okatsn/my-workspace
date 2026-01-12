@@ -1,10 +1,10 @@
-FROM okatsn/my-julia-build:v1.12-2025d AS build-julia
-FROM okatsn/my-quarto-build:v1.6-2025a AS build-quarto
-FROM okatsn/my-typst-space:v2025a AS build0
+FROM okatsn/my-julia-build:v1.12-2026a AS build-julia
+FROM okatsn/my-quarto-build:v1.8-2026a AS build-quarto
+FROM okatsn/my-typst-space:v2026a AS build0
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
 # # The list of available tags: https://quay.io/repository/jupyter/minimal-notebook?tab=tags
-FROM quay.io/jupyter/minimal-notebook:2025-05-30
+FROM quay.io/jupyter/minimal-notebook:ubuntu-24.04
 
 # Referring [User-related configurations](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/common.html#user-related-configurations)
 # ENV CHOWN=yes

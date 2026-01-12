@@ -17,8 +17,8 @@ The content of this folder is migrated from [okatsn/my-julia-build](https://gith
 ## How to build the image solely from the Dockerfile:
 
 ```bash
-# These commands should be executed in WSL at the directory of my-julia-build
-cd ./julia-debian-build
+# These commands should be executed in WSL in the julia-debian-build directory
+cd julia-debian-build
 
 # bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
 docker compose --env-file ../my-build.env build --no-cache
