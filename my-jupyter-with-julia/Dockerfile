@@ -1,5 +1,5 @@
 FROM okatsn/my-julia-build:v1.12-2026a AS build-julia
-FROM okatsn/my-quarto-build:v1.6-2025a AS build-quarto
+FROM okatsn/my-quarto-build:v1.8-2026a AS build-quarto
 FROM okatsn/my-typst-space:v2026a AS build0
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
