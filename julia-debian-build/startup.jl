@@ -14,7 +14,7 @@
 # Also see: [Customizing your IJulia environment](https://julialang.github.io/IJulia.jl/v1.22/manual/usage/#Customizing-your-IJulia-environment) that uses [Revise.jl](https://quarto.org/docs/computations/julia.html#revise.jl).
 atreplinit() do repl
     try
-        @eval using OhMyREPL, TerminalPager, OkStartUp
+        @eval using OhMyREPL, TerminalPager, OkStartUp, Infiltrator
     catch e
         @warn "error in startup.jl (okatsn/julia-debian-build)" e
     end
