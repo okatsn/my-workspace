@@ -8,6 +8,9 @@
         "../.github/agents": true,
         "../my-agents/general/agents": true,
     },
+    "chat.promptFilesLocations": {
+        "../my-agents/general/prompts": true,
+    },
     // Julia
     "julia.executablePath": "/usr/local/bin/julia",
     "julia.languageServerExecutablePath": "/usr/local/bin/julia",
