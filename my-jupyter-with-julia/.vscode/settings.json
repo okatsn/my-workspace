@@ -3,6 +3,11 @@
         "titleBar.activeBackground": "#CB3C33",
         "titleBar.inactiveBackground": "#CB3C33",
     },
+    // Copilot
+    "chat.agentFilesLocations": {
+        "../.github/agents": true,
+        "../my-agents/general/agents": true,
+    },
     // Julia
     "julia.executablePath": "/usr/local/bin/julia",
     "julia.languageServerExecutablePath": "/usr/local/bin/julia",
