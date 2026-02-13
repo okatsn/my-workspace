@@ -19,7 +19,7 @@ cd my-jupyter-with-julia
 creates `TEMP` in the current directory, that you can:
 
 ```bash
-cp -r TEMP/. ../../projects/MyProject/
+cp -r TEMP/. ../../MyProject/
 ```
 
 Remeber to restore the current workspace.
