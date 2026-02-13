@@ -11,6 +11,9 @@
     "chat.promptFilesLocations": {
         "../my-agents/general/prompts": true,
     },
+    "chat.instructionsFilesLocations": {
+        "../my-agents/shell/instructions": true,
+    },
     // Julia
     "julia.executablePath": "/usr/local/bin/julia",
     "julia.languageServerExecutablePath": "/usr/local/bin/julia",
