@@ -1,0 +1,11 @@
+{
+    "chat.agentFilesLocations": {
+        "../my-agents/mustache-maker/agents": true
+    },
+    "chat.promptFilesLocations": {
+        "../my-agents/mustache-maker/prompts": true
+    },
+    "chat.instructionsFilesLocations": {
+        "../my-agents/shell/instructions": true
+    }
+}
