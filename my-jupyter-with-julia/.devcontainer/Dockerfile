@@ -39,3 +39,7 @@ RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.
 # imagemagick
 
 USER $NB_USER
+
+# Force Julia's Pkg to use the git CLI instead of LibGit2, so that
+# VS Code dev-container credential helpers (shell functions) work correctly.
+ENV JULIA_PKG_USE_CLI_GIT=true
