@@ -13,8 +13,12 @@
 #
 # Also see: [Customizing your IJulia environment](https://julialang.github.io/IJulia.jl/v1.22/manual/usage/#Customizing-your-IJulia-environment) that uses [Revise.jl](https://quarto.org/docs/computations/julia.html#revise.jl).
 atreplinit() do repl
-    try
-        @eval using OhMyREPL, TerminalPager, OkStartUp, Infiltrator
+    # Defer loading to avoid REPLExt init race in Julia 1.12+
+    # OhMyREPL's BracketInserter accesses Base.get_extension(Pkg, :REPLExt)
+    # which isn't available yet during atreplinit.
+    @async try
+        sleep(0.5)
+        @eval using OhMyREPL, TerminalPager, OkStartUp
     catch e
         @warn "error in startup.jl (okatsn/julia-debian-build)" e
     end
