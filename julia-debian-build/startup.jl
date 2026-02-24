@@ -20,6 +20,6 @@ atreplinit() do repl
         sleep(0.5)
         @eval using OhMyREPL, TerminalPager, OkStartUp
     catch e
-        @warn "error in startup.jl (okatsn/julia-debian-build)" e
+        @warn "error in startup.jl (docker/okatsn/my-julia-build/)" e
     end
 end # mkdir -p $HOME/.julia/config && cp startup.jl "$_"
