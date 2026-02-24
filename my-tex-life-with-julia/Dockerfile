@@ -49,12 +49,6 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 
 
 
-# For OhMyREPL
-# KEYNOTE: use $HOME instead of /home/$NB_USER will fail! Since $HOME is not recognized as absolute directory!
-# RUN mkdir -p /home/$NB_USER/.julia/config
-# COPY .devcontainer/startup.jl /home/$NB_USER/.julia/config/startup.jl
-
-
 # CHECKPOINT: Multi stage build; Merge these keynotes to the README of my-tex-life-with-julia
 # https://cindyliu923.com/2021/05/23/What-is-docker-multi-stage/
 # - Explanation: What are inside an image?  layers!

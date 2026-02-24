@@ -1,6 +1,18 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 set -e
+# Pause before exit when the script fails so the caller can see the error.
+# - Uses an EXIT trap to catch any non-zero exit (including explicit `exit 1`).
+# - If running interactively it prompts the user to press Enter. In CI or
+#   non-interactive environments it sleeps for 5 seconds instead.
+trap 'rc=$?; if [ "$rc" -ne 0 ]; then
+  echo "\nERROR: script exited with code $rc at $(date)" >&2
+  if [ -n "$CI" ] || [ ! -t 1 ]; then
+    echo "Non-interactive or CI environment detected; sleeping 5s before exit..." >&2
+    sleep 5
+  else
+    read -rp "Press Enter to exit..."
+  fi
+fi' EXIT
 
 IMAGE_NAME="okatsn/my-util-box"
 BUILD_IMAGE=true
