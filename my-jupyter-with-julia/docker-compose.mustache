@@ -29,6 +29,7 @@ services:
       # # Docker socket to access Docker server
       - /var/run/docker.sock:/var/run/docker.sock
       {{/dind}}
+      # # WARNING: Forwarding `.ssh`, `.gitconfig` and `pydrive2fs` (DVC token) allows agents in container to run `git push origin --delete` or `dvc gc -T`.
       # # SSH directory
       # - ~/.ssh:/home/jovyan/.ssh
       # # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
