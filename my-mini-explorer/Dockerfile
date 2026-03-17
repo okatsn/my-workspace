@@ -45,3 +45,7 @@ RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$
 COPY --chown=$NB_UID:$NB_GID .devcontainer/starship.toml /$HOME/.config/starship.toml
 RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
     && echo 'eval "$(starship init bash)"' >> ~/.bashrc
+
+
+# # Set dvc auto-complete. This requires bash-completion to be installed.
+RUN dvc completion -s bash | tee /etc/bash_completion.d/dvc
