@@ -144,16 +144,7 @@ USER root
 RUN mv /usr/bin/git /usr/bin/git.real
 
 # Create the interceptor script
-RUN echo '#!/bin/bash\n\
-    for arg in "$@"; do\n\
-    # Intercept any command containing "push"\n\
-    if [[ "$arg" == "push" ]]; then\n\
-    echo "🚨 SECURITY BLOCKED: '\''git push'\'' is disabled in this AI sandbox to protect the remote repository." >&2\n\
-    exit 1\n\
-    fi\n\
-    done\n\
-    # If safe, pass all arguments to the real git binary\n\
-    exec /usr/bin/git.real "$@"' > /usr/bin/git && \
+RUN printf '#!/bin/bash\nfor arg in "$@"; do\n    if [[ "$arg" == "push" ]]; then\n        echo "🚨 SECURITY BLOCKED: git push is disabled in this AI sandbox to protect the remote repository." >&2\n        exit 1\n    fi\ndone\nexec /usr/bin/git.real "$@"\n' > /usr/bin/git && \
     chmod +x /usr/bin/git
 
 # 2. Secure DVC Wrapper
@@ -161,16 +152,7 @@ RUN echo '#!/bin/bash\n\
 RUN mv /opt/conda/bin/dvc /opt/conda/bin/dvc.real
 
 # Create the interceptor script
-RUN echo '#!/bin/bash\n\
-    for arg in "$@"; do\n\
-    # Intercept push and garbage collection (gc)\n\
-    if [[ "$arg" == "push" ]] || [[ "$arg" == "gc" ]]; then\n\
-    echo "🚨 SECURITY BLOCKED: '\''dvc $arg'\'' is disabled in this AI sandbox." >&2\n\
-    exit 1\n\
-    fi\n\
-    done\n\
-    # If safe, pass all arguments to the real dvc binary\n\
-    exec /opt/conda/bin/dvc.real "$@"' > /opt/conda/bin/dvc && \
+RUN printf '#!/bin/bash\nfor arg in "$@"; do\n    if [[ "$arg" == "push" ]] || [[ "$arg" == "gc" ]]; then\n        echo "🚨 SECURITY BLOCKED: dvc $arg is disabled in this AI sandbox." >&2\n        exit 1\n    fi\ndone\nexec /opt/conda/bin/dvc.real "$@"\n' > /opt/conda/bin/dvc && \
     chmod +x /opt/conda/bin/dvc
 
 # ==========================================
