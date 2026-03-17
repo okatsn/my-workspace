@@ -56,3 +56,11 @@ KEYNOTE: the **Container** is not just storage, but a **Running process**
     my-dvc-image \
     dvc pull
 ```
+
+
+[The Read-Only Service Account](https://gemini.google.com/app/f38854df52155b00)
+If you want the AI agent to be able to autonomously dvc pull data to run experiments, but absolutely block it from pushing or deleting data:
+- Create a Google Cloud Service Account and grant it Viewer (Read-Only) access to the specific Google Drive folder where your DVC remote lives.
+- Download that Service Account's JSON key file and mount only that specific file into the container.
+- Configure the container's DVC to use the Service Account for authentication (dvc remote modify myremote gdrive_use_service_account true).
+- The Result: The container (and the agent) can pull data freely without bothering you. If the agent attempts a dvc push or dvc gc -c, Google Drive's API will reject the request.
