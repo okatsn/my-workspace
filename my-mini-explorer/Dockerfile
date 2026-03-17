@@ -32,7 +32,7 @@ RUN pip3 install dvc \
     # DVC bash completion
     && dvc completion -s bash | tee /etc/bash_completion.d/dvc \
     # Git bash completion
-    && curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.git-completion.sh
+    && curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ${HOME}/.git-completion.sh
 
 
 
