@@ -39,3 +39,5 @@ Push the image with the `helloworld` tag:
 
 - Add `RUN ls -la /opt/conda/bin/dvc* && echo "--- dvc content ---" && cat /opt/conda/bin/dvc && echo "--- end ---"` in Dockerfile.
 - Build with `docker build --progress=plain -t test-image . 2>&1 | tee build.log`
+- For Docker Compose: `docker compose build --progress=plain 2>&1 | tee build.log`
+    - To build a specific service: `docker compose build --progress=plain <service-name> 2>&1 | tee build.log`
