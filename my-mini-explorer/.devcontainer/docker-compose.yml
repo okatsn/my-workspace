@@ -1,0 +1,44 @@
+# # Instruction
+# - assign unique names per variable: devcontainer_name, service, image, docker_compose_name
+# - set dind: true only if Docker-in-Docker is required (e.g., running docker commands inside the container)
+
+services:
+  # The service name should be consistent with that in devcontainer.json
+  mwminie:
+    build:
+      context: ..
+      #     That is out of /.devcontainer
+      # context: .
+      #     That is /.devcontainer
+      dockerfile: .devcontainer/Dockerfile
+
+    # Better not to have duplicate image name
+    image: mwminie
+    init: true
+    # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
+
+    # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "..." is already in use by container" might occur if there is another container of the same name is currently running.
+    container_name: mw-mini-explorer
+    volumes:
+      # # Mount the project root as the workspace folder (must match workspaceFolder in devcontainer.json)
+      - ..:/home/jovyan/workspace
+      # # Docker socket to access Docker server (alternative to DinD)
+      # - /var/run/docker.sock:/var/run/docker.sock
+      # # Copilot agents
+      - ~/projects/my-agents:/home/jovyan/projects/my-agents
+      # # Git config
+      # - ~/.gitconfig:/home/jovyan/.gitconfig
+      # # SSH directory
+      # - ~/.ssh:/home/jovyan/.ssh
+      # # Persistent volume for VSCode extensions; avoids reinstalling on rebuild
+      - vscode-server:/home/jovyan/.vscode-server
+    environment:
+      # Set time zone (GMT-8 is UTC+8):
+      # - To print available time-zone names: ls /usr/share/zoneinfo
+      - TZ=Etc/GMT-8
+    entrypoint: sh -c "sleep infinity"
+
+
+# KEYNOTE: Those defined volumes in service should be declared at the root level
+volumes:
+  vscode-server:
