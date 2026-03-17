@@ -6,13 +6,13 @@
     // Copilot
     "chat.agentFilesLocations": {
         "../.github/agents": true,
-        "../my-agents/general/agents": true,
+        "../projects/my-agents/general/agents": true,
     },
     "chat.promptFilesLocations": {
-        "../my-agents/general/prompts": true,
+        "../projects/my-agents/general/prompts": true,
     },
     "chat.instructionsFilesLocations": {
-        "../my-agents/shell/instructions": true,
+        "../projects/my-agents/shell/instructions": true,
     },
     // Julia
     "julia.executablePath": "/usr/local/bin/julia",
