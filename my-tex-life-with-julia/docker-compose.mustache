@@ -13,12 +13,12 @@ services:
       dockerfile: .devcontainer/Dockerfile
 
     # Better not to have duplicate image name
-    image: {{image}} 
-    init: true 
+    image: {{image}}
+    init: true
     # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
-    
+
     # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
-    container_name: {{docker_compose_name}} 
+    container_name: {{docker_compose_name}}
     {{#dind}}
     privileged: true  # Add this line to allow Docker operations (using `docker` via dind)
     {{/dind}}
@@ -33,13 +33,15 @@ services:
       - ~/.ssh:/home/jovyan/.ssh
       # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
+      # # Copilot agents
+      - ~/projects/my-agents:/home/jovyan/projects/my-agents
       # # Shell history persistence
       - ~/.zsh_history:/home/jovyan/.zsh_history:z
       # # Git config
       - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions
       - julia-depot:/home/jovyan/.julia
-      # # KEYNOTE: 
+      # # KEYNOTE:
       # # - Named volumes is chosen because VSCode extensions of this environment is not expected to be shared with those in WSL.
       # # - Please refer to okatsn/MyTeXLife for more explanation
       - vscode-server:/home/jovyan/.vscode-server
@@ -63,7 +65,7 @@ services:
     entrypoint: sh -c "sleep infinity"
     # entrypoint: ["zsh", "-c", "while sleep 1000; do :; done"]
 
-{{#dind}}    
+{{#dind}}
   # # Use a sibling container to run docker in a docker container (Docker in Docker, DinD)
   # - Set up `dind` where `docker` is inherently available, that can be used via tcp protocol by the service that depends on it.
   # Referring: https://gemini.google.com/app/3c8f232c01664a56
