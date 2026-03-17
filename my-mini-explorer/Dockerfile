@@ -8,7 +8,8 @@ ENV NB_USER=${NB_USER} \
     NB_GID=${NB_GID}\
     NB_UID=${NB_UID}
 
-
+ARG VSCODE_PATH="$HOME/.vscode-server/"
+ARG WORKSPACE_DIR="$HOME/workspace/"
 
 # `tree` list the tree of file directory.
 RUN apt-get update && apt-get install -y \
@@ -35,6 +36,10 @@ RUN pip3 install dvc \
 # Setup non-root user
 RUN useradd -m -u $NB_UID -g $NB_GID -s /bin/bash $NB_USER
 
+RUN mkdir -p $WORKSPACE_DIR && \
+    mkdir -p $VSCODE_PATH/extensions && \
+    chown $NB_USER:$NB_GID $WORKSPACE_DIR && \
+    chown $NB_USER:$NB_GID /usr/local/bin
 
 RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
 COPY --chown=$NB_UID:$NB_GID .devcontainer/starship.toml /$HOME/.config/starship.toml
