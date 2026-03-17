@@ -24,19 +24,19 @@ services:
     {{/dind}}
     volumes:
       # # Mount the project root as the workspace folder (must match workspaceFolder in devcontainer.json)
-      - ..:/root/workspace
+      - ..:/home/jovyan/workspace
       {{^dind}}
       # # Docker socket to access Docker server (alternative to DinD)
       # - /var/run/docker.sock:/var/run/docker.sock
       {{/dind}}
       # # Copilot agents
-      - ~/projects/my-agents:/root/projects/my-agents
+      - ~/projects/my-agents:/home/jovyan/projects/my-agents
       # # Git config
-      # - ~/.gitconfig:/root/.gitconfig
+      # - ~/.gitconfig:/home/jovyan/.gitconfig
       # # SSH directory
-      # - ~/.ssh:/root/.ssh
+      # - ~/.ssh:/home/jovyan/.ssh
       # # Persistent volume for VSCode extensions; avoids reinstalling on rebuild
-      - vscode-server:/root/.vscode-server
+      - vscode-server:/home/jovyan/.vscode-server
       {{#dind}}
       - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
     depends_on:
