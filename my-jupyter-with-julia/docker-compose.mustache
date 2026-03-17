@@ -34,7 +34,7 @@ services:
       # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
       # # Copilot agents
-      - ~/projects/my-agents:/home/jovyan/my-agents
+      - ~/projects/my-agents:/home/jovyan/projects/my-agents
       # # Git config
       - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions
