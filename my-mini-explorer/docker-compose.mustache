@@ -1,0 +1,91 @@
+# # Instruction
+# - assign unique names per variable: devcontainer_name, service, image, docker_compose_name
+# - set dind: true only if Docker-in-Docker is required (e.g., running docker commands inside the container)
+
+services:
+  # The service name should be consistent with that in devcontainer.json
+  {{service}}:
+    build:
+      context: ..
+      #     That is out of /.devcontainer
+      # context: .
+      #     That is /.devcontainer
+      dockerfile: .devcontainer/Dockerfile
+
+    # Better not to have duplicate image name
+    image: {{image}}
+    init: true
+    # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
+
+    # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "..." is already in use by container" might occur if there is another container of the same name is currently running.
+    container_name: {{docker_compose_name}}
+    {{#dind}}
+    privileged: true  # Add this line to allow Docker operations (using `docker` via dind)
+    {{/dind}}
+    volumes:
+      # # Mount the project root as the workspace folder (must match workspaceFolder in devcontainer.json)
+      - ..:/root/workspace
+      {{^dind}}
+      # # Docker socket to access Docker server (alternative to DinD)
+      # - /var/run/docker.sock:/var/run/docker.sock
+      {{/dind}}
+      # # Copilot agents
+      - ~/projects/my-agents:/root/projects/my-agents
+      # # Git config
+      # - ~/.gitconfig:/root/.gitconfig
+      # # SSH directory
+      # - ~/.ssh:/root/.ssh
+      # # Persistent volume for VSCode extensions; avoids reinstalling on rebuild
+      - vscode-server:/root/.vscode-server
+      {{#dind}}
+      - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
+    depends_on:
+      # (Docker in Docker, DinD)
+      dind-{{service}}:
+        condition: service_started  # Make this explicit
+      {{/dind}}
+    environment:
+      {{#dind}}
+      # # Use http to connect with the other container
+      - DOCKER_HOST=tcp://dind:2375  # Add this to connect to DinD
+      {{/dind}}
+      # Set time zone (GMT-8 is UTC+8):
+      # - To print available time-zone names: ls /usr/share/zoneinfo
+      - TZ=Etc/GMT-8
+    entrypoint: sh -c "sleep infinity"
+
+{{#dind}}
+  # # Use a sibling container to run docker in a docker container (Docker in Docker, DinD)
+  # - Set up `dind` where `docker` is inherently available, that can be used via tcp protocol by the service that depends on it.
+  # Referring: https://gemini.google.com/app/3c8f232c01664a56
+  # KEYNOTE: there is no need to install docker in Dockerfile!
+  dind-{{service}}:
+    image: docker:dind
+    privileged: true # dind needs privileged mode
+    environment:
+      # # When empty, it use http to connect with the other container
+      - DOCKER_TLS_CERTDIR=
+      # # Use https to connect with the other container
+      # - DOCKER_TLS_CERTDIR=/certs
+    volumes:
+      # KEYNOTE: The Docker client in your dev container connects to the DinD Docker daemon (running in a separate container). When you use --volume "$PWD:/data" inside the dev container (where $PWD is "/root/workspace"), that path is being interpreted relative to the file system of the DinD container. To make uses of data and files in your working directory, you have to add the same bind mount for your workspace.
+      - ../:/root/workspace
+      - dind-data:/var/lib/docker
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G  # Give dind less, as it mostly manages other containers
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    command: --host=tcp://0.0.0.0:2375
+    # Add this to expose Docker API
+{{/dind}}
+
+# KEYNOTE: Those defined volumes in service should be declared at the root level
+volumes:
+  vscode-server:
+  {{#dind}}
+  dind-data:
+  {{/dind}}
