@@ -1,0 +1,7 @@
+{
+    "devcontainer_name": "MyWorkspace",
+    "service": "mwminie",
+    "image": "mwminie",
+    "docker_compose_name": "mw-mini-explorer",
+    "dind": false
+}
