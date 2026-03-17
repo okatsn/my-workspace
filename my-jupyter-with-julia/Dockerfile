@@ -157,8 +157,8 @@ RUN echo '#!/bin/bash\n\
     chmod +x /usr/bin/git
 
 # 2. Secure DVC Wrapper
-# Since DVC was installed via pip as root, it resides in /usr/local/bin/dvc
-RUN mv /usr/local/bin/dvc /usr/local/bin/dvc.real
+# DVC was installed via mamba (conda) as NB_USER, so it resides in /opt/conda/bin/dvc
+RUN mv /opt/conda/bin/dvc /opt/conda/bin/dvc.real
 
 # Create the interceptor script
 RUN echo '#!/bin/bash\n\
@@ -170,8 +170,8 @@ RUN echo '#!/bin/bash\n\
     fi\n\
     done\n\
     # If safe, pass all arguments to the real dvc binary\n\
-    exec /usr/local/bin/dvc.real "$@"' > /usr/local/bin/dvc && \
-    chmod +x /usr/local/bin/dvc
+    exec /opt/conda/bin/dvc.real "$@"' > /opt/conda/bin/dvc && \
+    chmod +x /opt/conda/bin/dvc
 
 # ==========================================
 
@@ -193,7 +193,7 @@ ENV PATH=$PATH:$HOME/.local/bin
 
 # # Set dvc auto-complete. This requires bash-completion to be installed.
 # KEYNOTE: git auto-completion seems to be handled correctly in jupyter minimal notebook. For how to set git completion, you may refer to [the Dockerfile of MyTeXLife](https://github.com/okatsn/MyTeXLife/blob/fc00e3b840db2f63d8e3d67ac41065042f5b0602/.devcontainer/Dockerfile)
-RUN dvc completion -s bash | tee /etc/bash_completion.d/dvc
+RUN /opt/conda/bin/dvc completion -s bash | tee /etc/bash_completion.d/dvc
 
 
 USER $NB_USER
