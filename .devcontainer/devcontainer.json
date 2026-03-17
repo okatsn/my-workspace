@@ -1,30 +1,26 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/universal
+// Instruction
+// - For "name", make it unique among existing containers
+// - For "service", make it match the service name in docker-compose.yml
 {
-	"name": "Debian slim (No Git)",
-	// CHANGE: Use 'build' instead of 'image'
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	"features": {
-		// CRITICAL: Ensure no credentials are leaked in
-		// "sshd": "latest" // <--- DELETE or ensure this is NOT here
-	},
-	"customizations": {
-		"vscode": {
-			"settings": {
-				// Disable the helper that tries to copy your local git keys
-				"git.terminalAuthentication": false
-			}
-		}
-	}
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
-	// Configure tool-specific properties.
-	// "customizations": {},
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+    "name": "MyWorkspace",
+    "dockerComposeFile": [
+        "docker-compose.yml"
+    ],
+    // the service in docker-compose.yml
+    "service": "mwminie",
+    "shutdownAction": "stopCompose",
+    // KEYNOTE: make this consistent with the volume mount target in docker-compose.yml
+    "workspaceFolder": "/home/jovyan/workspace",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "files.eol": "\n",
+                "dev.containers.cacheVolume": true,
+                "gitProjectManager.baseProjectsFolders": [
+                    "~/workspace"
+                ]
+            }
+        }
+    }
+    // "postCreateCommand": "",
 }
