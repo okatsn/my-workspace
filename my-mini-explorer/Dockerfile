@@ -96,6 +96,8 @@ COPY --chown=$NB_UID:$NB_GID .devcontainer/starship.toml /$HOME/.config/starship
 RUN curl -fsSL https://starship.rs/install.sh | sh -s -- -y \
     && echo 'eval "$(starship init bash)"' >> ~/.bashrc
 
+# `.bash_profile` runs ~/.git-completion.sh
+COPY .devcontainer/.bash_profile /$HOME/.bash_profile
 
 # # Set dvc auto-complete. This requires bash-completion to be installed.
 RUN dvc completion -s bash | tee /etc/bash_completion.d/dvc
