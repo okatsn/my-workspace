@@ -35,7 +35,7 @@ services:
       # # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
       # # Copilot agents
-      - ~/projects/my-agents:/home/jovyan/projects/my-agents
+      - ~/projects/my-agents:/home/jovyan/projects/my-agents:ro
       # # Shell history persistence
       - ~/.zsh_history:/home/jovyan/.zsh_history:z
       # # Git config
