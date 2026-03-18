@@ -64,7 +64,7 @@ RUN mv /usr/local/bin/dvc /usr/local/bin/dvc.real
 RUN echo '#!/bin/bash\n\
     for arg in "$@"; do\n\
     # Intercept push and garbage collection (gc)\n\
-    if [[ "$arg" == "push" ]] || [[ "$arg" == "gc" ]]; then\n\
+    if [[ "$arg" == "gc" ]]; then\n\
     echo "🚨 SECURITY BLOCKED: '\''dvc $arg'\'' is disabled in this AI sandbox." >&2\n\
     exit 1\n\
     fi\n\

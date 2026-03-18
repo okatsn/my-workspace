@@ -152,7 +152,7 @@ RUN printf '#!/bin/bash\nfor arg in "$@"; do\n    if [[ "$arg" == "push" ]]; the
 RUN mv /opt/conda/bin/dvc /opt/conda/bin/dvc.real
 
 # Create the interceptor script
-RUN printf '#!/bin/bash\nfor arg in "$@"; do\n    if [[ "$arg" == "push" ]] || [[ "$arg" == "gc" ]]; then\n        echo "🚨 SECURITY BLOCKED: dvc $arg is disabled in this AI sandbox." >&2\n        exit 1\n    fi\ndone\nexec /opt/conda/bin/dvc.real "$@"\n' > /opt/conda/bin/dvc && \
+RUN printf '#!/bin/bash\nfor arg in "$@"; do\n    if [[ "$arg" == "gc" ]]; then\n        echo "🚨 SECURITY BLOCKED: dvc $arg is disabled in this AI sandbox." >&2\n        exit 1\n    fi\ndone\nexec /opt/conda/bin/dvc.real "$@"\n' > /opt/conda/bin/dvc && \
     chmod +x /opt/conda/bin/dvc
 
 # ==========================================
