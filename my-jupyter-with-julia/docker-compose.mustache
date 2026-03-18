@@ -27,7 +27,8 @@ services:
       - ..:/home/jovyan/workspace
       {{^dind}}
       # # Docker socket to access Docker server
-      - /var/run/docker.sock:/var/run/docker.sock
+      # Docker command run inside the container actually communicates with the Docker engine on your host machine. This theoretically allows a malicious agent to grant root accessibility to your host machine by creating a new container and mounted it to the entire hard drive.
+      # - /var/run/docker.sock:/var/run/docker.sock
       {{/dind}}
       # # WARNING: Forwarding `.ssh`, `.gitconfig` and `pydrive2fs` (DVC token) allows agents in container to run `git push origin --delete` or `dvc gc -T`.
       # # SSH directory
