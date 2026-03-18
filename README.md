@@ -1,5 +1,6 @@
 [README](#readme)
 - [README](#readme)
+  - [CHECKPOINT](#checkpoint)
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
@@ -30,6 +31,12 @@
 
 
 # README
+
+## CHECKPOINT
+
+The development environments are not safe to serve as AI-agent sandboxes:
+an AI agent can do as much as you can, such as `git push origin --delete main` or `dvc gc -c`.
+[CHECKPOINT](https://gemini.google.com/app/f85d413c3fba0f6e)
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
