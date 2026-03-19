@@ -51,6 +51,10 @@ VERDICT:
 - The best practice is to set protection on your remote side, by setting up IAM for google drive, or fine-grained PAT for each repo.
 - Install everything you need but do not enable `autoApprove`. It is as dangerous as it was described in the pop-up window when you try to enable auto approval.
 
+Future work:
+- Is it a good idea that human developer and AI agent shares the same environment (container)?
+- Keywords: Zero trust, AI sandboxes
+
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
 
