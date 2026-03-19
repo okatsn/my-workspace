@@ -1,0 +1,35 @@
+// Instruction
+// - For "name", make it unique among existing containers
+// - For "service", make it match the service name in docker-compose.yml
+{
+    "name": "{{devcontainer_name}}",
+    "dockerComposeFile": [
+        "docker-compose.yml"
+    ],
+    // the service in docker-compose.yml
+    "service": "{{service}}",
+    "shutdownAction": "stopCompose",
+    // KEYNOTE: make this consistent with the volume mount target in docker-compose.yml
+    "workspaceFolder": "/home/jovyan/workspace",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "files.eol": "\n",
+                "dev.containers.cacheVolume": true,
+                "gitProjectManager.baseProjectsFolders": [
+                    "~/workspace"
+                ]
+            }
+        }
+    },
+    // Block SSH agent forwarding from the host so SSH-keyed remotes cannot be used.
+    // NOTE: VS Code re-injects GIT_ASKPASS, VSCODE_GIT_ASKPASS_*, VSCODE_GIT_IPC_HANDLE,
+    // and a credential.helper git config at runtime, so setting those vars here has no
+    // effect.
+    "remoteEnv": {
+        // SSH_AUTH_SOCK='' is respected by VS Code and effectively disables SSH agent forwarding.
+        "SSH_AUTH_SOCK": ""
+    },
+    // "postCreateCommand": "",
+
+}

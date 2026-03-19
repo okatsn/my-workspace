@@ -13,32 +13,35 @@ services:
       dockerfile: .devcontainer/Dockerfile
 
     # Better not to have duplicate image name
-    image: texjuliadev 
-    init: true 
+    image: texjuliadev
+    init: true
     # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
-    
+
     # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
-    container_name: texlife-with-julia 
+    container_name: texlife-with-julia
     privileged: true  # Add this line to allow Docker operations (using `docker` via dind)
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ..:/workspace
+      # # WARNING: Forwarding `.ssh`, `.gitconfig` and `pydrive2fs` (DVC token) allows agents in container to run `git push origin --delete` or `dvc gc -T`.
       # # SSH directory
-      - ~/.ssh:/home/jovyan/.ssh
-      # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
+      # - ~/.ssh:/home/jovyan/.ssh
+      # # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
+      # # Copilot agents
+      - ~/projects/my-agents:/home/jovyan/projects/my-agents
       # # Shell history persistence
       - ~/.zsh_history:/home/jovyan/.zsh_history:z
       # # Git config
-      - ~/.gitconfig:/home/jovyan/.gitconfig
+      # - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions
       - julia-depot:/home/jovyan/.julia
-      # # KEYNOTE: 
+      # # KEYNOTE:
       # # - Named volumes is chosen because VSCode extensions of this environment is not expected to be shared with those in WSL.
       # # - Please refer to okatsn/MyTeXLife for more explanation
       - vscode-server:/home/jovyan/.vscode-server
       # # DVC credential cache directory (this makes DVC credential persistant)
-      - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
+      # - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
       - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
     depends_on:
       # (Docker in Docker, DinD)

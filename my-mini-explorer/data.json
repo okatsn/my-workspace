@@ -1,0 +1,7 @@
+{
+    "devcontainer_name": "MyMiniExplorer",
+    "service": "miniexplorer",
+    "image": "miniexplorer",
+    "docker_compose_name": "mini-explorer",
+    "dind": false
+}

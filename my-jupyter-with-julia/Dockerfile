@@ -97,6 +97,7 @@ RUN mkdir -p $WORKSPACE_DIR $SUB_PROJECT_DIR $JULIA_PKG_DEVDIR
 # - Without `chown $NB_USER:$NB_GID /home/$NB_USER`, subdirectories for vscode cannot be created because "/home/$NB_USER" is created and only owned by root.
 RUN mkdir -p $VSCODE_PATH/extensions && \
     chown $NB_USER:$NB_GID $WORKSPACE_DIR && \
+    # WARNING: This allows arbitrary installation at runtime
     chown $NB_USER:$NB_GID /usr/local/bin
 # in order to install starship
 
@@ -134,6 +135,8 @@ RUN mamba install --quiet --yes \
 
 
 USER root
+
+
 # Install UV
 # See [How to create a python project using UV](https://youtu.be/PwGKhvqJCQM?si=DzCSBuMeVWuaYNCx&t=396)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -147,7 +150,7 @@ ENV PATH=$PATH:$HOME/.local/bin
 
 # # Set dvc auto-complete. This requires bash-completion to be installed.
 # KEYNOTE: git auto-completion seems to be handled correctly in jupyter minimal notebook. For how to set git completion, you may refer to [the Dockerfile of MyTeXLife](https://github.com/okatsn/MyTeXLife/blob/fc00e3b840db2f63d8e3d67ac41065042f5b0602/.devcontainer/Dockerfile)
-RUN dvc completion -s bash | tee /etc/bash_completion.d/dvc
+RUN /opt/conda/bin/dvc completion -s bash | tee /etc/bash_completion.d/dvc
 
 
 USER $NB_USER

@@ -14,6 +14,18 @@ fi
 
 # The following `cp` commands will create an extra folder if there already is, for example, resulting in NewProject/.vscode/.vscode/settings.json if NewProject/.vscode already exists.
 
+# Guard: ensure node is available
+if ! command -v node > /dev/null 2>&1; then
+  echo "Error: 'node' is not installed. Please install Node.js before running this script." >&2
+  exit 1
+fi
+
+# Guard: ensure mustache package is installed (install automatically if missing)
+if [ ! -d node_modules ]; then
+  echo "node_modules not found. Running npm install..." >&2
+  npm install
+fi
+
 node render.js
 cp -r .devcontainer "$newproj/.devcontainer"
 cp -r .vscode "$newproj/.vscode"

@@ -7,15 +7,15 @@ Once an image is successfully built, commit and push the image as follows:
 
 #### Get container ID
 **in wsl**
-- `docker container list` to get the CONTAINER_ID 
+- `docker container list` to get the CONTAINER_ID
 
 **in Docker Desktop**
-- click on tab "Containers" 
+- click on tab "Containers"
 - expand the droplist of `myjuliaspace_devcontainer` and it shows
 
 #### Commit
 
-- In wsl, `docker commit CONTAINER_ID user/repo` 
+- In wsl, `docker commit CONTAINER_ID user/repo`
     - e.g., `docker commit 3935a2cd9ee6 okatsn/my-julia-space`
 
 commit with a tag and message:
@@ -34,3 +34,10 @@ Push the image with the `helloworld` tag:
 - in .devcontainer/Dockerfile, with `FROM okatsn/my-julia-space`
 - add .devcontainer/docker-compose.yml
 - add .devcontainer/devcontainer.json
+
+### Debug
+
+- Add `RUN ls -la /opt/conda/bin/dvc* && echo "--- dvc content ---" && cat /opt/conda/bin/dvc && echo "--- end ---"` in Dockerfile.
+- Build with `docker build --progress=plain -t test-image . 2>&1 | tee build.log`
+- For Docker Compose: `docker compose build --progress=plain 2>&1 | tee build.log`
+    - To build a specific service: `docker compose build --progress=plain <service-name> 2>&1 | tee build.log`

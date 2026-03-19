@@ -1,4 +1,4 @@
-# Example: In my-tex-life-with-julia run `. create_project.sh HelloWorld`
+# Example: In my-mini-explorer run `. create_project.sh HelloWorld`
 
 newproj=$1
 
@@ -8,11 +8,11 @@ if mkdir "$newproj"; then
   echo "Directory '$newproj' created successfully."
 else
   echo "Error: Failed to create directory '$newproj'. The terminal will be closed soon." >&2
-  sleep 5 # Wait before exiting to allow user to see the error message
+  sleep 5 # Wait before exiting to allow user to see the error message.
   exit 1
 fi
 
-# The following `cp` commands will create an extra folder if there already is, for example, resulting in NewProject/.vscode/.vscode/settings.json if NewProject/.vscode already exists.
+# The following `cp` commands will create an extra folder if there already is, for example, resulting in NewProject/.devcontainer/.devcontainer/... if NewProject/.devcontainer already exists.
 
 # Guard: ensure node is available
 if ! command -v node > /dev/null 2>&1; then
@@ -28,8 +28,4 @@ fi
 
 node render.js
 cp -r .devcontainer "$newproj/.devcontainer"
-cp -r .vscode "$newproj/.vscode"
 cp data.json "$newproj/data.json"
-cp create_template.sh "$newproj/create_template.sh"
-cp expand_output.sh "$newproj/expand_output.sh"
-cp clean_n_zip.sh "$newproj/clean_n_zip.sh"

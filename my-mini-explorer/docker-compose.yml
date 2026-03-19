@@ -9,5 +9,6 @@ services:
       args:
         - NB_UID=${NB_UID}
         - NB_GID=${NB_GID}
+        - NB_USER=${NB_USER}
         - DEBIAN_VERSION=${DEBIAN_VERSION}
     entrypoint: sh -c "sleep infinity"

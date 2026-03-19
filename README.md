@@ -1,5 +1,6 @@
 [README](#readme)
 - [README](#readme)
+  - [CHECKPOINT](#checkpoint)
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
@@ -30,6 +31,25 @@
 
 
 # README
+
+## CHECKPOINT
+
+[Referring this, ](https://gemini.google.com/app/f85d413c3fba0f6e)
+the development environments are not safe to serve as AI-agent sandboxes:
+an AI agent can do as much as you can, such as `git push origin --delete main` or `dvc gc -c`.
+The "safety shim" prevents only accidents; an AI agent can easily find the true location for your `git` to push if it is intended.
+
+[Also referring this, ](https://gemini.google.com/app/7179f36ce5e95d6b)
+even when we remove `git` and block `apt-get install` in container, since `.git` is mounted as workspace,
+a malicious agent can still modify `.git` to set pre-commit hook which allows execution of malicious code when the human user
+run `git push` in the host machine; this includes rewriting your git history (and human pushes it).
+Furthermore, the agent theoretically can install git by BYOB (Bring Your Own Binary).
+While it is very challenging, a highly sophisticated agent running could interface with the VSCode server backgorund processes to request Github authentication tokens, since `vscode-server` is mounted.
+
+VERDICT:
+- It is impractical to play hide-and-seek (the path obscurity) to secure your remote codebase because it requires a full understanding of all possible routes in your system.
+- The best practice is to set protection on your remote side, by setting up IAM for google drive, or fine-grained PAT for each repo.
+- Install everything you need but do not enable `autoApprove`. It is as dangerous as it was described in the pop-up window when you try to enable auto approval.
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
