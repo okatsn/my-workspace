@@ -30,14 +30,6 @@
                 "dev.containers.cacheVolume": true
             }
         }
-    },
-    // Block SSH agent forwarding from the host so SSH-keyed remotes cannot be used.
-    // NOTE: VS Code re-injects GIT_ASKPASS, VSCODE_GIT_ASKPASS_*, VSCODE_GIT_IPC_HANDLE,
-    // and a credential.helper git config at runtime, so setting those vars here has no
-    // effect.
-    "remoteEnv": {
-        // SSH_AUTH_SOCK='' is respected by VS Code and effectively disables SSH agent forwarding.
-        "SSH_AUTH_SOCK": ""
-    },
+    }
     // "postCreateCommand": "",
 }
