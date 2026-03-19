@@ -45,8 +45,9 @@ RUN useradd -m -u $NB_UID -g $NB_GID -s /bin/bash $NB_USER
 
 RUN mkdir -p $WORKSPACE_DIR && \
     mkdir -p $VSCODE_PATH/extensions && \
-    chown $NB_USER:$NB_GID $WORKSPACE_DIR && \
-    chown $NB_USER:$NB_GID /usr/local/bin
+    # # This allows installation at runtime
+    # chown $NB_USER:$NB_GID /usr/local/bin && \
+    chown $NB_USER:$NB_GID $WORKSPACE_DIR
 
 RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
 COPY --chown=$NB_UID:$NB_GID .devcontainer/starship.toml /$HOME/.config/starship.toml
