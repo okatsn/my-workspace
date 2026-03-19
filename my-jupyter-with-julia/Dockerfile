@@ -136,32 +136,6 @@ RUN mamba install --quiet --yes \
 
 USER root
 
-# ==========================================
-# AI SANDBOX SECURITY WRAPPERS
-# ==========================================
-
-# 1. Secure Git Wrapper
-# Rename the original git binary so the agent can't bypass the wrapper using an absolute path
-RUN mv /usr/bin/git /usr/bin/git.real
-
-# Create the interceptor script
-RUN printf '#!/bin/bash\nfor arg in "$@"; do\n    if [[ "$arg" == "push" ]]; then\n        echo "🚨 SECURITY BLOCKED: git push is disabled in this AI sandbox to protect the remote repository." >&2\n        exit 1\n    fi\ndone\nexec /usr/bin/git.real "$@"\n' > /usr/bin/git && \
-    chmod +x /usr/bin/git
-
-# 2. Secure DVC Wrapper
-# DVC was installed via mamba (conda) as NB_USER, so it resides in /opt/conda/bin/dvc
-RUN mv /opt/conda/bin/dvc /opt/conda/bin/dvc.real
-
-# Create the interceptor script
-RUN printf '#!/bin/bash\nfor arg in "$@"; do\n    if [[ "$arg" == "gc" ]]; then\n        echo "🚨 SECURITY BLOCKED: dvc $arg is disabled in this AI sandbox." >&2\n        exit 1\n    fi\ndone\nexec /opt/conda/bin/dvc.real "$@"\n' > /opt/conda/bin/dvc && \
-    chmod +x /opt/conda/bin/dvc
-
-# ==========================================
-
-
-
-
-
 
 # Install UV
 # See [How to create a python project using UV](https://youtu.be/PwGKhvqJCQM?si=DzCSBuMeVWuaYNCx&t=396)
