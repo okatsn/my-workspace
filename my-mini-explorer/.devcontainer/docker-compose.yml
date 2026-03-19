@@ -25,7 +25,7 @@ services:
       # # Docker socket to access Docker server (alternative to DinD)
       # - /var/run/docker.sock:/var/run/docker.sock
       # # Copilot agents
-      - ~/projects/my-agents:/home/jovyan/projects/my-agents
+      - ~/projects/my-agents:/home/jovyan/projects/my-agents:ro
       # # Git config
       # - ~/.gitconfig:/home/jovyan/.gitconfig
       # # SSH directory
