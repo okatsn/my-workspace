@@ -26,27 +26,27 @@ services:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ..:/home/jovyan/workspace
       {{^dind}}
-      # # Docker socket to access Docker server
+      # # WARNING: Docker socket to access Docker server
       # Docker command run inside the container actually communicates with the Docker engine on your host machine. This theoretically allows a malicious agent to grant root accessibility to your host machine by creating a new container and mounted it to the entire hard drive.
       # - /var/run/docker.sock:/var/run/docker.sock
       {{/dind}}
       # # WARNING: Forwarding `.ssh`, `.gitconfig` and `pydrive2fs` (DVC token) allows agents in container to run `git push origin --delete` or `dvc gc -T`.
-      # # SSH directory
+      # # WARNING: SSH directory
       # - ~/.ssh:/home/jovyan/.ssh
       # # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
       # # Copilot agents
       - ~/projects/my-agents:/home/jovyan/projects/my-agents:ro
-      # # Git config
-      # - ~/.gitconfig:/home/jovyan/.gitconfig
+      # # WARNING: Git config
+      - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions
       - julia-depot:/home/jovyan/.julia
       # # KEYNOTE:
       # # - Named volumes is chosen because VSCode extensions of this environment is not expected to be shared with those in WSL.
       # # - Please refer to okatsn/MyTeXLife for more explanation
       - vscode-server:/home/jovyan/.vscode-server
-      # # DVC credential cache directory (this makes DVC credential persistant)
-      # - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
+      # # WARNING: DVC credential cache directory (this makes DVC credential persistant)
+      - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
       {{#dind}}
       - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
     depends_on:
