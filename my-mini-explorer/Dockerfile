@@ -45,8 +45,8 @@ RUN curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git
 
 RUN mkdir -p $WORKSPACE_DIR && \
     mkdir -p $VSCODE_PATH/extensions && \
-    # # This allows installation at runtime
-    # chown $NB_USER:$NB_GID /usr/local/bin && \
+    # WARNING: This allows arbitrary installation at runtime
+    chown $NB_USER:$NB_GID /usr/local/bin && \
     chown $NB_USER:$NB_GID $WORKSPACE_DIR
 
 RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship

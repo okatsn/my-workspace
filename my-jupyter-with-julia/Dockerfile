@@ -97,6 +97,7 @@ RUN mkdir -p $WORKSPACE_DIR $SUB_PROJECT_DIR $JULIA_PKG_DEVDIR
 # - Without `chown $NB_USER:$NB_GID /home/$NB_USER`, subdirectories for vscode cannot be created because "/home/$NB_USER" is created and only owned by root.
 RUN mkdir -p $VSCODE_PATH/extensions && \
     chown $NB_USER:$NB_GID $WORKSPACE_DIR && \
+    # WARNING: This allows arbitrary installation at runtime
     chown $NB_USER:$NB_GID /usr/local/bin
 # in order to install starship
 
