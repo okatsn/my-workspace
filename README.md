@@ -34,9 +34,17 @@
 
 ## CHECKPOINT
 
-The development environments are not safe to serve as AI-agent sandboxes:
+[Referring this, ](https://gemini.google.com/app/f85d413c3fba0f6e)
+the development environments are not safe to serve as AI-agent sandboxes:
 an AI agent can do as much as you can, such as `git push origin --delete main` or `dvc gc -c`.
-[CHECKPOINT](https://gemini.google.com/app/f85d413c3fba0f6e)
+
+[Also referring this, ](https://gemini.google.com/app/7179f36ce5e95d6b)
+even when we remove `git` and block `apt-get install` in container, since `.git` is mounted as workspace,
+a malicious agent can still modify `.git` to set pre-commit hook which allows execution of malicious code when the human user
+run `git push` in the host machine; this includes rewriting your git history (and human pushes it).
+Furthermore, the agent theoretically can install git by BYOB (Bring Your Own Binary).
+While it is very challenging, a highly sophisticated agent running could interface with the VSCode server backgorund processes to request Github authentication tokens, since `vscode-server` is mounted.
+
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
