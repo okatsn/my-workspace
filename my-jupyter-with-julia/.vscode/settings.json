@@ -5,7 +5,7 @@
     },
     // Copilot
     "chat.agentFilesLocations": {
-        "../.github/agents": true,
+        ".github/agents": true,
         "../projects/my-agents/general/agents": true,
     },
     "chat.promptFilesLocations": {
