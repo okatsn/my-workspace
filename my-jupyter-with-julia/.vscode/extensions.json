@@ -35,10 +35,11 @@
         "tamasfe.even-better-toml",
         "ziyasal.vscode-open-in-github",
         "ciiqr.reindent",
-        // Markdown
+        // Markdown/LaTeX helper
         "TakumiI.markdowntable",
         "yzhang.markdown-all-in-one",
         "renathossain.markdown-runner", // "copy" button for code block
+        "oijaz.unicode-latex", // insert unicode using LaTeX math syntax
         // For python linting and formatting.
         "charliermarsh.ruff",
         // Spell & Grammar check
