@@ -19,7 +19,26 @@ RUN apt-get update && \
     # git-crypt \
     # gnupg \
     # Final clean
+    ## For Claude `docx` skill (okatsn/claude-skills)
+    # libreoffice \
+    # poppler-utils \
+    ## Final clean
     && fc-cache -f -v
+
+## For Claude `docx` skill: install docx JS library for creating new Word documents
+# RUN apt update && apt install -y \
+#     ## Why npm is required:
+#     # 1. For `npx degit`; it costs around 366 MB.
+#     # 2. npm is required for `npm install -g docx` (docx skill: creating new Word documents)
+#     npm \
+#     # Install imagemagick that allows png-jpg conversion
+#     # - Rotate image in-place: `mogrify -rotate 90 sancen-1-photo-4.png`
+#     imagemagick
+
+# # Make globally installed npm packages resolvable via require()
+# ENV NODE_PATH=/usr/local/lib/node_modules
+# # For docx skill
+# RUN npm install -g docx
 
 
 ## Install fonts that supports smcp
@@ -30,13 +49,6 @@ RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.
     && fc-cache -fv \
     && rm -rv /tmp/temp123 \
     && rm -rv /tmp/temp123.zip
-
-# RUN apt update && apt install -y \
-# # For `npx degit`; it costs around 366 MB.
-# npm \
-# # Install imagemagick that allows png-jpg conversion
-# # - Rotate image in-place: `mogrify -rotate 90 sancen-1-photo-4.png`
-# imagemagick
 
 USER $NB_USER
 
