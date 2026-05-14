@@ -7,12 +7,20 @@
     "chat.agentFilesLocations": {
         ".github/agents": true,
         "../projects/my-agents/general/agents": true,
+        "../projects/my-agents/typst/agents": true,
     },
     "chat.promptFilesLocations": {
         "../projects/my-agents/general/prompts": true,
     },
     "chat.instructionsFilesLocations": {
         "../projects/my-agents/shell/instructions": true,
+    },
+    "chat.agentSkillsLocations": {
+        ".github/skills": true,
+        ".claude/skills": true,
+        "~/ai-skills/claude-skills": true,
+        // Note their difference
+        "~/ai-skills/claude-skill-typst/skills": true
     },
     // Julia
     "julia.executablePath": "/usr/local/bin/julia",
