@@ -30,6 +30,7 @@ services:
       # - ~/.ssh:/tmp/.ssh:ro
       # # Copilot agents
       - ~/projects/my-agents:/home/jovyan/projects/my-agents:ro
+      - ~/ai-skills:/home/jovyan/ai-skills:ro
       # # WARNING: Git config
       - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions
