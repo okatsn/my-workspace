@@ -43,6 +43,7 @@
   run `git push` in the host machine; this includes rewriting your git history (and human pushes it).
   Furthermore, the agent theoretically can install git by BYOB (Bring Your Own Binary).
   While it is very challenging, a highly sophisticated agent running could interface with the VSCode server backgorund processes to request Github authentication tokens, since `vscode-server` is mounted.
+- [Refer this to set up network limitation in docker-compose.yaml](https://gemini.google.com/app/443c8c6c909a83a0)
 - VERDICT:
   - It is impractical to play hide-and-seek (the path obscurity) to secure your remote codebase because it requires a full understanding of all possible routes in your system.
   - The best practice is to set protection on your remote side, by setting up IAM for google drive, or fine-grained PAT for each repo.
