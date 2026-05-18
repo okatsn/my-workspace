@@ -68,6 +68,9 @@ Future work:
       - Since the Service Account is a completely separate entity from you, it will only see the folder you shared with it. It has no access to the rest of your Drive.
 
 
+Security risks:
+- [RoguePilot & CamoLeak](https://orca.security/resources/blog/roguepilot-github-copilot-vulnerability/): Exploit the vscode bridge helper to get the Git credential.
+
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
 
