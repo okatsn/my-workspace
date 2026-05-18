@@ -22,6 +22,11 @@
         // Note their difference
         "~/ai-skills/claude-skill-typst/skills": true
     },
+    // Prevent VSCode from re-inject GIT_ASKPASS into the container environment
+    // 1. Blocks the VS Code GitHub Extension
+    "github.gitAuthentication": false,
+    // 2. Blocks the Integrated Terminal Extension Bridge
+    "git.terminalAuthentication": false,
     // Julia
     "julia.executablePath": "/usr/local/bin/julia",
     "julia.languageServerExecutablePath": "/usr/local/bin/julia",
