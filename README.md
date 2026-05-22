@@ -2,6 +2,7 @@
 - [README](#readme)
   - [Be safe in agentic coding](#be-safe-in-agentic-coding)
     - [Best practices](#best-practices)
+    - [Known issue](#known-issue)
     - [Read-only DVC key for Google Drive](#read-only-dvc-key-for-google-drive)
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
@@ -61,7 +62,7 @@ VERDICT and Best Practices:
 
 ### Best practices
 
-Revoke token regularly:
+Revoke Git token regularly:
 - GitHub ▶️ User navigation menu ▶️ Settings ▶️ Integrations: Applications ▶️ Authorized OAuth Apps ▶️ **Revoke/Revoke all**
 - VSCode ▶️ Accounts ▶️ `<user_name>`: Sign Out ▶️ Sign in to grant VSCode permissions for:
   - AI features
@@ -77,7 +78,11 @@ Grant PAT in container for git push/pull:
   - `"github.gitAuthentication": false`
   - `"git.terminalAuthentication": true`
 - Run `git fetch` in VSCode (host machine default profile), on the pop-up window select "Token" and paste PAT rather than "Sign in with your browser".
-- Run `git fetch` in the container (with container profile), enter user and password. The `my-jupyter-with-julia` devcontainer will cache credentials for 8 hours by default. See the [devcontainer.json](./my-jupyter-with-julia/.devcontainer/devcontainer.json).
+- Run `git fetch` in the container (with container profile), enter user and password. The `my-jupyter-with-julia` devcontainer will **cache credentials for 8 hours by default**. See the [devcontainer.json](./my-jupyter-with-julia/.devcontainer/devcontainer.json).
+
+### Known issue
+
+- `dvc repro -f` ask for GitHub User name and password for every Git clone: DVC ignores the cached token because it seems to rely on python's library rather than the system's Git binary. Convert all DVC imports to SSH (e.g., using `dvc import git@github.com:username/repository.git path/to/file`) can securely solve this issue.
 
 
 ### Read-only DVC key for Google Drive

@@ -20,7 +20,7 @@ services:
     # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
     container_name: {{docker_compose_name}}
     {{#dind}}
-    privileged: true  # Add this line to allow Docker operations (using `docker` via dind)
+    privileged: true  # WARNING: Allow Docker operations (using `docker` via dind). Very dangerous for agentic coding since it allow agent to do anything on host machine
     {{/dind}}
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
