@@ -2,6 +2,7 @@
 - [README](#readme)
   - [Be safe in agentic coding](#be-safe-in-agentic-coding)
     - [Best practices](#best-practices)
+    - [Read-only DVC key for Google Drive](#read-only-dvc-key-for-google-drive)
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
@@ -58,27 +59,6 @@ VERDICT and Best Practices:
   - Zero trust
   - AI sandboxes
 
-TODO:
-- Read-only Google drive token for `dvc` to use #dvc
-  - [[IAM]] ([[Identity and Access Management]])IAM (Identity and Access Management) is designed to manage permissions for Google Cloud Platform resources, not personal Google Drive files
-  - Use a [[Service Account]] can achieve the goal:
-    - Create a Service Account (GCP Console)
-      - Google Cloud Console > IAM & Admin > Service Accounts.
-      - Create a new Service Account.
-      - Copy the generated email address (e.g., my-app@my-project.iam.gserviceaccount.com).
-      - Create and download a JSON Key for this account.
-    - Grant Access in Google Drive
-      - Go to your Personal Google Drive.
-      - Right-click the specific folder you want the app to access.
-      - Select Share.
-      - Paste the Service Account email address into the "Add people" field.
-      - Crucial Step: Set the permission role to Viewer (this makes it read-only).
-      - Uncheck "Notify people" (since it's a bot) and click Share.
-    - Configure Your App
-      - Use the downloaded JSON Key to authenticate your application using the Google Drive API.
-      - Since the Service Account is a completely separate entity from you, it will only see the folder you shared with it. It has no access to the rest of your Drive.
-
-
 ### Best practices
 
 Revoke token regularly:
@@ -98,6 +78,28 @@ Grant PAT in container for git push/pull:
   - `"git.terminalAuthentication": true`
 - Run `git fetch` in VSCode (host machine default profile), on the pop-up window select "Token" and paste PAT rather than "Sign in with your browser".
 - Run `git fetch` in the container (with container profile), enter user and password. The `my-jupyter-with-julia` devcontainer will cache credentials for 8 hours by default. See the [devcontainer.json](./my-jupyter-with-julia/.devcontainer/devcontainer.json).
+
+
+### Read-only DVC key for Google Drive
+
+- Read-only Google drive token for `dvc` to use #dvc
+  - [[IAM]] ([[Identity and Access Management]])IAM (Identity and Access Management) is designed to manage permissions for Google Cloud Platform resources, not personal Google Drive files
+  - Use a [[Service Account]] can achieve the goal:
+    - Create a Service Account (GCP Console)
+      - Google Cloud Console > IAM & Admin > Service Accounts.
+      - Create a new Service Account.
+      - Copy the generated email address (e.g., my-app@my-project.iam.gserviceaccount.com).
+      - Create and download a JSON Key for this account.
+    - Grant Access in Google Drive
+      - Go to your Personal Google Drive.
+      - Right-click the specific folder you want the app to access.
+      - Select Share.
+      - Paste the Service Account email address into the "Add people" field.
+      - Crucial Step: Set the permission role to Viewer (this makes it read-only).
+      - Uncheck "Notify people" (since it's a bot) and click Share.
+    - Configure Your App
+      - Use the downloaded JSON Key to authenticate your application using the Google Drive API.
+      - Since the Service Account is a completely separate entity from you, it will only see the folder you shared with it. It has no access to the rest of your Drive.
 
 
 ## Install WSL
