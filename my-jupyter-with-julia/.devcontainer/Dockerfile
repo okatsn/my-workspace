@@ -13,6 +13,9 @@ RUN apt-get update && \
     fonts-noto-cjk \
     fonts-noto-cjk-extra \
     fonts-noto-color-emoji \
+    # Copilot sandboxing
+    bubblewrap \
+    socat \
     # PDF utilities
     ghostscript \
     # # git-crypt
@@ -52,6 +55,6 @@ RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.
 
 USER $NB_USER
 
-# Force Julia's Pkg to use the git CLI instead of LibGit2, so that
-# VS Code dev-container credential helpers (shell functions) work correctly.
+# Force Julia's Pkg to use the git CLI instead of LibGit2.
+# This streamlines the process of adding package which is private but registered on public registry.
 ENV JULIA_PKG_USE_CLI_GIT=true

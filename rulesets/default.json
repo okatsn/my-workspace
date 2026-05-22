@@ -1,0 +1,29 @@
+{
+    "id": 16566277,
+    "name": "Protect main",
+    "target": "branch",
+    "source_type": "Repository",
+    "source": "okatsn/my-stargazer",
+    "enforcement": "active",
+    "conditions": {
+        "ref_name": {
+            "exclude": [
+                "refs/heads/sandbox/**/*",
+                "refs/heads/tmp/**/*"
+            ],
+            "include": [
+                "~DEFAULT_BRANCH",
+                "~ALL"
+            ]
+        }
+    },
+    "rules": [
+        {
+            "type": "deletion"
+        },
+        {
+            "type": "non_fast_forward"
+        }
+    ],
+    "bypass_actors": []
+}

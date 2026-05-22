@@ -27,9 +27,41 @@
                 "julia.environmentPath": "~/workspace", // KEYNOTE: it is expected to be WORKSPACE_DIR  defined in Dockerfile
                 // General settings
                 "files.eol": "\n",
-                "dev.containers.cacheVolume": true
+                "dev.containers.cacheVolume": true,
+                // KEYNOTE: Better to also set these two options `false` in the profile for your container workspaces.
+                // Prevent VS Code GitHub extension from serving credentials via the IPC socket. Without this, direct calls to askpass-main.js return a live OAuth token (HTTP 200) even when GIT_ASKPASS is absent from the environment.
+                "github.gitAuthentication": false,
             }
         }
-    }
+    },
     // "postCreateCommand": "",
+    // VS Code Dev Containers injects a credential relay helper into /etc/gitconfig and
+    // ~/.gitconfig at every attach, regardless of dev.containers.gitCredentialHelperConfigLocation.
+    //
+    // Two relay paths exist:
+    //   1. credential.helper  → calls relay JS via IPC socket → returns live GitHub token.
+    //   2. GIT_ASKPASS        → re-injected per terminal by VS Code git extension.
+    //
+    // Defense strategy:
+    //   - remoteEnv nullifies REMOTE_CONTAINERS_IPC so the relay JS exits immediately
+    //     for ordinary git operations. This can be bypassed by setting the variable
+    //     manually, so it is not sufficient on its own.
+    //   - postAttachCommand is the primary block: it overwrites the relay JS client
+    //     (the file referenced in /etc/gitconfig) with a no-op after VS Code injects it,
+    //     and clears the user-level credential.helper entry. Even if REMOTE_CONTAINERS_IPC
+    //     is set manually afterwards, calling the relay JS just exits with code 1.
+    //   - GIT_ASKPASS variables are nullified here as a belt-and-suspenders measure;
+    //     the git wrapper in /usr/local/bin/git also unsets them unconditionally.
+    "remoteEnv": {
+        "REMOTE_CONTAINERS_IPC": "",
+        "GIT_ASKPASS": "",
+        "VSCODE_GIT_ASKPASS_NODE": "",
+        "VSCODE_GIT_ASKPASS_MAIN": ""
+    },
+    // Runs after every VS Code attach. Overwrites the relay JS client injected by
+    // Dev Containers with a no-op, then clears the user-level credential.helper.
+    // The UUID in the filename changes per session; the glob targets only the
+    // client script (hex-UUID prefix) and excludes the server-side script.
+    // It first unsets whatever VS Code injected, then immediately applies your cache.
+    "postAttachCommand": "for f in /tmp/vscode-remote-containers-[0-9a-f]*-[0-9a-f]*-*.js; do [ -f \"$f\" ] && echo 'process.exit(1);' > \"$f\"; done; git config --global --unset-all credential.helper 2>/dev/null; true; git config --global credential.helper 'cache --timeout=28800'"
 }
