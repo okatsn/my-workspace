@@ -1,6 +1,7 @@
 [README](#readme)
 - [README](#readme)
-  - [CHECKPOINT](#checkpoint)
+  - [Be safe in agentic coding](#be-safe-in-agentic-coding)
+    - [Best practices](#best-practices)
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
@@ -32,22 +33,32 @@
 
 # README
 
-## CHECKPOINT
+## Be safe in agentic coding
 
-- [Referring this, ](https://gemini.google.com/app/f85d413c3fba0f6e) the development environments are not safe to serve as AI-agent sandboxes: an AI agent can do as much as you can, such as `git push origin --delete main` or `dvc gc -c`.  The "safety shim" prevents only accidents; an AI agent can easily find the true location for your `git` to push if it is intended.
-- [Also referring this, ](https://gemini.google.com/app/7179f36ce5e95d6b) even when we remove `git` and block `apt-get install` in container, since `.git` is mounted as workspace, a malicious agent can still modify `.git` to set pre-commit hook which allows execution of malicious code when the human user run `git push` in the host machine; this includes rewriting your git history (and human pushes it). Furthermore, the agent theoretically can install git by BYOB (Bring Your Own Binary). While it is very challenging, a highly sophisticated agent running could interface with the VSCode server backgorund processes to request Github authentication tokens, since `vscode-server` is mounted.
-- [Refer this to set up network limitation in docker-compose.yaml](https://gemini.google.com/app/443c8c6c909a83a0)
-- VERDICT:
-  - It is impractical to play hide-and-seek (the path obscurity) to secure your remote codebase because it requires a full understanding of all possible routes in your system.
-  - The best practice is to set protection on your remote side, by setting up IAM for google drive, or fine-grained PAT for each repo.
-  - Install everything you need but do not enable `autoApprove`. It is as dangerous as it was described in the pop-up window when you try to enable auto approval.
+Must keep in mind:
+- An AI agent [can do everything the user can do](https://openai.com/index/building-codex-windows-sandbox/), such as:
+  -  `git push origin --delete main` or `dvc gc -c`.
+  - Modify `.git` and set pre-commit hook, that even in the sandbox no one can push, malicious code can be executed as human user use `git` in the host machine.
+- The "safety shim" introduce extra obscurity and prevents only accidents.
+- "Security through obscurity" is not secure at all.
+- Block installation of a certain software may not prohibit an agent to use it: An agent can bypass the installation restriction with BYOB (Bring Your Own Binary) approach in the workspace. For example, block `apt-get install` in container do not prohibit an agent to use, for example, `git`, once `curl` is available.
+
+There are always tradeoffs:
+- Mount `vscode-server` to use VSCode extension in your Dev Container development environment ▶️ agent running could interface with the VSCode server backgorund processes to request GitHub authentication tokens. You can ask an agent to do this and see what happens. Also refer: [RoguePilot & CamoLeak](https://orca.security/resources/blog/roguepilot-github-copilot-vulnerability/): Exploit the vscode bridge helper to get the Git credential.
+
+VERDICT and Best Practices:
+- It is impractical to play hide-and-seek (the path obscurity) to secure your remote/local codebase because it requires a full understanding of all possible routes in your system.
+- Must set protection on your remote side, for example:
+  - Set up IAM for google drive
+  - fine-grained PAT for accessing GitHub repo.
+  - Add [GitHub protection rulesets (click to see example)](./rulesets/default.json).
+- Do not enable `autoApprove`. It is as dangerous as it was described in the pop-up window when you try to enable auto approval.
 
 - Keywords:
   - Zero trust
   - AI sandboxes
 
-Future work:
-- Confirm is it a good idea that human developer and AI agent shares the same environment (container)?
+TODO:
 - Read-only Google drive token for `dvc` to use #dvc
   - [[IAM]] ([[Identity and Access Management]])IAM (Identity and Access Management) is designed to manage permissions for Google Cloud Platform resources, not personal Google Drive files
   - Use a [[Service Account]] can achieve the goal:
@@ -68,8 +79,15 @@ Future work:
       - Since the Service Account is a completely separate entity from you, it will only see the folder you shared with it. It has no access to the rest of your Drive.
 
 
-Security risks:
-- [RoguePilot & CamoLeak](https://orca.security/resources/blog/roguepilot-github-copilot-vulnerability/): Exploit the vscode bridge helper to get the Git credential.
+### Best practices
+
+Revoke token regularly
+- GitHub ▶️ User navigation menu ▶️ Settings ▶️ Integrations: Applications ▶️ Authorized OAuth Apps ▶️ **Revoke/Revoke all**
+- VSCode ▶️ Accounts ▶️ `<user_name>`: Sign Out ▶️ Sign in to grant VSCode permissions for:
+  - AI features
+  - GistPad
+  - Github Repository Manager
+-
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
