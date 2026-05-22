@@ -91,10 +91,13 @@ Revoke token regularly:
 Grant PAT in container for git push/pull:
 - Set ruleset to protect all branches of important repos: GitHub ▶️ Settings (repo scope) ▶️ Rules/Rulesets ▶️ New ruleset
 - Generate PAT: GitHub ▶️ Settings (user scope) ▶️ Developer Settings ▶️ Personal Access Tokens: Fine grained tokens ▶️ Create with **Contents: Read and Write** permissions.
-- In the VSCode profile for containerized environment, set
-  - "git.terminalAuthentication": true,
-  - "github.gitAuthentication": false
-- Run `git fetch` in the container, enter user and password. The `my-jupyter-with-julia` devcontainer will cache credentials for 8 hours by default. See the [devcontainer.json](./my-jupyter-with-julia/.devcontainer/devcontainer.json).
+- In VSCode **Default Profile**
+  - `"github.gitAuthentication": true`
+- In the **profile for containerized environment**, set
+  - `"github.gitAuthentication": false`
+  - `"git.terminalAuthentication": true`
+- Run `git fetch` in VSCode (host machine default profile), on the pop-up window select "Token" and paste PAT rather than "Sign in with your browser".
+- Run `git fetch` in the container (with container profile), enter user and password. The `my-jupyter-with-julia` devcontainer will cache credentials for 8 hours by default. See the [devcontainer.json](./my-jupyter-with-julia/.devcontainer/devcontainer.json).
 
 
 ## Install WSL
