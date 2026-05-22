@@ -82,7 +82,12 @@ Grant PAT in container for git push/pull:
 
 ### Known issue
 
-- `dvc repro -f` ask for GitHub User name and password for every Git clone: DVC ignores the cached token because it seems to rely on python's library rather than the system's Git binary. Convert all DVC imports to SSH (e.g., using `dvc import git@github.com:username/repository.git path/to/file`) can securely solve this issue.
+`dvc repro -f` ask for GitHub User name and password for every Git clone:
+- DVC ignores the cached token because it seems to rely on python's library rather than the system's Git binary.
+- Use `dvc repro -f -s` instead.
+- Configure SSH is an agent-safe solution that fundamentally fix the problem, but at the following prices:
+  - One needs to convert all DVC imports to SSH (or reimport using `dvc import git@github.com:username/repository.git path/to/file`).
+  - One cannot use PAT for SSH authentication. Must generate SSH and start SSH Agent on the host machine, as well as add the public key to GitHub.
 
 
 ### Read-only DVC key for Google Drive
