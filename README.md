@@ -81,13 +81,21 @@ TODO:
 
 ### Best practices
 
-Revoke token regularly
+Revoke token regularly:
 - GitHub ▶️ User navigation menu ▶️ Settings ▶️ Integrations: Applications ▶️ Authorized OAuth Apps ▶️ **Revoke/Revoke all**
 - VSCode ▶️ Accounts ▶️ `<user_name>`: Sign Out ▶️ Sign in to grant VSCode permissions for:
   - AI features
   - GistPad
   - Github Repository Manager
--
+
+Grant PAT in container for git push/pull:
+- Set ruleset to protect all branches of important repos: GitHub ▶️ Settings (repo scope) ▶️ Rules/Rulesets ▶️ New ruleset
+- Generate PAT: GitHub ▶️ Settings (user scope) ▶️ Developer Settings ▶️ Personal Access Tokens: Fine grained tokens ▶️ Create with **Contents: Read and Write** permissions.
+- In the VSCode profile for containerized environment, set
+  - "git.terminalAuthentication": true,
+  - "github.gitAuthentication": false
+- Run `git fetch` in the container, enter user and password. The `my-jupyter-with-julia` devcontainer will cache credentials for 8 hours by default. See the [devcontainer.json](./my-jupyter-with-julia/.devcontainer/devcontainer.json).
+
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
