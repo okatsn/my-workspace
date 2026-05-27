@@ -5,6 +5,8 @@ USER root
 RUN apt-get update && \
     apt-get -y install \
     fontconfig \
+    # # DejaVu Sans & DejaVu Sans Mono (required by Documenter's documenter.sty)
+    fonts-dejavu \
     # # Install Tinos (the best Times New Roman alternative)
     # fonts-croscore \
     # # 中文類楷體
