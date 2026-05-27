@@ -28,7 +28,7 @@ RUN apt-get update && \
     ## Final clean
     && fc-cache -f -v
 
-## For Claude `docx` skill: install docx JS library for creating new Word documents
+# ## For Claude `docx` skill: install docx JS library for creating new Word documents
 # RUN apt update && apt install -y \
 #     ## Why npm is required:
 #     # 1. For `npx degit`; it costs around 366 MB.
@@ -44,7 +44,7 @@ RUN apt-get update && \
 # RUN npm install -g docx
 
 
-## Install fonts that supports smcp
+# ## Install fonts that supports smcp
 # RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.zip -O /tmp/temp123.zip  \
 #     && unzip /tmp/temp123.zip -d /tmp/temp123  \
 #     && mkdir -p /usr/share/fonts/opentype/source-serif-pro \
@@ -52,6 +52,18 @@ RUN apt-get update && \
 #     && fc-cache -fv \
 #     && rm -rv /tmp/temp123 \
 #     && rm -rv /tmp/temp123.zip
+
+
+# ## Install tectonic LaTeX engine (prebuilt static binary, v0.15.0)
+# # See https://github.com/tectonic-typesetting/tectonic/releases for latest version.
+# # Install tectonic if you need to compile docs to PDF using Documenter.jl (requires LaTeX utilities).
+# ARG TECTONIC_VERSION=0.15.0
+# RUN wget -q \
+#     "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
+#     -O /tmp/tectonic.tar.gz \
+#     && tar -xzf /tmp/tectonic.tar.gz -C /usr/local/bin \
+#     && chmod +x /usr/local/bin/tectonic \
+#     && rm /tmp/tectonic.tar.gz
 
 USER $NB_USER
 
