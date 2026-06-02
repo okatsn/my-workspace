@@ -27,8 +27,20 @@ RUN apt-get update && \
     ## For Claude `docx` skill (okatsn/claude-skills)
     # libreoffice \
     # poppler-utils \
+    # # [OJS] For Observable Framework (with `curl` and `ca-certificates` already available)
+    # gnupg \
+    # && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    # && apt-get install -y nodejs \
+    # && apt-get clean \
     ## Final clean
+    && rm -rf /var/lib/apt/lists/* \
     && fc-cache -f -v
+
+# # [OJS] Verify Node.js and NPM installation
+# RUN node -v && npm -v
+
+# # [OJS] Install Observable CLI globally
+# RUN npm install -g @observablehq/framework
 
 # ## For Claude `docx` skill: install docx JS library for creating new Word documents
 # RUN apt update && apt install -y \
