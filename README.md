@@ -4,6 +4,7 @@
     - [Best practices](#best-practices)
     - [Known issue](#known-issue)
     - [DVC key for Google Drive](#dvc-key-for-google-drive)
+- [CHECKPOINT](#checkpoint)
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
@@ -121,6 +122,12 @@ Use the key:
   ```
 - Run `source ~/.bashrc` to make the change take effects immediately (without restarting), then use alias in local environment.
 
+# CHECKPOINT
+The current implementation of aliases don't work. Please refer:
+https://gemini.google.com/app/b3581d2839ad5b00
+
+Also see:
+https://gemini.google.com/app/e3aca3d1369d755a
 
 
 #### Method 2
@@ -129,7 +136,11 @@ Create an client App that provides client ID and password that DVC can be used t
 
 Refer [DVC - Using a custom Google Cloud project](https://doc.dvc.org/user-guide/data-management/remote-storage/google-drive#using-a-custom-google-cloud-project-recommended), enable the Drive API in [Google Cloud Console/APIs & Services](https://console.cloud.google.com/apis), and create [OAuth Clients](https://console.cloud.google.com/auth/clients) to get `gdrive_client_id` and `gdrive_client_secret`.
 
-Once remote `gdrive_client_id` and `gdrive_client_secret` were set, `dvc` remote request triggers the authorization in browser.
+Once remote `gdrive_client_id` and `gdrive_client_secret` were set, , `dvc` remote request triggers the authorization in browser.
+```bash
+dvc remote modify myremote gdrive_client_id 'client-id'
+dvc remote modify myremote gdrive_client_secret 'client-secret'
+```
 
 However, this approach requires configuring `gdrive_client_id` and `gdrive_client_secret` for every gdrive remote.
 
