@@ -119,7 +119,8 @@ Use the key:
   # Clear session credentials
   alias dvc-clear="unset GDRIVE_CREDENTIALS_DATA"
   ```
-- Use alias in local environment.
+- Run `source ~/.bashrc` to make the change take effects immediately (without restarting), then use alias in local environment.
+
 
 
 #### Method 2
