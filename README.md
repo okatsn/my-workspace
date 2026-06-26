@@ -3,7 +3,7 @@
   - [Be safe in agentic coding](#be-safe-in-agentic-coding)
     - [Best practices](#best-practices)
     - [Known issue](#known-issue)
-    - [Read-only DVC key for Google Drive](#read-only-dvc-key-for-google-drive)
+    - [DVC key for Google Drive](#dvc-key-for-google-drive)
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
@@ -90,26 +90,46 @@ Grant PAT in container for git push/pull:
   - One cannot use PAT for SSH authentication. Must generate SSH and start SSH Agent on the host machine, as well as add the public key to GitHub.
 
 
-### Read-only DVC key for Google Drive
+### DVC key for Google Drive
 
-- Read-only Google drive token for `dvc` to use #dvc
-  - [[IAM]] ([[Identity and Access Management]])IAM (Identity and Access Management) is designed to manage permissions for Google Cloud Platform resources, not personal Google Drive files
-  - Use a [[Service Account]] can achieve the goal:
-    - Create a Service Account (GCP Console)
-      - Google Cloud Console > IAM & Admin > Service Accounts.
-      - Create a new Service Account.
-      - Copy the generated email address (e.g., my-app@my-project.iam.gserviceaccount.com).
-      - Create and download a JSON Key for this account.
-    - Grant Access in Google Drive
-      - Go to your Personal Google Drive.
-      - Right-click the specific folder you want the app to access.
-      - Select Share.
-      - Paste the Service Account email address into the "Add people" field.
-      - Crucial Step: Set the permission role to Viewer (this makes it read-only).
-      - Uncheck "Notify people" (since it's a bot) and click Share.
-    - Configure Your App
-      - Use the downloaded JSON Key to authenticate your application using the Google Drive API.
-      - Since the Service Account is a completely separate entity from you, it will only see the folder you shared with it. It has no access to the rest of your Drive.
+#### Method 1
+
+Create service account and grant it permission to access specific folder in Google Drive:
+- In [Google Cloud Console](https://console.cloud.google.com/welcome), open (Open project picker) or create a project
+- Go to [IAM & Admin/Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts)
+- Create a service account with its name hinting 'read-only' permission (e.g., `read-only@automatically-generated.iam.gserviceaccount.com`).
+- Create a service account with its name hinting 'write' permission (e.g., `read-and-write@automatically-generated.iam.gserviceaccount.com`).
+- For each service account, click `Actions` ▶️ `Manage Keys` ▶️ `Add key` select JSON and `Create`. And save these json files.
+
+Grant read/write permission respectively for different service account as well as the scope it can access:
+- Go to Google Drive Web application
+- Grant scope by share specific directory with a service account.
+- Grant permission by configure "can view" or "can edit". For example, grant `read-only@automatically-generated.iam.gserviceaccount.com` "view" and `read-and-write@automatically-generated.iam.gserviceaccount.com` "edit" permission.
+
+Use the key:
+- Put keys in cache folder
+- Add alias in `.bashrc`
+  ```bash
+  # Toggle write permissions
+  alias dvc-write="export GDRIVE_CREDENTIALS_DATA=\$(cat ~/.cache/GDRIVE_CREDENTIALS_DATA/editor.json)"
+
+  # Toggle read-only permissions
+  alias dvc-read="export GDRIVE_CREDENTIALS_DATA=\$(cat ~/.cache/GDRIVE_CREDENTIALS_DATA/reader.json)"
+
+  # Clear session credentials
+  alias dvc-clear="unset GDRIVE_CREDENTIALS_DATA"
+  ```
+- Use alias in local environment.
+
+
+#### Method 2
+
+Refer [DVC - Using a custom Google Cloud project](https://doc.dvc.org/user-guide/data-management/remote-storage/google-drive#using-a-custom-google-cloud-project-recommended), enable the Drive API in [Google Cloud Console/APIs & Services](https://console.cloud.google.com/apis), and create [OAuth Clients](https://console.cloud.google.com/auth/clients) to get `gdrive_client_id` and `gdrive_client_secret`.
+
+Once remote `gdrive_client_id` and `gdrive_client_secret` were set, `dvc` remote request triggers the authorization in browser.
+
+However, this approach requires configuring `gdrive_client_id` and `gdrive_client_secret` for every gdrive remote.
+
 
 
 ## Install WSL
