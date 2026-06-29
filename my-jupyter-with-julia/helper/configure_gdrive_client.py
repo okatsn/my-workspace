@@ -15,6 +15,11 @@ def main():
     parser = argparse.ArgumentParser(
         description="Configure DVC Google Drive remotes with custom OAuth credentials.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog="""
+Examples:
+  python configure_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
+  python configure_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
+""",
     )
     parser.add_argument(
         "-r",
