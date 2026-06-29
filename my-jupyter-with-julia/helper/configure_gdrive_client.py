@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
+# # TO USE:
+# python configure_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
+# python configure_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -33,24 +37,34 @@ def main():
 
     args = parser.parse_args()
 
-    # 2. Validate Target Path
+    # 2. Fail-Fast: Environment & Input Validation
+    if not shutil.which("dvc"):
+        print("❌ Error: DVC CLI is not installed or not found in PATH.", file=sys.stderr)
+        sys.exit(1)
+
+    if not args.client_id.strip() or not args.client_secret.strip():
+        print("❌ Error: Client ID and Client Secret cannot be empty.", file=sys.stderr)
+        sys.exit(1)
+
     target_path = Path(args.path).resolve()
     if not target_path.exists():
-        print(f"❌ Error: Target path '{args.path}' does not exist.")
+        print(f"❌ Error: Target path '{args.path}' does not exist.", file=sys.stderr)
         sys.exit(1)
 
     # 3. Discover DVC Workspaces based on chosen mode
     if args.recursive:
         print(f"🔍 Recursively scanning for DVC workspaces under: {target_path}")
         dvc_dirs = list(target_path.rglob(".dvc"))
+        if not dvc_dirs:
+            print("⚠️ No DVC repositories found under the specified path.")
+            sys.exit(0)
     else:
         print(f"🔍 Checking single target workspace at: {target_path}")
         single_dvc = target_path / ".dvc"
-        dvc_dirs = [single_dvc] if single_dvc.is_dir() else []
-
-    if not dvc_dirs:
-        print("⚠️ No DVC repositories found for the specified configuration.")
-        sys.exit(0)
+        if not single_dvc.is_dir():
+            print(f"❌ Error: '{target_path}' is not a valid DVC workspace (missing .dvc directory).", file=sys.stderr)
+            sys.exit(1)
+        dvc_dirs = [single_dvc]
 
     summary = []
 
