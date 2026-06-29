@@ -82,8 +82,10 @@ def main():
         try:
             # Query DVC remotes for this specific project
             res = subprocess.run(
-                ["dvc", "-C", str(project_root), "remote", "list"],
-                capture_output=True, text=True, check=True
+                ["dvc", "--cd", str(project_root), "remote", "list"],
+                capture_output=True,
+                text=True,
+                check=True,
             )
 
             # Filter for Google Drive remotes
@@ -101,12 +103,12 @@ def main():
             # Update credentials for each discovered gdrive remote
             for remote in gdrive_remotes:
                 subprocess.run([
-                    "dvc", "-C", str(project_root), "remote", "modify", "--local",
+                    "dvc", "--cd", str(project_root), "remote", "modify", "--local",
                     remote, "gdrive_client_id", args.client_id
                 ], check=True, capture_output=True)
 
                 subprocess.run([
-                    "dvc", "-C", str(project_root), "remote", "modify", "--local",
+                    "dvc", "--cd", str(project_root), "remote", "modify", "--local",
                     remote, "gdrive_client_secret", args.client_secret
                 ], check=True, capture_output=True)
 
