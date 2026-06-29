@@ -85,6 +85,9 @@ RUN apt-get update && \
 #     && chmod +x /usr/local/bin/tectonic \
 #     && rm /tmp/tectonic.tar.gz
 
+# # Install JQ
+# RUN sudo apt update && sudo apt install -y jq
+
 USER $NB_USER
 
 # Force Julia's Pkg to use the git CLI instead of LibGit2.
