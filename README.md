@@ -107,20 +107,6 @@ Grant read/write permission respectively for different service account as well a
 - Grant scope by share specific directory with a service account.
 - Grant permission by configure "can view" or "can edit". For example, grant `read-only@automatically-generated.iam.gserviceaccount.com` "view" and `read-and-write@automatically-generated.iam.gserviceaccount.com` "edit" permission.
 
-Use the key:
-- Put keys in cache folder
-- Add alias in `.bashrc`
-  ```bash
-  # Toggle write permissions
-  alias dvc-write="export GDRIVE_CREDENTIALS_DATA=\$(cat ~/.cache/GDRIVE_CREDENTIALS_DATA/editor.json)"
-
-  # Toggle read-only permissions
-  alias dvc-read="export GDRIVE_CREDENTIALS_DATA=\$(cat ~/.cache/GDRIVE_CREDENTIALS_DATA/reader.json)"
-
-  # Clear session credentials
-  alias dvc-clear="unset GDRIVE_CREDENTIALS_DATA"
-  ```
-- Run `source ~/.bashrc` to make the change take effects immediately (without restarting), then use alias in local environment.
 
 # CHECKPOINT
 The current implementation of aliases don't work. Please refer:
@@ -134,14 +120,19 @@ https://gemini.google.com/app/e3aca3d1369d755a
 
 Create an client App that provides client ID and password that DVC can be used to redirect user to App's authentication page.
 
-Refer [DVC - Using a custom Google Cloud project](https://doc.dvc.org/user-guide/data-management/remote-storage/google-drive#using-a-custom-google-cloud-project-recommended), enable the Drive API in [Google Cloud Console/APIs & Services](https://console.cloud.google.com/apis), and create [OAuth Clients](https://console.cloud.google.com/auth/clients) to get `gdrive_client_id` and `gdrive_client_secret`.
+Refer [DVC - Using a custom Google Cloud project](https://doc.dvc.org/user-guide/data-management/remote-storage/google-drive#using-a-custom-google-cloud-project-recommended), enable the Drive API in [Google Cloud Console/APIs & Services](https://console.cloud.google.com/apis), and create [OAuth Clients](https://console.cloud.google.com/auth/clients) to get `gdrive_client_id` and `gdrive_client_secret`. Don't forget to go to [APIs & Services > OAuth consent screen > Audience](https://console.cloud.google.com/auth/audience) to Add users (with otherwise blocked).
 
-Once remote `gdrive_client_id` and `gdrive_client_secret` were set, , `dvc` remote request triggers the authorization in browser.
-```bash
-dvc remote modify myremote gdrive_client_id 'client-id'
-dvc remote modify myremote gdrive_client_secret 'client-secret'
-```
 
+Workaround:
+1. Export `GDRIVE_CLIENT_ID` and `GDRIVE_CLIENT_SECRET` respectively.
+2. Run
+   ```bash
+   dvc remote modify --local myremote gdrive_client_id '$GDRIVE_CLIENT_ID'
+   dvc remote modify --local myremote gdrive_client_secret '$GDRIVE_CLIENT_SECRET'
+   ```
+3. Click URL to authenticate.
+
+Once remote `gdrive_client_id` and `gdrive_client_secret` were set, `dvc` remote request triggers the authorization in browser.
 However, this approach requires configuring `gdrive_client_id` and `gdrive_client_secret` for every gdrive remote.
 
 
