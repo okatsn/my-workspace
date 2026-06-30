@@ -161,8 +161,8 @@ Examples:
                 (display_name, f"✅ Configured Globally ({', '.join(gdrive_remotes)})")
             )
 
-        except subprocess.CalledProcessError:
-            summary.append((display_name, "❌ Failed (DVC CLI Error)"))
+        except subprocess.CalledProcessError as e:
+            summary.append((display_name, f"❌ Failed (DVC CLI Error: {e.stderr.strip()})"))
         except Exception as e:
             summary.append((display_name, f"❌ Failed ({type(e).__name__})"))
 
