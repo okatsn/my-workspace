@@ -106,8 +106,25 @@ Examples:
                 summary.append((display_name, "⚪ Skipped (No gdrive remotes)"))
                 continue
 
-            # Update credentials for each discovered gdrive remote
+            # Process global reference changes for each discovered gdrive remote
             for remote in gdrive_remotes:
+                # Add dummy remote reference globally (don't check=True as it may already exist globally)
+                subprocess.run(
+                    [
+                        "dvc",
+                        "--cd",
+                        str(project_root),
+                        "remote",
+                        "add",
+                        "--global",
+                        remote,
+                        "dummy://whatever1234",
+                    ],
+                    capture_output=True,
+                    text=True,
+                )
+
+                # Update credentials for the remote globally
                 subprocess.run(
                     [
                         "dvc",
