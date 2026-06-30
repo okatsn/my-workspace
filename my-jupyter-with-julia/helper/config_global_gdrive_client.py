@@ -116,7 +116,7 @@ Examples:
                         "add",
                         "--global",
                         remote,
-                        "dummy://whatever1234",
+                        "gdrive://dummyurl.whatever1234",
                     ],
                     capture_output=True,
                     text=True,
