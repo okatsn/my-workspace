@@ -4,7 +4,6 @@
     - [Best practices](#best-practices)
     - [Known issue](#known-issue)
     - [DVC key for Google Drive](#dvc-key-for-google-drive)
-- [CHECKPOINT](#checkpoint)
   - [Install WSL](#install-wsl)
   - [Install, configure and update `git`](#install-configure-and-update-git)
   - [Install others (optional)](#install-others-optional)
@@ -107,14 +106,15 @@ Grant read/write permission respectively for different service account as well a
 - Grant scope by share specific directory with a service account.
 - Grant permission by configure "can view" or "can edit". For example, grant `read-only@automatically-generated.iam.gserviceaccount.com` "view" and `read-and-write@automatically-generated.iam.gserviceaccount.com` "edit" permission.
 
+Then set, for example:
+```bash
+dvc remote modify --local myremote gdrive_use_service_account true
+dvc remote modify --local myremote gdrive_service_account_json_file_path ~/.cache/GDRIVE_CREDENTIALS_DATA/read-only-key.json
+```
 
-# CHECKPOINT
-The current implementation of aliases don't work. Please refer:
-https://gemini.google.com/app/b3581d2839ad5b00
-
-Also see:
-https://gemini.google.com/app/e3aca3d1369d755a
-
+!!! note 💡
+    It makes no sense to grant a service account 'write' permission when it has no GDrive quota (then it is equivalent to a Google Account with 0 GB storage: it can delete but cannot push). This is the limitation of for personal Google Account.
+    You can assign service account GDrive quota with paid Google Workspace via organization admin.
 
 #### Method 2
 
@@ -135,7 +135,9 @@ Workaround:
 Once remote `gdrive_client_id` and `gdrive_client_secret` were set, `dvc` remote request triggers the authorization in browser.
 However, this approach requires configuring `gdrive_client_id` and `gdrive_client_secret` for every gdrive remote.
 
-
+!!! warning ⚠️
+    It will fail when there is an imported DVC file whose referenced remote name is not identical to what you defined locally, while it is tedious to manually track and maintain the dependent remote information across repo.
+    To deal this conundrum, one can clone all associated repos to local, and use [this python helper](./my-jupyter-with-julia/helper/config_global_gdrive_client.py) to automatically make global configuration. Furthermore, this is more safe since secrets are stored out of the scope of each project (that an agent can never touch).
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
