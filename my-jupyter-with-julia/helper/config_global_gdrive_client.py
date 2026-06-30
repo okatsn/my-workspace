@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # # TO USE:
-# python configure_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
-# python configure_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
+# python config_global_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
+# python config_global_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
 import argparse
 import os
 import shutil
@@ -13,12 +13,12 @@ from pathlib import Path
 def main():
     # 1. Set up the CLI interface
     parser = argparse.ArgumentParser(
-        description="Configure DVC Google Drive remotes with custom OAuth credentials.",
+        description="Configure DVC Google Drive remotes globally with custom OAuth credentials.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog="""
 Examples:
-  python configure_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
-  python configure_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
+  python config_global_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
+  python config_global_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
 """,
     )
     parser.add_argument(
