@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # # TO USE:
-# python config_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
-# python config_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
+# python3 config_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
+# python3 config_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
 import argparse
 import os
 import shutil
@@ -17,8 +17,8 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog="""
 Examples:
-  python config_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
-  python config_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
+  python3 config_gdrive_client.py $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./
+  python3 config_gdrive_client.py -r $GDRIVE_CLIENT_ID $GDRIVE_CLIENT_SECRET ./projects
 """,
     )
     parser.add_argument(
