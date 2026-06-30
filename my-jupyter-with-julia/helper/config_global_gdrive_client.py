@@ -115,7 +115,7 @@ Examples:
                         str(project_root),
                         "remote",
                         "modify",
-                        "--local",
+                        "--global",
                         remote,
                         "gdrive_client_id",
                         args.client_id,
@@ -131,7 +131,7 @@ Examples:
                         str(project_root),
                         "remote",
                         "modify",
-                        "--local",
+                        "--global",
                         remote,
                         "gdrive_client_secret",
                         args.client_secret,
@@ -141,7 +141,7 @@ Examples:
                 )
 
             summary.append(
-                (display_name, f"✅ Configured ({', '.join(gdrive_remotes)})")
+                (display_name, f"✅ Configured Globally ({', '.join(gdrive_remotes)})")
             )
 
         except subprocess.CalledProcessError:
