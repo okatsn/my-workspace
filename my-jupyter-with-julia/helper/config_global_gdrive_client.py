@@ -112,8 +112,6 @@ Examples:
                 subprocess.run(
                     [
                         "dvc",
-                        "--cd",
-                        str(project_root),
                         "remote",
                         "add",
                         "--global",
@@ -128,8 +126,6 @@ Examples:
                 subprocess.run(
                     [
                         "dvc",
-                        "--cd",
-                        str(project_root),
                         "remote",
                         "modify",
                         "--global",
@@ -144,8 +140,6 @@ Examples:
                 subprocess.run(
                     [
                         "dvc",
-                        "--cd",
-                        str(project_root),
                         "remote",
                         "modify",
                         "--global",
