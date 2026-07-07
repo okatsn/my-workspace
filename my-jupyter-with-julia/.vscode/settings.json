@@ -21,7 +21,8 @@
         "~/ai-skills/claude-skills": false,
         "~/ai-skills/posit-dev-skills/quarto": false,
         // Note their difference
-        "~/ai-skills/claude-skill-typst/skills": false
+        "~/ai-skills/claude-skill-typst/skills": false,
+        "~/ai-skills/superpowers/skills": true,
     },
     // Julia
     "julia.executablePath": "/usr/local/bin/julia",
