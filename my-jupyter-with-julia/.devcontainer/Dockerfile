@@ -32,6 +32,9 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/* \
     && fc-cache -f -v
 
+# # For pdf to docx converting skills
+# RUN pip install pdf2docx
+
 
 # # # [OJS] For Observable Framework (with `curl` and `ca-certificates` already available)
 # RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
