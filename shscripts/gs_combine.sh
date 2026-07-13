@@ -1,5 +1,5 @@
 #!/bin/bash
-# filepath: /home/okatsn/my-workspace/shscript/qpdf_combine.sh
+# filepath: /home/okatsn/my-workspace/shscripts/qpdf_combine.sh
 
 output_file="output.pdf"
 pdf_files=()
@@ -41,8 +41,8 @@ docker run --rm \
   --volume "$(pwd):/workspace" \
   --workdir /workspace \
   --user "$(id -u):$(id -g)" \
-  okatsn/my-util-box "pdftk $pages_arg output $output_file"
-  
+  okatsn/my-util-box "gs -sDEVICE=pdfwrite -dSAFER -dNOPAUSE -dBATCH -sOutputFile=$output_file $pages_arg"
+
 #   okatsn/my-util-box "ls -la"
 
 echo "Combined PDFs into: $output_file"
