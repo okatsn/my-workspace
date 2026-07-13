@@ -18,6 +18,7 @@
     "chat.agentSkillsLocations": {
         ".github/skills": true,
         ".claude/skills": true,
+        "~/projects/my-agents/typst/skills": true,
         "~/ai-skills/claude-skills": false,
         "~/ai-skills/posit-dev-skills/quarto": false,
         // Note their difference
