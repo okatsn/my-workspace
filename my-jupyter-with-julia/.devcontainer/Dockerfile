@@ -15,19 +15,18 @@ RUN apt-get update && \
     # fonts-noto-cjk \
     # fonts-noto-cjk-extra \
     # fonts-noto-color-emoji \
-    # Copilot sandboxing
+    # # Copilot sandboxing
     bubblewrap \
     socat \
-    # PDF utilities
+    # # PDF utilities
     ghostscript \
     # # git-crypt
     # git-crypt \
     # gnupg \
-    # Final clean
-    ## For Claude `docx` skill (okatsn/claude-skills)
+    # # For Claude `docx` skill (okatsn/claude-skills)
     # libreoffice \
     # poppler-utils \
-    ## Final clean
+    # # Final clean
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && fc-cache -f -v
