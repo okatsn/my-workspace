@@ -55,6 +55,7 @@ RUN apt-get update && \
 #     ## Why npm is required:
 #     # 1. For `npx degit`; it costs around 366 MB.
 #     # 2. npm is required for `npm install -g docx` (docx skill: creating new Word documents)
+#     NOTE: Install nodejs with nodesource setup script in the previous [OJS] block automatically has npm installed
 #     npm \
 #     # Install imagemagick that allows png-jpg conversion
 #     # - Rotate image in-place: `mogrify -rotate 90 sancen-1-photo-4.png`
