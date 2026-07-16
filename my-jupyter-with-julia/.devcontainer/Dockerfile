@@ -50,15 +50,16 @@ RUN apt-get update && \
 # # [OJS] Install Observable CLI globally
 # RUN npm install -g @observablehq/framework
 
-# ## For Claude `docx` skill: install docx JS library for creating new Word documents
-# RUN apt update && apt install -y \
+# # For Claude `docx` skill: install docx JS library for creating new Word documents
+# RUN apt-get update && apt-get install -y --no-install-recommends \
 #     ## Why npm is required:
 #     # 1. For `npx degit`; it costs around 366 MB.
 #     # 2. npm is required for `npm install -g docx` (docx skill: creating new Word documents)
 #     npm \
 #     # Install imagemagick that allows png-jpg conversion
 #     # - Rotate image in-place: `mogrify -rotate 90 sancen-1-photo-4.png`
-#     imagemagick
+#     imagemagick \
+#     && rm -rf /var/lib/apt/lists/*
 
 # # Make globally installed npm packages resolvable via require()
 # ENV NODE_PATH=/usr/local/lib/node_modules
