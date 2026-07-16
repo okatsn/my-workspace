@@ -10,12 +10,7 @@
 # $ docker push okatsn/my-tex-life-with-julia:latest
 
 
-FROM okatsn/my-typst-space:v2025a AS build0
-
-FROM okatsn/my-julia-build:v1.11-2025a AS build-julia
-
-FROM okatsn/my-quarto-build:v1.6 AS build-quarto
-
+FROM okatsn/my-typst-space:v2026a AS build0
 
 FROM okatsn/my-tex-life:v2026a
 # Docker image https://hub.docker.com/repository/docker/okatsn/my-tex-life/general built from https://github.com/okatsn/MyTeXLife
@@ -68,18 +63,6 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 
 
 
-# # Julia part (Please refer the Dockerfile in okatsn/my-julia-build)
-# Noted that the following command makes no change IF you are rebuilding the image WITHOUT prune build and volumes.
-# Explain: Modification on a directory mounted as a volume will be overriden by the volume if the volume already exist. See explanlation in julia-debian-build/README.md
-COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
-COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
-# Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
-RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
-
-# # Quarto part
-COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
-# Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
-RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 
 
 # Install DVC
@@ -103,20 +86,6 @@ RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$
 
 # WORKDIR $WORKSPACE_DIR
 USER $NB_USER
-# RUN julia -e '...' will fail if the permission settings (`chown`) have problems.
-
-# # Install jlpkg, which allows direct use of Pkg in bash command line.
-# # Please refer https://github.com/fredrikekre/jlpkg
-# # KEYNOTE: use jlpkg to install Pkg was intended to fix the " UndefVarError: `Pkg` not defined". However, this error is resulted by a stupid mistake in the next RUN that `Pkg.instantiate()` is used without `using Pkg` (you used `&&` to concatenate two `RUN julia -e '...'`). Feel free to delete this "Install jlpkg" section in the future.
-# RUN curl -fsSL https://github.com/fredrikekre/jlpkg/releases/download/v1.5.1/jlpkg-v1.5.1.tar.gz | \
-#     tar -xzC /usr/local/bin && \
-#     jlpkg add Pkg && \
-
-# KEYNOTE: This seems to cause Permission denied error until you (firstly disable this line in order to successfully build the container) add and build IJulia in your container, and rebuild again. (The permission issue is related to conda)
-# RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");'
-
-
-
 
 COPY --from=build0 /bin/typst /bin
 # Please refer: https://github.com/my-typst-space
