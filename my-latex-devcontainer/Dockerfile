@@ -20,6 +20,16 @@ USER root
 
 # Under root user
 
+# ==========================================
+# 1. Install Python, Pip, and Venv as ROOT
+# ==========================================
+USER root
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
 # # Install Zotero
@@ -85,7 +95,22 @@ RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$
 
 
 # WORKDIR $WORKSPACE_DIR
+
+# ==========================================
+# 2. Configure Virtual Environment as USER
+# ==========================================
 USER $NB_USER
+
+# Create a virtual environment in the user's home directory
+RUN python3 -m venv /home/$NB_USER/.venv
+
+# Prepend the virtual environment's bin to PATH
+# This ensures "python" and "pip" commands default to this venv automatically
+ENV PATH="/home/$NB_USER/.venv/bin:$PATH"
+
+# Upgrade pip inside the environment
+RUN pip install --no-cache-dir --upgrade pip
+
 
 COPY --from=build0 /bin/typst /bin
 # Please refer: https://github.com/my-typst-space
