@@ -36,11 +36,11 @@ services:
       # # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
       # # Copilot agents
-      - ~/projects/my-agents:/workspace/my-agents:ro
+      - ~/projects/my-agents:/home/jovyan/my-agents:ro
       # # Shell history persistence
       - ~/.zsh_history:/home/jovyan/.zsh_history:z
       # Off-the-shelf skills
-      - ~/ai-skills:/workspace/ai-skills:ro
+      - ~/ai-skills:/home/jovyan/ai-skills:ro
       # # WARNING: Git config
       # - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions
