@@ -17,7 +17,7 @@ FROM okatsn/my-julia-build:v1.11-2025a AS build-julia
 FROM okatsn/my-quarto-build:v1.6 AS build-quarto
 
 
-FROM okatsn/my-tex-life:2024c
+FROM okatsn/my-tex-life:v2026a
 # Docker image https://hub.docker.com/repository/docker/okatsn/my-tex-life/general built from https://github.com/okatsn/MyTeXLife
 
 
