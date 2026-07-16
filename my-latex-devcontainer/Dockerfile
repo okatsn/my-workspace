@@ -1,23 +1,18 @@
-# CHECKPOINT: When I'm trying to build a new container base on it (saying `FROM okatsn/my-tex-life-with-julia`), permission error occurred when the docker-compose.yml of the new container also create/attach the volume of .vscode-server.
+# CHECKPOINT: When I'm trying to build a new container base on it (saying `FROM okatsn/my-latex-devcontainer`), permission error occurred when the docker-compose.yml of the new container also create/attach the volume of .vscode-server.
 # The error is fixed when I build the image again using the following command instead; previously, the image was build using docker-compose.yml.
-# However, I cannot reproduce the error again. I'm not sure the permission denied error is solved by using the following building command, or by remove all the my-tex-life-with-julia--related containers, images and volumes.
+# However, I cannot reproduce the error again. I'm not sure the permission denied error is solved by using the following building command, or by remove all the my-latex-devcontainer--related containers, images and volumes.
 #
 # Building command:
-# # `devjuliatex` and `my-tex-life-with-julia` can be replaced by arbitrary names.
+# # `devjuliatex` and `my-latex-devcontainer` can be replaced by arbitrary names.
 # # Remember to change the tag name before build and push.
 # $ docker build -t devjuliatex -f .devcontainer/Dockerfile .
-# $ docker tag devjuliatex okatsn/my-tex-life-with-julia:latest
-# $ docker push okatsn/my-tex-life-with-julia:latest
+# $ docker tag devjuliatex okatsn/my-latex-devcontainer:latest
+# $ docker push okatsn/my-latex-devcontainer:latest
 
 
-FROM okatsn/my-typst-space:v2025a AS build0
+FROM okatsn/my-typst-space:v2026a AS build0
 
-FROM okatsn/my-julia-build:v1.11-2025a AS build-julia
-
-FROM okatsn/my-quarto-build:v1.6 AS build-quarto
-
-
-FROM okatsn/my-tex-life:2024c
+FROM okatsn/my-tex-life:v2026a
 # Docker image https://hub.docker.com/repository/docker/okatsn/my-tex-life/general built from https://github.com/okatsn/MyTeXLife
 
 
@@ -25,6 +20,16 @@ USER root
 
 # Under root user
 
+# ==========================================
+# 1. Install Python, Pip, and Venv as ROOT
+# ==========================================
+USER root
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
 # # Install Zotero
@@ -49,7 +54,7 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 
 
 
-# CHECKPOINT: Multi stage build; Merge these keynotes to the README of my-tex-life-with-julia
+# CHECKPOINT: Multi stage build; Merge these keynotes to the README of my-latex-devcontainer
 # https://cindyliu923.com/2021/05/23/What-is-docker-multi-stage/
 # - Explanation: What are inside an image?  layers!
 # - Keypoints: Middle images won't presents as layers in the final image.
@@ -68,18 +73,6 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 
 
 
-# # Julia part (Please refer the Dockerfile in okatsn/my-julia-build)
-# Noted that the following command makes no change IF you are rebuilding the image WITHOUT prune build and volumes.
-# Explain: Modification on a directory mounted as a volume will be overriden by the volume if the volume already exist. See explanlation in julia-debian-build/README.md
-COPY --from=build-julia --chown=$NB_UID:$NB_GID /home/okatsn/.julia /home/$NB_USER/.julia
-COPY --from=build-julia --chown=$NB_UID:$NB_GID /opt/julia-okatsn /opt/julia-okatsn
-# Create link in the new machine (based on that /usr/local/bin/ is already in PATH)
-RUN ln -fs /opt/julia-okatsn/bin/julia /usr/local/bin/julia
-
-# # Quarto part
-COPY --from=build-quarto --chown=$NB_UID:$NB_GID /opt/quarto /opt/quarto
-# Making the application located at `/opt/quarto/bin/quarto` accessible from anywhere on your system by simply using the command `quarto`.
-RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 
 
 # Install DVC
@@ -102,20 +95,21 @@ RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$
 
 
 # WORKDIR $WORKSPACE_DIR
+
+# ==========================================
+# 2. Configure Virtual Environment as USER
+# ==========================================
 USER $NB_USER
-# RUN julia -e '...' will fail if the permission settings (`chown`) have problems.
 
-# # Install jlpkg, which allows direct use of Pkg in bash command line.
-# # Please refer https://github.com/fredrikekre/jlpkg
-# # KEYNOTE: use jlpkg to install Pkg was intended to fix the " UndefVarError: `Pkg` not defined". However, this error is resulted by a stupid mistake in the next RUN that `Pkg.instantiate()` is used without `using Pkg` (you used `&&` to concatenate two `RUN julia -e '...'`). Feel free to delete this "Install jlpkg" section in the future.
-# RUN curl -fsSL https://github.com/fredrikekre/jlpkg/releases/download/v1.5.1/jlpkg-v1.5.1.tar.gz | \
-#     tar -xzC /usr/local/bin && \
-#     jlpkg add Pkg && \
+# Create a virtual environment in the user's home directory
+RUN python3 -m venv /home/$NB_USER/.venv
 
-# KEYNOTE: This seems to cause Permission denied error until you (firstly disable this line in order to successfully build the container) add and build IJulia in your container, and rebuild again. (The permission issue is related to conda)
-# RUN julia -e 'using Pkg; Pkg.update(); Pkg.instantiate(); Pkg.build("IJulia");'
+# Prepend the virtual environment's bin to PATH
+# This ensures "python" and "pip" commands default to this venv automatically
+ENV PATH="/home/$NB_USER/.venv/bin:$PATH"
 
-
+# Upgrade pip inside the environment
+RUN pip install --no-cache-dir --upgrade pip
 
 
 COPY --from=build0 /bin/typst /bin

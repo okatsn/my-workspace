@@ -19,7 +19,7 @@ Once an image is successfully built, commit and push the image as follows:
     - e.g., `docker commit 3935a2cd9ee6 okatsn/my-julia-space`
 
 commit with a tag and message:
-- `docker commit -m "Hello World!" 89065a96c90b okatsn/my-tex-life-with-julia:helloworld`
+- `docker commit -m "Hello World!" 89065a96c90b okatsn/my-latex-devcontainer:helloworld`
 
 #### Push committed image (with tag)
 

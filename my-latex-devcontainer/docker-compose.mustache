@@ -4,7 +4,7 @@
 
 services:
   # The service name should be consistent with that in devcontainer.json
-  devtj:
+  {{service}}:
     build:
       context: ..
       #     That is out of /.devcontainer
@@ -13,18 +13,25 @@ services:
       dockerfile: .devcontainer/Dockerfile
 
     # Better not to have duplicate image name
-    image: texjuliadev
+    image: {{image}}
     init: true
     # See https://docs.docker.com/compose/compose-file/compose-file-v3/#init
 
     # Better not to have duplicate container name. Error "Conflict will occur if another. The container name "/tex-with-julia" is already in use by container" might occur if there is another container of the same name is currently running.
-    container_name: texlife-with-julia
-    privileged: true  # Add this line to allow Docker operations (using `docker` via dind)
+    container_name: {{docker_compose_name}}
+    {{#dind}}
+    privileged: true  # WARNING: Allow Docker operations (using `docker` via dind). Very dangerous for agentic coding since it allow agent to do anything on host machine
+    {{/dind}}
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ..:/workspace
+      {{^dind}}
+      # # WARNING: Docker socket to access Docker server
+      # Docker command run inside the container actually communicates with the Docker engine on your host machine. This theoretically allows a malicious agent to grant root accessibility to your host machine by creating a new container and mounted it to the entire hard drive.
+      # - /var/run/docker.sock:/var/run/docker.sock
+      {{/dind}}
       # # WARNING: Forwarding `.ssh`, `.gitconfig` and `pydrive2fs` (DVC token) allows agents in container to run `git push origin --delete` or `dvc gc -T`.
-      # # SSH directory
+      # # WARNING: SSH directory
       # - ~/.ssh:/home/jovyan/.ssh
       # # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
@@ -32,8 +39,10 @@ services:
       - ~/projects/my-agents:/home/jovyan/projects/my-agents:ro
       # # Shell history persistence
       - ~/.zsh_history:/home/jovyan/.zsh_history:z
+      # Off-the-shelf skills
+      - ~/ai-skills:/home/jovyan/ai-skills:ro
       # # WARNING: Git config
-      - ~/.gitconfig:/home/jovyan/.gitconfig
+      # - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions
       - julia-depot:/home/jovyan/.julia
       # # KEYNOTE:
@@ -41,26 +50,31 @@ services:
       # # - Please refer to okatsn/MyTeXLife for more explanation
       - vscode-server:/home/jovyan/.vscode-server
       # # WARNING: DVC credential cache directory (this makes DVC credential persistant)
-      - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
+      # - ~/.cache/pydrive2fs:/home/jovyan/.cache/pydrive2fs
+      {{#dind}}
       - /usr/bin/docker:/usr/bin/docker  # Add this to access docker binary; otherwise, permission denied when using docker in this docker container (DinD).
     depends_on:
       # (Docker in Docker, DinD)
-      dind-devtj:
+      dind-{{service}}:
         condition: service_started  # Make this explicit
+      {{/dind}}
     environment:
+      {{#dind}}
       # # Use http to connect with the other container
       - DOCKER_HOST=tcp://dind:2375  # Add this to connect to DinD
+      {{/dind}}
       # Set time zone (GMT-8 is UTC+8):
       # - To print available time-zone names: ls /usr/share/zoneinfo
       - TZ=Etc/GMT-8
     entrypoint: sh -c "sleep infinity"
     # entrypoint: ["zsh", "-c", "while sleep 1000; do :; done"]
 
+{{#dind}}
   # # Use a sibling container to run docker in a docker container (Docker in Docker, DinD)
   # - Set up `dind` where `docker` is inherently available, that can be used via tcp protocol by the service that depends on it.
   # Referring: https://gemini.google.com/app/3c8f232c01664a56
   # KEYNOTE: there is no need to install docker in Dockerfile!
-  dind-devtj:
+  dind-{{service}}:
     image: docker:dind
     privileged: true # dind needs privileged mode
     environment:
@@ -82,10 +96,13 @@ services:
           memory: 256M
     command: --host=tcp://0.0.0.0:2375
     # Add this to expose Docker API
+{{/dind}}
 
 # KEYNOTE: Those defined volumes in service should be declared in the root level
 # Unbind vscode-server to volumes to ensure extensions in devcontainer.json to be installed on rebuild
 volumes:
   julia-depot:
   vscode-server:
+  {{#dind}}
   dind-data:
+  {{/dind}}

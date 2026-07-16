@@ -28,8 +28,7 @@
                 // General settings
                 "files.eol": "\n",
                 "dev.containers.cacheVolume": true,
-                // KEYNOTE: Better to also set these two options `false` in the profile for your container workspaces.
-                // Prevent VS Code GitHub extension from serving credentials via the IPC socket. Without this, direct calls to askpass-main.js return a live OAuth token (HTTP 200) even when GIT_ASKPASS is absent from the environment.
+                // KEYNOTE: Prevent VS Code GitHub extension from serving credentials via the IPC socket. Without this, direct calls to askpass-main.js return a live OAuth token (HTTP 200) even when GIT_ASKPASS is absent from the environment.
                 "github.gitAuthentication": false,
             }
         }
