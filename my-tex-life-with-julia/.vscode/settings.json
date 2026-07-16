@@ -25,10 +25,6 @@
         "~/ai-skills/claude-skill-typst/skills": false,
         "~/ai-skills/superpowers/skills": false,
     },
-    // Julia
-    "julia.executablePath": "/usr/local/bin/julia",
-    "julia.languageServerExecutablePath": "/usr/local/bin/julia",
-    "julia.NumThreads": 1,
     // "ltex.dictionary": {
     //     "en-US": [
     //         ":~/workspace/ltex-dictionary/ltex.dictionary.en-US.txt",
