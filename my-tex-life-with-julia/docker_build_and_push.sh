@@ -29,7 +29,7 @@ trap 'rc=$?; if [ "$rc" -ne 0 ]; then
   fi
 fi' EXIT
 
-IMAGE_NAME="okatsn/my-tex-life-with-julia"
+IMAGE_NAME="okatsn/my-latex-devcontainer"
 BUILD_IMAGE=true
 TAGS=()
 

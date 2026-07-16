@@ -21,8 +21,8 @@ sudo apt install nodejs npm -y
 
 ## To create a mustache project
 
-!!! note 
-    Replace `mustache-project` to something like `my-tex-life-with-julia` .
+!!! note
+    Replace `mustache-project` to something like `my-latex-devcontainer` .
 
 Create and go to the project directory
 

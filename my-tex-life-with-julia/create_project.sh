@@ -1,4 +1,4 @@
-# Example: In my-tex-life-with-julia run `. create_project.sh HelloWorld`
+# Example: In my-latex-devcontainer run `. create_project.sh HelloWorld`
 
 newproj=$1
 

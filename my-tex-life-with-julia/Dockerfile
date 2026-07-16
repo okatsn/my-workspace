@@ -1,13 +1,13 @@
-# CHECKPOINT: When I'm trying to build a new container base on it (saying `FROM okatsn/my-tex-life-with-julia`), permission error occurred when the docker-compose.yml of the new container also create/attach the volume of .vscode-server.
+# CHECKPOINT: When I'm trying to build a new container base on it (saying `FROM okatsn/my-latex-devcontainer`), permission error occurred when the docker-compose.yml of the new container also create/attach the volume of .vscode-server.
 # The error is fixed when I build the image again using the following command instead; previously, the image was build using docker-compose.yml.
-# However, I cannot reproduce the error again. I'm not sure the permission denied error is solved by using the following building command, or by remove all the my-tex-life-with-julia--related containers, images and volumes.
+# However, I cannot reproduce the error again. I'm not sure the permission denied error is solved by using the following building command, or by remove all the my-latex-devcontainer--related containers, images and volumes.
 #
 # Building command:
-# # `devjuliatex` and `my-tex-life-with-julia` can be replaced by arbitrary names.
+# # `devjuliatex` and `my-latex-devcontainer` can be replaced by arbitrary names.
 # # Remember to change the tag name before build and push.
 # $ docker build -t devjuliatex -f .devcontainer/Dockerfile .
-# $ docker tag devjuliatex okatsn/my-tex-life-with-julia:latest
-# $ docker push okatsn/my-tex-life-with-julia:latest
+# $ docker tag devjuliatex okatsn/my-latex-devcontainer:latest
+# $ docker push okatsn/my-latex-devcontainer:latest
 
 
 FROM okatsn/my-typst-space:v2026a AS build0
@@ -44,7 +44,7 @@ RUN chmod +x /tmp/get_zoteroaddons.sh && \
 
 
 
-# CHECKPOINT: Multi stage build; Merge these keynotes to the README of my-tex-life-with-julia
+# CHECKPOINT: Multi stage build; Merge these keynotes to the README of my-latex-devcontainer
 # https://cindyliu923.com/2021/05/23/What-is-docker-multi-stage/
 # - Explanation: What are inside an image?  layers!
 # - Keypoints: Middle images won't presents as layers in the final image.

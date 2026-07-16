@@ -6,7 +6,7 @@ The content of this folder is migrated from [okatsn/MyTeXLifeWithJulia](https://
 ## Use with Dev Containers extension of VSCode
 
 Use with Dev Containers extension of VSCode (`ms-vscode-remote.remote-containers`)
-- `WSL: Open folder in WSL` and open `my-workspace/my-tex-life-with-julia`
+- `WSL: Open folder in WSL` and open `my-workspace/my-latex-devcontainer`
 - `Dev Containers: Rebuild and Reopen in Container`
 
 
@@ -17,7 +17,7 @@ For more information, see the comments in Dockerfile.
 
 Option 1:
 - Modify the contents in `data.json`.
-- `cd my-tex-life-with-julia` to navigate to the directory.
+- `cd my-latex-devcontainer` to navigate to the directory.
 - `. create_project.sh HelloWorld` in bash.
 - Copy all the contents in the HelloWorld folder to the directory of your project.
 
@@ -29,11 +29,11 @@ Option 2:
 
 ## Apply this workspace as arbitrary container (for user)
 
-To build user's workspace, modify [my-tex-life-with-julia/data.json](data.json) and use [my-tex-life-with-julia/create_project.sh](create_project.sh) to export `.devcontainer` files based on [data.json](data.json). For example,
+To build user's workspace, modify [my-latex-devcontainer/data.json](data.json) and use [my-latex-devcontainer/create_project.sh](create_project.sh) to export `.devcontainer` files based on [data.json](data.json). For example,
 
 ```bash
-# After set up my-tex-life-with-julia/data.json
-cd my-tex-life-with-julia
+# After set up my-latex-devcontainer/data.json
+cd my-latex-devcontainer
 . create_project.sh TEMP
 ```
 
