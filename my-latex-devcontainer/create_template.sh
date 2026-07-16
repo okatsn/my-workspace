@@ -17,6 +17,8 @@ fi' EXIT
 # Create a structured LaTeX manuscript template in the current directory.
 # The current directory is assumed to be the intended NameOfMainFolder.
 # No arguments are accepted. Existing files are NOT overwritten.
+# Example:
+# cd my-paper && . ../create_template.sh
 
 sleep_and_exit() {
 	# Sleep 5 seconds so user can read the error per project shell guide.
