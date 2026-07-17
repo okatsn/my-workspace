@@ -8,12 +8,15 @@ set -e
 #   ./dvcDag.sh -LR -o mydag.png   # Generate mydag.png with Left-Right layout
 #   ./dvcDag.sh -TB -o mydag.png   # Generate mydag.png with Top-Bottom layout
 
-# Pause before exit when the script fails so the caller can see the error.
-# - Uses an EXIT trap to catch any non-zero exit (including explicit `exit 1`).
+# Pause before exit when the script fails OR when explicitly requested (like --help).
+# - Uses an EXIT trap to catch any exit.
 # - If running interactively it prompts the user to press Enter. In CI or
 #   non-interactive environments it sleeps for 5 seconds instead.
-trap 'rc=$?; if [ "$rc" -ne 0 ]; then
-  echo "\nERROR: script exited with code $rc at $(date)" >&2
+trap 'rc=$?; if [ "$rc" -ne 0 ] || [ "$PAUSE_ON_EXIT" = "true" ]; then
+  if [ "$rc" -ne 0 ]; then
+    echo "" >&2
+    echo "ERROR: script exited with code $rc at $(date)" >&2
+  fi
   if [ -n "$CI" ] || [ ! -t 1 ]; then
     echo "Non-interactive or CI environment detected; sleeping 5s before exit..." >&2
     sleep 5
@@ -42,6 +45,7 @@ show_usage() {
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   show_usage
+  PAUSE_ON_EXIT=true
   exit 0
 fi
 
