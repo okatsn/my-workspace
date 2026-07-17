@@ -182,19 +182,13 @@ main() {
 	              -o manuscript/manuscript.tex \
 	              '. expand_output.sh manuscript'
     dvc stage add -n compile \
-                  -d manuscript/main.tex \
                   -d manuscript/manuscript.tex \
-                  -o manuscript/main.pdf \
                   -o manuscript/manuscript.pdf \
-                  -o manuscript/main.aux \
                   -o manuscript/manuscript.aux \
-                  -o manuscript/main.bbl \
                   -o manuscript/manuscript.bbl \
-                  -o manuscript/main.blg \
                   -o manuscript/manuscript.blg \
-                  -o manuscript/main.synctex.gz \
                   -o manuscript/manuscript.synctex.gz \
-                  'cd manuscript/ && . compile.sh main.tex && . compile.sh manuscript.tex'
+                  'cd manuscript/ && compile.sh manuscript.tex'
 	dvc stage add -n clean_n_zip manuscript \
 	              -d manuscript/manuscript.pdf \
 				  -o latex-manuscript.zip \
