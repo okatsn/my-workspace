@@ -189,7 +189,7 @@ main() {
                   -o manuscript/manuscript.blg \
                   -o manuscript/manuscript.synctex.gz \
                   'cd manuscript/ && compile.sh manuscript.tex'
-	dvc stage add -n clean_n_zip manuscript \
+	dvc stage add -n clean_n_zip_manuscript \
 	              -d manuscript/manuscript.pdf \
 				  -o latex-manuscript.zip \
 				  '. clean_n_zip.sh'
