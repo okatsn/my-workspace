@@ -6,6 +6,17 @@ The Dockerfile script for building this workspace is [my-jupyter-with-julia/Dock
 
 Use [my-jupyter-with-julia/docker_build_and_push.sh](docker_build_and_push.sh) to build an image for this and push it to Dockerhub.
 
+### Convention
+
+Always push with two tags:  `. docker_build_and_push.sh v[yyyy][a-z] v[yyyy][a-z].[n]`;
+the `v[yyyy][a-z]` always refer the latest/largest `n` in the same prefix.
+
+For example:
+- `. docker_build_and_push.sh v2026c v2026c.0` (the first push of "v2026c" version; `v2026c` and `v2026c.0` refers the same image);
+- `. docker_build_and_push.sh v2026c v2026c.1` (now `v2026c` refers the `v2026c.1` image).
+
+
+
 ## Apply this workspace as arbitrary container (for user)
 
 To build user's workspace, modify [my-jupyter-with-julia/data.json](data.json) and use [my-jupyter-with-julia/create_project.sh](create_project.sh) to export `.devcontainer` files based on [data.json](data.json). For example,
