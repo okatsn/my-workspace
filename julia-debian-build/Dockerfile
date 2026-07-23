@@ -80,31 +80,25 @@ RUN julia -e 'using Pkg; Pkg.update()' \
 # KEYNOTE: Don't build IJulia or add packages before the final stage
 # - The build step of IJulia is required to make any jupyter related functions such as quarto; it involves linking Julia with the Jupyter notebook infrastructure, and IJulia relies on the Conda.jl package to manage the Jupyter installation.
 # - Thus, it is prone to error or effortless if the layer of building IJulia is in the stage other than the final stage when trying to build a multi-stage Docker image, because each stage is a different machine/system.
-# - Copy only the Project.toml instead of add packages and move them to a new machine.
-
-# (LEGACY) For OhMyREPL
-# ARG OKATSN_JULIA_ENVS=/home/okatsn/.julia/environments
-# # Don't add `@`, @v1.10 will create a folder "@v1.10".
-# ARG TARGET_PROJECTTOML=${OKATSN_JULIA_ENVS}/${JULIA_PROJECT}/Project.toml
-# RUN mkdir -p /home/okatsn/.julia/config && \
-#     mkdir -p ${OKATSN_JULIA_ENVS}/${JULIA_PROJECT} && \
-#     rm -f $TARGET_PROJECTTOML
-
-# COPY startup.jl /home/okatsn/.julia/config/startup.jl
-# COPY Project.toml $TARGET_PROJECTTOML
-# # KEYNOTE: For OhMyREPL etc.
-# - RUN mkdir -p /home/$NB_USER/.julia/config && cp .devcontainer/startup.jl "$_" # This mkdir all necessary paths and copy files to there in one line. It worked in bash but failed in Dockerfile.
-# - Use $HOME instead of /home/$NB_USER will fail! Since $HOME is not recognized as absolute directory!
-# - COPY startup.jl in the end to avoid permission error
+# KEYNOTE: OhMyREPL settings were migrated to my-jupyter-with-julia/helper/init.sh
+#   (LEGACY) For OhMyREPL
+#     ARG OKATSN_JULIA_ENVS=/home/okatsn/.julia/environments
+#     # Don't add `@`, @v1.10 will create a folder "@v1.10".
+#     ARG TARGET_PROJECTTOML=${OKATSN_JULIA_ENVS}/${JULIA_PROJECT}/Project.toml
+#     RUN mkdir -p /home/okatsn/.julia/config && \
+#         mkdir -p ${OKATSN_JULIA_ENVS}/${JULIA_PROJECT} && \
+#         rm -f $TARGET_PROJECTTOML
+#   (startup.jl and Project.toml were moved to my-jupyter-with-julia/.devcontainer)
+#     COPY startup.jl /home/okatsn/.julia/config/startup.jl
+#     COPY Project.toml $TARGET_PROJECTTOML
+#     # COPY startup.jl in the end to avoid permission error
 #
-# # KEYNOTE: COPYing startup.jl and Project.toml only works for the first build. If the destination is already mounted to a volume in the context of rebuild a container, as you mounted a volume, it essentially covers up whatever was in that directory in the image, making the COPY command seem like it had no effect.
+# KEYNOTE: COPY files to a directory mounted as volume only works for the first build. Unless you prune the volume, the COPY command had no effect at container rebuild even without cache.
 
 
 # Copy essential files to a temporary location inside the image
 RUN mkdir -p /tmp/julia
 RUN echo "JULIA_PROJECT=${JULIA_PROJECT}" > /tmp/julia/julia.env
-COPY Project.toml /tmp/julia/Project.toml
-COPY startup.jl /tmp/julia/startup.jl
 
 
 # End of Stage "my-julia-build"
