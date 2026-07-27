@@ -30,6 +30,18 @@ node render.js
 cp -r .devcontainer "$newproj/.devcontainer"
 cp -r .vscode "$newproj/.vscode"
 cp data.json "$newproj/data.json"
-cp create_template.sh "$newproj/create_template.sh"
+# DVC pipeline
+cp dvc.yaml "$newproj/dvc.yaml"
+cp params.yaml "$newproj/params.yaml"
+# scripts used in DVC pipeline
 cp expand_output.sh "$newproj/expand_output.sh"
 cp clean_n_zip.sh "$newproj/clean_n_zip.sh"
+cp diff_ref.sh "$newproj/diff_ref.sh"
+cp tex_graph.py "$newproj/tex_graph.py"
+# manuscript template
+cp -r manuscript "$newproj/manuscript"
+cp -r chapters "$newproj/chapters"
+cp -r contents "$newproj/contents"
+cp .gitignore "$newproj/.gitignore"
+# AGENTS.md (README shared by agents and human)
+cp AGENTS.md "$newproj/AGENTS.md"

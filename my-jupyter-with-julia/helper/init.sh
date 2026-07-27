@@ -32,8 +32,8 @@ JULIA_CONFIG_DIR="$HOME/.julia/config/"
 mkdir -p "$JULIA_ENV_DIR"
 mkdir -p "$JULIA_CONFIG_DIR"
 
-cp -f /tmp/julia/Project.toml "${JULIA_ENV_DIR}/Project.toml"
-cp -f /tmp/julia/startup.jl "${JULIA_CONFIG_DIR}/startup.jl"
+cp -f /home/jovyan/workspace/.devcontainer/Project.toml "${JULIA_ENV_DIR}/Project.toml"
+cp -f /home/jovyan/workspace/.devcontainer/startup.jl "${JULIA_CONFIG_DIR}/startup.jl"
 
 echo "Project.toml and startup.jl copied!"
 

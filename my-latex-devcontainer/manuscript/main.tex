@@ -1,0 +1,47 @@
+% This is main.tex, the simplest LaTeX document
+\documentclass{article}
+% Bring in configuration macros
+\input{./config.tex}
+
+\begin{document}
+
+\title{\mainTitle}
+\author{\Me}
+\date{\today}
+
+\maketitle
+
+This document includes a reference \cite{placeholder2025}.
+
+% Include chapter sections
+
+\section{Introduction} \label{sec_intro}
+%% KEYNOTE: Supported citation and cross-reference syntaxes
+% - \citep
+% - \citep[e.g.,][]
+% - \citet
+% - Fig.~\ref{fig_site}
+% - Sec.~\ref{sec_met}
+
+% ... add more chapter inputs here ...
+\section{Methods} \label{sec_met}
+
+\section{Results}
+
+\input{../chapters/sec_result.tex}
+
+\section{Discussion}
+
+\input{../chapters/sec_discussion.tex}
+
+\section{Conclusion}
+
+\input{../chapters/sec_conclusion.tex}
+
+\section*{Acknowledgement}
+
+
+\bibliographystyle{plain}
+\bibliography{bibtex} % refers to bibtex.bib
+
+\end{document}

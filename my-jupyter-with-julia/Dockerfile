@@ -1,4 +1,4 @@
-FROM okatsn/my-julia-build:v1.12-2026b AS build-julia
+FROM okatsn/my-julia-build:v1.12-2026c AS build-julia
 FROM okatsn/my-quarto-build:v1.8-2026a AS build-quarto
 FROM okatsn/my-typst-space:v2026a AS build0
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
@@ -32,9 +32,20 @@ USER root
 
 
 # # Fix permissions for directories that is going to be mounted as volume but not-yet created when building this image. For those mounted as volume but user might need their permissions, directories must be made first.
-#
 # - The starship cache: allow starship to create log.
-RUN mkdir -p /home/$NB_USER/.cache/starship && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/starship
+# - Create all other necessary user directories at once
+RUN mkdir -p \
+    /home/$NB_USER/.cache/starship \
+    $WORKSPACE_DIR \
+    $SUB_PROJECT_DIR \
+    $JULIA_PKG_DEVDIR \
+    $VSCODE_PATH/extensions
+
+# Fix permissions on all created home subdirectories before dropping root privileges
+RUN chown -R $NB_UID:$NB_GID /home/$NB_USER && \
+    chown $NB_USER:$NB_GID /usr/local/bin && \
+    fix-permissions /home/$NB_USER
+
 # - pydrive2fs: persistent dvc remote credentials.
 # RUN mkdir -p /home/$NB_USER/.cache/pydrive2fs && chown -R $NB_USER:$NB_GID /home/$NB_USER/.cache/pydrive2fs
 # KEYNOTE: this cannot solve the permission issue. Still only root can access pydrive2fs.
@@ -87,19 +98,6 @@ RUN ln -fs /opt/quarto/bin/quarto /usr/local/bin/quarto
 # and it is currently no need to set QUARTO_PYTHON
 # Quarto CLI (e.g., `quarto preview ...`, `quarto render ...`) works when this container is built; however, additional VSCode settings needs to be correctly specified otherwise VSCode quarto extension won't work properly (cannot find Jupyter  pre-installed in minimal-notebook). See the settings in devcontainer.json
 # ENV QUARTO_PYTHON=/opt/conda/bin/jupyter
-
-RUN mkdir -p $WORKSPACE_DIR $SUB_PROJECT_DIR $JULIA_PKG_DEVDIR
-
-
-
-## Fix permissions for NB_USER
-# ERROR will occur if:
-# - Without `chown $NB_USER:$NB_GID /home/$NB_USER`, subdirectories for vscode cannot be created because "/home/$NB_USER" is created and only owned by root.
-RUN mkdir -p $VSCODE_PATH/extensions && \
-    chown $NB_USER:$NB_GID $WORKSPACE_DIR && \
-    # WARNING: This allows arbitrary installation at runtime
-    chown $NB_USER:$NB_GID /usr/local/bin
-# in order to install starship
 
 # Switch to $NB_USER
 # # Switch to $NB_USER is essential for the following RUN julia -e ...

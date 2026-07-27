@@ -42,6 +42,8 @@ creates `TEMP` in the current directory, that you can:
 ```bash
 cp -r TEMP/. ../../MyProject/
 ```
+> or `cp -r TEMP/. ../../MyProject/subproject`
+
 
 Remeber to restore the current workspace.
 

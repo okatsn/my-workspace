@@ -1,4 +1,4 @@
-FROM okatsn/my-jupyter-with-julia:v2026c
+FROM okatsn/my-jupyter-with-julia:v2026c.1
 
 USER root
 
