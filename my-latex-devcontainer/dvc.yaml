@@ -1,0 +1,41 @@
+stages:
+  expand_to_output:
+    cmd: . expand_output.sh manuscript
+    deps:
+      - contents
+      - chapters
+      - manuscript/main.tex
+    outs:
+      - manuscript/manuscript.tex
+  compile:
+    cmd: cd manuscript/ && . compile.sh manuscript.tex
+    deps:
+      - manuscript/manuscript.tex
+    outs:
+      - manuscript/manuscript.pdf
+      # Auxiliary files are added as outs, because in this way they will be removed before `dvc repro`.
+      - manuscript/manuscript.aux
+      - manuscript/manuscript.bbl
+      - manuscript/manuscript.blg
+      - manuscript/manuscript.synctex.gz
+  tex_dependency_graph:
+    # Build the dependency graph for references
+    cmd: python3 tex_graph.py manuscript/main.tex > tex_dependency_graph.md
+    deps:
+      - contents
+      - chapters
+      - manuscript/main.tex
+    outs:
+      - tex_dependency_graph.md
+  diff_ref:
+    cmd: . diff_ref.sh ${diff_ref.branch} manuscript/manuscript.tex manuscript_0.diff
+    deps:
+      - manuscript/manuscript.tex
+    outs:
+      - manuscript_0.diff
+  clean_n_zip:
+    cmd: . clean_n_zip.sh manuscript latex-manuscript
+    deps:
+      - manuscript/manuscript.pdf
+    outs:
+      - latex-manuscript.zip

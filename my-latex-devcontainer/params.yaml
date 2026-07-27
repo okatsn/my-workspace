@@ -1,0 +1,3 @@
+diff_ref:
+  # `manuscript_0.diff` shows the difference between manuscript/manuscript.tex of the current workspace against `diff_ref.branch`
+  branch: main
