@@ -16,25 +16,26 @@ trap 'rc=$?; if [ "$rc" -ne 0 ]; then
   fi
 fi' EXIT
 
-# Check for exactly one argument
-if [ "$#" -ne 1 ]; then
-	echo "Error: This script requires exactly one argument (document folder path)" >&2
-	echo "Usage: $0 <document-folder>" >&2
+# Check for exactly two arguments
+if [ "$#" -ne 2 ]; then
+	echo "Error: This script requires exactly two arguments" >&2
+	echo "Usage: $0 <document-folder> <temp-directory-name>" >&2
 	exit 1
 fi
 
 # Work in a temporary directory
 DOCFILE="$1"
+TEMP_DIR="$2"
 # Create the working directory; on failure print an error, wait 5s, then exit
-if ! mkdir latex-manuscript/; then
-	echo "Error: failed to create directory 'latex-manuscript/'" >&2
+if ! mkdir "$TEMP_DIR"/; then
+	echo "Error: failed to create directory '$TEMP_DIR/'" >&2
 	# wait so the user can see the message (ShellGuide: wait 5 seconds on custom errors)
 	sleep 5
 	exit 1
 fi
-cp -r $DOCFILE/. latex-manuscript/
+cp -r "$DOCFILE"/. "$TEMP_DIR"/
 
-cd latex-manuscript
+cd "$TEMP_DIR"
 
 # Remove auxiliary files before zipping (to avoid journal system to compile wrongly):
 find -type f -name '*.aux' -exec rm {} \;
@@ -42,6 +43,8 @@ find -type f -name '*.blg' -exec rm {} \;
 find -type f -name 'main.*' -exec rm {} \;
 find -type f -name '*.sh' -exec rm {} \;
 find -type f -name '*.dvc' -exec rm {} \;
+find -type f -name '*.spl' -exec rm {} \;
+find -type f -name '*.synctex.gz' -exec rm {} \;
 find -type f -name '*:Zone.Identifier' -exec rm {} \;
 # Remove TOML files
 find -type f -name '*.toml' -exec rm {} \;
@@ -52,9 +55,9 @@ find -type f -name '*.pdf' ! -name 'manuscript.pdf' -exec rm {} \;
 
 rm .gitignore
 
-zip -9 -r ../latex-manuscript.zip .
+zip -9 -r "../${TEMP_DIR}.zip" .
 # the compression level from -0 (no compression) to -9 (highest compression).
 # instead of `zip -r latex-manuscript`, `zip -r .` make files in the root.
 
 cd ..
-rm -rv latex-manuscript
+rm -rv "$TEMP_DIR"
