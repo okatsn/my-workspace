@@ -29,10 +29,12 @@ The latex manuscript structure:
 
 ## Rules
 
-- Read `dvc.yaml`, `params.yaml` to understand the dependencies of `main.tex` and the pipeline of manuscript production.
-- `manuscript.tex` is expanded from `main.tex`, it serves as a replica of the whole manuscript but in a single file. Only read it; NEVER edit it.
-- `main.tex` and its dependencies (`chapters/*.tex`, `contents/*.tex`) are the SSoT.
+- Read `dvc.yaml`, `params.yaml` to understand the dependencies of `main.tex` and peripheral files in the manuscript production pipeline.
+- `manuscript.tex` is expanded from `main.tex`, it serves as a replica of the whole manuscript but in a single file. Only read it; NEVER edit it. The final product is `manuscript.tex` (to be shared); it is tracked by DVC.
+- `main.tex` and its dependencies (`chapters/*.tex`, `contents/*.tex`) are the SSoT; they are tracked by GIT.
 - Read `tex_dependency_graph.md` to understand the dependencies of `main.tex` before dive into the SSoT.
+- Write manuscript in `chapters/*.tex` and `contents/*.tex`. Keep `main.tex` as a pure skeleton.
+- Put figures in `manuscript/`: `latexpand` simply expand latex code, which means when you include a figure in `chapters/*.tex` or `contents/*.tex` files, you have to use path `Fig.eps` (to be read by `manuscript.tex`), rather than `../manuscript/Fig.eps` (errored/cannot find the file in compiling `manuscript.tex`).
 
 Rationale:
 1. `manuscript.tex` is tracked by DVC pipeline, so it should not be edited.
