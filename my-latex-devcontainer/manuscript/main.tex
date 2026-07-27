@@ -1,0 +1,24 @@
+% This is main.tex, the simplest LaTeX document
+\documentclass{article}
+% Bring in configuration macros
+\input{./config.tex}
+
+\begin{document}
+
+\title{\mainTitle}
+\author{\Me}
+\date{\today}
+
+\maketitle
+
+
+% Include chapter sections
+\input{../chapters/sec_1.tex}
+
+This document includes a reference \cite{placeholder2025}.
+% ... add more chapter inputs here ...
+
+\bibliographystyle{plain}
+\bibliography{bibtex} % refers to bibtex.bib
+
+\end{document}
