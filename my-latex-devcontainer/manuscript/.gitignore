@@ -5,6 +5,7 @@
 *.bbl
 *.blg
 *.spl
-
+/manuscript_diff_*.tex
+/manuscript_diff_*.pdf
 
 

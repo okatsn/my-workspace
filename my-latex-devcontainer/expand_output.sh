@@ -102,12 +102,10 @@ latexindent --output=manuscript.tex manuscript.tex
 
 echo "Creating reference files for local use..."
 
-cp manuscript.tex ../ref-manuscript.tex
-
-latexpand --keep-comments -o ../ref-manuscript-wc.tex "$file_name"
-
-cd ..
-
-latexindent --output=ref-manuscript-wc.tex ref-manuscript-wc.tex
+# # KEYNOTE: No need to generate ref-manuscript because we have `diff_ref` and `compile_diff_pdf` stages. Remove this later.
+# cp manuscript.tex ../ref-manuscript.tex
+# latexpand --keep-comments -o ../ref-manuscript-wc.tex "$file_name"
+# latexindent --output=ref-manuscript-wc.tex ref-manuscript-wc.tex
 
 echo "Expansion complete. 'manuscript.tex' is now ready for compilation and submission."
+cd ..

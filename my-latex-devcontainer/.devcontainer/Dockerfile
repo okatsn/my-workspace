@@ -59,6 +59,11 @@ ENV NODE_PATH=/usr/local/lib/node_modules
 # For docx skill
 RUN npm install -g docx
 
+# # # LATER: https://share.gemini.google/6ict9qKYq2Ro
+# # For converting diff file to html
+# # Example: `npx diff2html-cli -i file -s side -o stdout -- manuscript_0.diff > manuscript_0.html`
+# RUN npm install -g diff2html-cli
+
 
 # ## Install fonts that supports smcp
 # RUN wget https://github.com/adobe-fonts/source-serif/archive/refs/heads/release.zip -O /tmp/temp123.zip  \

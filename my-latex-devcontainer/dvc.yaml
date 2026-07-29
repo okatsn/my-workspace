@@ -28,11 +28,22 @@ stages:
     outs:
       - tex_dependency_graph.md
   diff_ref:
-    cmd: . diff_ref.sh ${diff_ref.branch} manuscript/manuscript.tex manuscript_0.diff
+    cmd: . diff_ref.sh --alsolatexdiff ${diff_ref.branch} manuscript/manuscript.tex manuscript_0.diff
     deps:
       - manuscript/manuscript.tex
+    params:
+      - diff_ref.branch
     outs:
       - manuscript_0.diff
+      - manuscript/manuscript_diff_${diff_ref.branch}.tex
+  compile_diff_pdf:
+    cmd: cd manuscript/ && . compile.sh manuscript_diff_${diff_ref.branch}.tex
+    deps:
+      - manuscript/manuscript_diff_${diff_ref.branch}.tex
+    params:
+      - diff_ref.branch
+    outs:
+      - manuscript/manuscript_diff_${diff_ref.branch}.pdf
   clean_n_zip:
     cmd: . clean_n_zip.sh manuscript latex-manuscript
     deps:

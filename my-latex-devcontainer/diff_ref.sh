@@ -26,20 +26,25 @@ trap cleanup EXIT
 
 show_usage() {
   cat << 'EOF'
-Usage: diff_ref.sh <branch> <file_to_compare> <output_diff>
+Usage: diff_ref.sh [--alsolatexdiff] <branch> <file_to_compare> <output_diff>
 
 Compare a file in the workspace with the same file at a reference
 branch/revision using `dvc get`. If the reference revision does not
 have the file tracked yet (e.g. the very first `dvc repro`), a dummy
 diff file with an obvious warning is written instead of failing.
 
+Options:
+  --alsolatexdiff Also run latexdiff and write output to a derived filename
+                  (e.g., manuscript/manuscript_diff_<branch>.tex)
+
 Arguments:
   branch          Git branch/revision to fetch the reference file from
   file_to_compare Path (relative to the repo root) to the file to compare
   output_diff     Path to write the resulting diff (or warning) to
 
-Example:
+Examples:
   ./diff_ref.sh main manuscript/manuscript.tex manuscript_0.diff
+  ./diff_ref.sh --alsolatexdiff main manuscript/manuscript.tex manuscript_0.diff
 EOF
 }
 
@@ -51,6 +56,13 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     show_usage
   fi
   exit 0
+fi
+
+# Handle --alsolatexdiff flag
+use_latexdiff=false
+if [[ "${1:-}" == "--alsolatexdiff" ]]; then
+  use_latexdiff=true
+  shift
 fi
 
 if [ "$#" -ne 3 ]; then
@@ -71,6 +83,22 @@ if dvc get . "$file_to_compare" --rev "$branch" -o "$reference_file"; then
   # `git diff --no-index` exits with code 1 when differences are found,
   # so it must not trigger the strict-mode error handler.
   git diff --no-index "$reference_file" "$file_to_compare" > "$output_diff" || true
+
+  # If --alsolatexdiff was requested and latexdiff is available, run it
+  if [ "$use_latexdiff" = true ] && command -v latexdiff >/dev/null 2>&1; then
+    # Derive the latexdiff output filename: insert _diff_<branch> before the extension
+    # Example: manuscript/manuscript.tex -> manuscript/manuscript_diff_main.tex
+    dir=$(dirname "$file_to_compare")
+    filename=$(basename "$file_to_compare")
+    filename_without_ext="${filename%.*}"
+    ext="${filename##*.}"
+    output_diff_tex="$dir/${filename_without_ext}_diff_${branch}.${ext}"
+
+    latexdiff "$reference_file" "$file_to_compare" > "$output_diff_tex" || true
+  elif [ "$use_latexdiff" = true ]; then
+    echo "WARNING: --alsolatexdiff requested but 'latexdiff' command not found on PATH." >&2
+  fi
+
   rm -f "$reference_file"
 else
   echo "" >&2

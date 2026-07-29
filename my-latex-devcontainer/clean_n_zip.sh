@@ -46,6 +46,7 @@ find -type f -name '*.dvc' -exec rm {} \;
 find -type f -name '*.spl' -exec rm {} \;
 find -type f -name '*.synctex.gz' -exec rm {} \;
 find -type f -name '*:Zone.Identifier' -exec rm {} \;
+find -type f -name 'manuscript_diff_*' -exec rm {} \;
 # Remove TOML files
 find -type f -name '*.toml' -exec rm {} \;
 # Remove all .tex files except `-name <file>`
