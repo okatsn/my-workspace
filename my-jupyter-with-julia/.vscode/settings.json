@@ -14,6 +14,7 @@
     },
     "chat.instructionsFilesLocations": {
         "~/projects/my-agents/shell/instructions": true,
+        "~/projects/my-agents/general/instructions": true,
     },
     "chat.agentSkillsLocations": {
         ".github/skills": true,
