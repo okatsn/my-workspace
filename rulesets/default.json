@@ -8,6 +8,7 @@
     "conditions": {
         "ref_name": {
             "exclude": [
+                "refs/heads/dependabot/**/*",
                 "refs/heads/sandbox/**/*",
                 "refs/heads/tmp/**/*"
             ],
