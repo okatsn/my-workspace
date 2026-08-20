@@ -4,6 +4,8 @@ USER root
 
 RUN apt-get update && \
     apt-get -y install \
+    # # ripgrep (especially useful for agents)
+    ripgrep \
     fontconfig \
     # # DejaVu Sans & DejaVu Sans Mono (required by Documenter's documenter.sty)
     fonts-dejavu \
