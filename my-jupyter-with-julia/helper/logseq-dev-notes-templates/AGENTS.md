@@ -6,6 +6,62 @@ For example, `[[Algorithm Whatever]]` in the body text or the metadata value con
 
 Logseq metadata are key-value pairs (syntax: `keys:: value`) for searchable attributes, tags, alias to an entire document pages.
 
+### Query Methods
+
+#### Using `ripgrep`
+
+ripgrep is available. Use `rg` for query, for example:
+
+```bash
+# Find the referenced page of an referred concept
+rg -l '^alias:: \[\[QD\]\]' pages
+```
+
+```bash
+# Find all blocks that refers the concept
+rg -n '\[\[QD\]\]' .
+```
+
+```bash
+# or find a concept directly:
+rg -n 'Quasi Differentiation'
+```
+
+#### Using the custom `logseq_refs.py`
+
+Here is the docstring:
+```python
+"""
+Small reference utility for an OG/file-based Logseq graph.
+
+Examples
+--------
+# Print pages referenced by explicitly listed journals:
+python logseq_refs.py . pages \
+    journals/2026-05-04.md journals/2026-05-05.md
+
+# Print pages referenced by an inclusive journal range:
+python logseq_refs.py . pages --from 2026-05-04 --to 2026-05-06
+
+# Path form is also accepted for range endpoints:
+python logseq_refs.py . pages \
+    --from journals/2026-05-04.md --to journals/2026-05-06.md
+
+# Also print the selected journals themselves, before referenced pages:
+python logseq_refs.py . pages \
+    --from 2026-05-04 --to 2026-05-06 --include-journals
+
+# Print blocks that reference a page (canonical name or alias):
+python logseq_refs.py . refs "Discontinuous Galerkin"
+"""
+```
+
+Use it in this repo, for example:
+
+```bash
+python helper/logseq_refs.py logseq-dev-notes pages --from 2026-08-07 --to 2026-08-21 --include-journal
+```
+
 ## Human--AI-Agent Collaboration Rules
 
 Ownership:
