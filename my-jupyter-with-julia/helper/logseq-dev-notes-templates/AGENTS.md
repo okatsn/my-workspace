@@ -8,58 +8,46 @@ Logseq metadata are key-value pairs (syntax: `keys:: value`) for searchable attr
 
 ### Query Methods
 
-#### Using `ripgrep`
+Use `logseq_refs.py` if the target is written in logseq page syntax in `logseq-dev-notes`.
+Use ripgrep, `rg` if the target is written in plain text, or a page property; not necessarily in `logseq-dev-notes`.
+
+
+See examples below.
+
+#### `ripgrep`
 
 ripgrep is available. Use `rg` for query, for example:
 
 ```bash
-# Find the referenced page of an referred concept
-rg -l '^alias:: \[\[QD\]\]' pages
-```
-
-```bash
-# Find all blocks that refers the concept
-rg -n '\[\[QD\]\]' .
-```
-
-```bash
-# or find a concept directly:
+# Find a concept directly:
 rg -n 'Quasi Differentiation'
+
+# Print the file names of all pages having property "status" (and its value):
+rg -n '^status::'
 ```
 
-#### Using the custom `logseq_refs.py`
+#### Using the custom `helper/logseq_refs.py`
 
-Here is the docstring:
-```python
-"""
-Small reference utility for an OG/file-based Logseq graph.
+This is a custom helper to query logseq contents.
 
-Examples
---------
+```bash
+# Print pages referenced by an inclusive journal range; selected journals themselves before referenced pages.
+python helper/logseq_refs.py logseq-dev-notes journals --from 2026-08-07 --to 2026-08-21 --include-self
+
 # Print pages referenced by explicitly listed journals:
-python logseq_refs.py . pages \
-    journals/2026-05-04.md journals/2026-05-05.md
-
-# Print pages referenced by an inclusive journal range:
-python logseq_refs.py . pages --from 2026-05-04 --to 2026-05-06
-
-# Path form is also accepted for range endpoints:
-python logseq_refs.py . pages \
-    --from journals/2026-05-04.md --to journals/2026-05-06.md
-
-# Also print the selected journals themselves, before referenced pages:
-python logseq_refs.py . pages \
-    --from 2026-05-04 --to 2026-05-06 --include-journals
+python helper/logseq_refs.py logseq-dev-notes journals \
+    journals/2026-08-07.md journals/2026-08-12.md
 
 # Print blocks that reference a page (canonical name or alias):
-python logseq_refs.py . refs "Discontinuous Galerkin"
-"""
-```
+python helper/logseq_refs.py logseq-dev-notes refs "Fisher-Shannon Product"
 
-Use it in this repo, for example:
+# Also print PAGE's own content before the referencing blocks:
+python helper/logseq_refs.py logseq-dev-notes refs "Fisher-Shannon Product" --include-self
 
-```bash
-python helper/logseq_refs.py logseq-dev-notes pages --from 2026-08-07 --to 2026-08-21 --include-journal
+# Also include blocks that reference namespace children (e.g. [[chat/*]]):
+python helper/logseq_refs.py logseq-dev-notes refs "chat" --list-children
+
+# Run `python logseq_refs.py --help` or `... journals --help` for details.
 ```
 
 ## Human--AI-Agent Collaboration Rules
