@@ -23,7 +23,11 @@ import unittest
 from pathlib import Path
 
 
-UTILITY = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path("logseq_refs.py").resolve()
+UTILITY = (
+    Path(sys.argv[1]).resolve()
+    if len(sys.argv) > 1
+    else Path("logseq_refs.py").resolve()
+)
 
 # Prevent unittest from interpreting the utility path as a test name.
 sys.argv = [sys.argv[0]]
@@ -82,15 +86,25 @@ class RefsCommandTests(unittest.TestCase):
         path.write_text(textwrap.dedent(content).lstrip(), encoding="utf-8")
         return path
 
-    def _run(self, page: str) -> subprocess.CompletedProcess[str]:
+    def _run(
+        self,
+        page: str,
+        list_children: bool = False,
+        include_self: bool = False,
+    ) -> subprocess.CompletedProcess[str]:
+        args = [
+            sys.executable,
+            str(UTILITY),
+            str(self.graph),
+            "refs",
+            page,
+        ]
+        if list_children:
+            args.append("--list-children")
+        if include_self:
+            args.append("--include-self")
         return subprocess.run(
-            [
-                sys.executable,
-                str(UTILITY),
-                str(self.graph),
-                "refs",
-                page,
-            ],
+            args,
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -136,7 +150,9 @@ class RefsCommandTests(unittest.TestCase):
         result = self._run("FEM")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("- Compare [[Finite Element Method]] against another method.", result.stdout)
+        self.assertIn(
+            "- Compare [[Finite Element Method]] against another method.", result.stdout
+        )
 
     def test_matching_child_block_prints_child_subtree_not_parent(self) -> None:
         self._write(
@@ -240,7 +256,7 @@ class RefsCommandTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertNotIn("Inline code only", result.stdout)
-        self.assertNotIn('```', result.stdout)
+        self.assertNotIn("```", result.stdout)
         self.assertNotIn("- [[FEM]]", result.stdout)
 
     def test_searches_both_pages_and_journals(self) -> None:
@@ -265,12 +281,250 @@ class RefsCommandTests(unittest.TestCase):
         self.assertIn("journals/2026-05-10.md", result.stdout)
         self.assertIn("pages/Another Topic.md", result.stdout)
 
+    def test_page_only_reference_is_found_without_any_journal(self) -> None:
+        self._write(
+            "pages/Another Topic.md",
+            """
+            - See [[Finite Element Method]] for background.
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- See [[Finite Element Method]] for background.", result.stdout)
+        self.assertIn("pages/Another Topic.md", result.stdout)
+
+    def test_page_only_alias_reference_matches_canonical_page(self) -> None:
+        self._write(
+            "pages/Another Topic.md",
+            """
+            - Compare [[FEM]] against another method.
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- Compare [[FEM]] against another method.", result.stdout)
+
+    def test_querying_by_alias_resolves_page_only_reference(self) -> None:
+        self._write(
+            "pages/Another Topic.md",
+            """
+            - Compare [[Finite Element Method]] against another method.
+            """,
+        )
+
+        result = self._run("FEM")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(
+            "- Compare [[Finite Element Method]] against another method.", result.stdout
+        )
+
+    def test_page_only_tag_reference_matches_page(self) -> None:
+        self._write(
+            "pages/Another Topic.md",
+            """
+            - EGU notes #conference/EGU26
+            """,
+        )
+
+        result = self._run("conference/EGU26")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- EGU notes #conference/EGU26", result.stdout)
+
+    def test_page_only_matching_child_block_prints_child_subtree_not_parent(
+        self,
+    ) -> None:
+        self._write(
+            "pages/Another Topic.md",
+            """
+            - Parent A should not be printed
+              - Child B mentions [[FEM]]
+                - B1 belongs to the matching subtree
+              - Sibling C should not be printed
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- Child B mentions [[FEM]]", result.stdout)
+        self.assertIn("- B1 belongs to the matching subtree", result.stdout)
+        self.assertNotIn("- Parent A should not be printed", result.stdout)
+        self.assertNotIn("- Sibling C should not be printed", result.stdout)
+
+    def test_page_only_refs_inside_inline_or_fenced_code_are_ignored(self) -> None:
+        self._write(
+            "pages/Another Topic.md",
+            r"""
+            - Inline code only: `[[FEM]]`
+            - Real reference: [[FVM]]
+
+            ```text
+            - [[FEM]]
+            ```
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Inline code only", result.stdout)
+        self.assertNotIn("```", result.stdout)
+        self.assertNotIn("- [[FEM]]", result.stdout)
+
+    def test_multiple_pages_referencing_same_target_all_appear(self) -> None:
+        self._write(
+            "pages/Topic One.md",
+            """
+            - First page mentions [[FEM]].
+            """,
+        )
+        self._write(
+            "pages/Topic Two.md",
+            """
+            - Second page mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- First page mentions [[FEM]].", result.stdout)
+        self.assertIn(
+            "- Second page mentions [[Finite Element Method]].", result.stdout
+        )
+        self.assertIn("pages/Topic One.md", result.stdout)
+        self.assertIn("pages/Topic Two.md", result.stdout)
+
     def test_unknown_page_fails_cleanly(self) -> None:
         result = self._run("Page That Does Not Exist")
 
         self.assertNotEqual(result.returncode, 0)
         combined = result.stdout + result.stderr
         self.assertIn("Unknown page", combined)
+
+    def test_list_children_includes_namespace_child_pages(self) -> None:
+        self._write("pages/chat.md", "- Chat root page.\n")
+        self._write("pages/chat___sub-a.md", "- Chat sub-a page.\n")
+        self._write(
+            "journals/2026-05-11.md",
+            """
+            - Root ref [[chat]]
+            - Child ref [[chat/sub-a]]
+            """,
+        )
+
+        without_flag = self._run("chat")
+        with_flag = self._run("chat", list_children=True)
+
+        self.assertEqual(without_flag.returncode, 0, without_flag.stderr)
+        self.assertIn("- Root ref [[chat]]", without_flag.stdout)
+        self.assertNotIn("- Child ref [[chat/sub-a]]", without_flag.stdout)
+
+        self.assertEqual(with_flag.returncode, 0, with_flag.stderr)
+        self.assertIn("- Root ref [[chat]]", with_flag.stdout)
+        self.assertIn("- Child ref [[chat/sub-a]]", with_flag.stdout)
+
+    def test_list_children_includes_deeply_nested_grandchild_pages(self) -> None:
+        self._write("pages/chat.md", "- Chat root page.\n")
+        self._write("pages/chat___sub-a.md", "- Chat sub-a page.\n")
+        self._write("pages/chat___sub-a___grandchild.md", "- Chat grandchild page.\n")
+        self._write(
+            "journals/2026-05-12.md",
+            """
+            - Grandchild ref [[chat/sub-a/grandchild]]
+            """,
+        )
+
+        result = self._run("chat", list_children=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- Grandchild ref [[chat/sub-a/grandchild]]", result.stdout)
+
+    def test_list_children_does_not_match_unrelated_prefix_sibling(self) -> None:
+        self._write("pages/chat.md", "- Chat root page.\n")
+        self._write("pages/chatbot.md", "- Unrelated chatbot page.\n")
+        self._write(
+            "journals/2026-05-13.md",
+            """
+            - Unrelated ref [[chatbot]]
+            """,
+        )
+
+        result = self._run("chat", list_children=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("- Unrelated ref [[chatbot]]", result.stdout)
+
+    def test_list_children_matches_alias_of_child_page(self) -> None:
+        self._write("pages/chat.md", "- Chat root page.\n")
+        self._write(
+            "pages/chat___sub-a.md",
+            """
+            alias:: [[sub-a-alias]]
+
+            - Chat sub-a page.
+            """,
+        )
+        self._write(
+            "journals/2026-05-14.md",
+            """
+            - Alias ref #sub-a-alias
+            """,
+        )
+
+        result = self._run("chat", list_children=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- Alias ref #sub-a-alias", result.stdout)
+
+    def test_include_self_prints_target_page_content_before_refs(self) -> None:
+        self._write(
+            "pages/Standalone Page.md",
+            """
+            - Standalone page's own content.
+            """,
+        )
+        self._write(
+            "journals/2026-05-15.md",
+            """
+            - Reference to [[Standalone Page]].
+            """,
+        )
+
+        without_flag = self._run("Standalone Page")
+        with_flag = self._run("Standalone Page", include_self=True)
+
+        self.assertEqual(without_flag.returncode, 0, without_flag.stderr)
+        self.assertNotIn("Standalone page's own content.", without_flag.stdout)
+
+        self.assertEqual(with_flag.returncode, 0, with_flag.stderr)
+        self.assertIn("[[Standalone Page]]", with_flag.stdout)
+        self.assertIn("Standalone page's own content.", with_flag.stdout)
+        self.assertIn("- Reference to [[Standalone Page]].", with_flag.stdout)
+
+        self_index = with_flag.stdout.index("Standalone page's own content.")
+        ref_index = with_flag.stdout.index("- Reference to [[Standalone Page]].")
+        self.assertLess(self_index, ref_index)
+
+    def test_include_self_works_even_without_any_references(self) -> None:
+        self._write(
+            "pages/Unreferenced Page.md",
+            """
+            - Nobody references this page.
+            """,
+        )
+
+        result = self._run("Unreferenced Page", include_self=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("[[Unreferenced Page]]", result.stdout)
+        self.assertIn("Nobody references this page.", result.stdout)
 
 
 if __name__ == "__main__":

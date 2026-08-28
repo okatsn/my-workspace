@@ -2,7 +2,7 @@
 """
 Behavior tests for:
 
-    python logseq_refs.py GRAPH pages JOURNAL...
+    python logseq_refs.py GRAPH journals JOURNAL...
 
 Usage:
     python test_logseq_pages.py
@@ -107,7 +107,7 @@ class PagesCommandTests(unittest.TestCase):
                 sys.executable,
                 str(UTILITY),
                 str(self.graph),
-                "pages",
+                "journals",
                 *(str(p) for p in journals),
             ],
             text=True,
@@ -315,7 +315,7 @@ class PagesInterfaceEquivalenceTests(unittest.TestCase):
                 sys.executable,
                 str(UTILITY),
                 str(self.graph),
-                "pages",
+                "journals",
                 *pages_args,
             ],
             text=True,
@@ -375,20 +375,20 @@ class PagesInterfaceEquivalenceTests(unittest.TestCase):
 
         self.assertSameBehavior(ranged, explicit)
 
-    def test_range_equals_explicit_with_include_journals(self) -> None:
-        """Selection syntax must not affect --include-journals output."""
+    def test_range_equals_explicit_with_include_self(self) -> None:
+        """Selection syntax must not affect --include-self output."""
         ranged = self._run(
             "--from",
             "2026-07-06",
             "--to",
             "2026-07-08",
-            "--include-journals",
+            "--include-self",
         )
         explicit = self._run(
             "journals/2026-07-06.md",
             "journals/2026-07-07.md",
             "journals/2026-07-08.md",
-            "--include-journals",
+            "--include-self",
         )
 
         self.assertSameBehavior(ranged, explicit)

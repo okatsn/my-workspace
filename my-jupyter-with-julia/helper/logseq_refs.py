@@ -5,24 +5,30 @@ Small reference utility for an OG/file-based Logseq graph.
 Examples
 --------
 # Print pages referenced by explicitly listed journals:
-python logseq_refs.py . pages \
+python logseq_refs.py . journals \
     journals/2026-05-04.md journals/2026-05-05.md
 
 # Print pages referenced by an inclusive journal range:
-python logseq_refs.py . pages --from 2026-05-04 --to 2026-05-06
+python logseq_refs.py . journals --from 2026-05-04 --to 2026-05-06
 
 # Path form is also accepted for range endpoints:
-python logseq_refs.py . pages \
+python logseq_refs.py . journals \
     --from journals/2026-05-04.md --to journals/2026-05-06.md
 
 # Also print the selected journals themselves, before referenced pages:
-python logseq_refs.py . pages \
-    --from 2026-05-04 --to 2026-05-06 --include-journals
+python logseq_refs.py . journals \
+    --from 2026-05-04 --to 2026-05-06 --include-self
 
 # Print blocks that reference a page (canonical name or alias):
 python logseq_refs.py . refs "Discontinuous Galerkin"
 
-Run `python logseq_refs.py --help` or `... pages --help` for details.
+# Also include blocks that reference namespace children (e.g. [[chat/*]]):
+python logseq_refs.py . refs "chat" --list-children
+
+# Also print PAGE's own content before the referencing blocks:
+python logseq_refs.py . refs "chat" --include-self
+
+Run `python logseq_refs.py --help` or `... journals --help` for details.
 """
 
 from __future__ import annotations
@@ -88,9 +94,7 @@ def without_code(text: str) -> str:
     lines = text.splitlines()
     mask = fenced_line_mask(lines)
     return "\n".join(
-        INLINE_CODE.sub("", line)
-        for line, is_code in zip(lines, mask)
-        if not is_code
+        INLINE_CODE.sub("", line) for line, is_code in zip(lines, mask) if not is_code
     )
 
 
@@ -133,7 +137,9 @@ class Graph:
         self.names: dict[str, Path] = {}
         self.canonical: dict[Path, str] = {}
 
-        for path in sorted(self.pages_dir.glob("*.md"), key=lambda p: p.name.casefold()):
+        for path in sorted(
+            self.pages_dir.glob("*.md"), key=lambda p: p.name.casefold()
+        ):
             path = path.resolve()
             text = path.read_text(encoding="utf-8")
             canonical = page_name_from_file(path)
@@ -284,7 +290,7 @@ def render_document(title: str, text: str, path: str | None = None) -> str:
     return "\n".join(header + ([body] if body else []))
 
 
-def show_pages(graph: Graph, journals: list[Path], include_journals: bool) -> None:
+def show_journals(graph: Graph, journals: list[Path], include_self: bool) -> None:
     sections: list[str] = []
     linked_pages: list[Path] = []
     seen: set[Path] = set()
@@ -292,7 +298,7 @@ def show_pages(graph: Graph, journals: list[Path], include_journals: bool) -> No
     for journal in journals:
         text = journal.read_text(encoding="utf-8")
 
-        if include_journals:
+        if include_self:
             sections.append(render_document(page_name_from_file(journal), text))
 
         for ref in refs(text):
@@ -314,16 +320,42 @@ def show_pages(graph: Graph, journals: list[Path], include_journals: bool) -> No
         print("\n\n".join(sections))
 
 
-def show_refs(graph: Graph, page: str) -> None:
+def show_refs(
+    graph: Graph,
+    page: str,
+    list_children: bool = False,
+    include_self: bool = False,
+) -> None:
     target = graph.resolve(page)
     if target is None:
         raise UserInputError(f"Unknown page: {page!r}")
 
+    targets = {target}
+    if list_children:
+        prefix = f"{graph.canonical[target]}/".casefold()
+        targets |= {
+            path
+            for path, name in graph.canonical.items()
+            if name.casefold().startswith(prefix)
+        }
+
     paths = sorted(graph.pages_dir.glob("*.md"), key=lambda p: p.name.casefold())
     if graph.journals_dir.is_dir():
-        paths += sorted(graph.journals_dir.glob("*.md"), key=lambda p: p.name.casefold())
+        paths += sorted(
+            graph.journals_dir.glob("*.md"), key=lambda p: p.name.casefold()
+        )
 
     first = True
+    if include_self:
+        print(
+            render_document(
+                graph.canonical[target],
+                target.read_text(encoding="utf-8"),
+                graph.display_path(target),
+            )
+        )
+        first = False
+
     for path in paths:
         path = path.resolve()
         text = path.read_text(encoding="utf-8")
@@ -331,7 +363,7 @@ def show_refs(graph: Graph, page: str) -> None:
 
         for start, own_end, subtree_end, _indent in blocks:
             own_text = "".join(lines[start:own_end])
-            if not any(graph.resolve(ref) == target for ref in refs(own_text)):
+            if not any(graph.resolve(ref) in targets for ref in refs(own_text)):
                 continue
 
             if not first:
@@ -351,18 +383,20 @@ def selected_journals(graph: Graph, args: argparse.Namespace) -> list[Path]:
     if has_range:
         return select_journal_range(graph, args.from_journal, args.to_journal)
     if not args.journals:
-        raise UserInputError("pages requires JOURNAL arguments or --from/--to")
+        raise UserInputError("journals requires JOURNAL arguments or --from/--to")
 
     return [resolve_journal_file(graph, value) for value in args.journals]
 
 
 def build_parser() -> argparse.ArgumentParser:
     examples = """examples:
-  logseq_refs.py . pages journals/2026-05-05.md journals/2026-05-06.md
-  logseq_refs.py . pages --from 2026-05-05 --to 2026-05-06
-  logseq_refs.py . pages --from journals/2026-05-05.md --to journals/2026-05-06.md
-  logseq_refs.py . pages --from 2026-05-05 --to 2026-05-06 --include-journals
+  logseq_refs.py . journals journals/2026-05-05.md journals/2026-05-06.md
+  logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06
+  logseq_refs.py . journals --from journals/2026-05-05.md --to journals/2026-05-06.md
+  logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06 --include-self
   logseq_refs.py . refs "Discontinuous Galerkin"
+  logseq_refs.py . refs "chat" --list-children
+  logseq_refs.py . refs "chat" --include-self
 """
     parser = argparse.ArgumentParser(
         description="Inspect references in an OG/file-based Logseq graph.",
@@ -372,34 +406,34 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("graph", metavar="GRAPH", help="Logseq graph directory")
     commands = parser.add_subparsers(dest="command", required=True)
 
-    pages = commands.add_parser(
-        "pages",
+    journals = commands.add_parser(
+        "journals",
         help="print pages referenced by journal files",
         description=(
             "Print unique pages referenced by selected journals. "
             "Use explicit JOURNAL arguments or an inclusive --from/--to range."
         ),
     )
-    pages.add_argument(
+    journals.add_argument(
         "journals",
         metavar="JOURNAL",
         nargs="*",
         help="journal path, absolute or relative to GRAPH",
     )
-    pages.add_argument(
+    journals.add_argument(
         "--from",
         dest="from_journal",
         metavar="DATE_OR_JOURNAL",
         help="inclusive range start, e.g. 2026-05-05 or journals/2026-05-05.md",
     )
-    pages.add_argument(
+    journals.add_argument(
         "--to",
         dest="to_journal",
         metavar="DATE_OR_JOURNAL",
         help="inclusive range end, e.g. 2026-05-06 or journals/2026-05-06.md",
     )
-    pages.add_argument(
-        "--include-journals",
+    journals.add_argument(
+        "--include-self",
         action="store_true",
         help="print selected journals before the pages they reference",
     )
@@ -410,6 +444,16 @@ def build_parser() -> argparse.ArgumentParser:
         description="Print blocks in pages/ and journals/ that reference PAGE.",
     )
     backlinks.add_argument("page", metavar="PAGE", help="canonical page name or alias")
+    backlinks.add_argument(
+        "--list-children",
+        action="store_true",
+        help="also include blocks referencing namespace children (e.g. [[PAGE/*]])",
+    )
+    backlinks.add_argument(
+        "--include-self",
+        action="store_true",
+        help="print PAGE's own content before the blocks that reference it",
+    )
 
     return parser
 
@@ -420,10 +464,10 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         graph = Graph(args.graph)
-        if args.command == "pages":
-            show_pages(graph, selected_journals(graph, args), args.include_journals)
+        if args.command == "journals":
+            show_journals(graph, selected_journals(graph, args), args.include_self)
         else:
-            show_refs(graph, args.page)
+            show_refs(graph, args.page, args.list_children, args.include_self)
         return 0
     except (UserInputError, OSError, UnicodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
