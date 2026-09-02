@@ -1,4 +1,5 @@
 purpose:: Project operational dashboard.
+exclude-from-graph-view:: true
 
 - Active milestone:
 
