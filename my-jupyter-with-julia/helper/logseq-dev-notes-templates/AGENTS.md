@@ -56,7 +56,8 @@ Ownership:
 
 - Only human developers write `journals/*.md`, review and update status of `DECISION`.
 - AI agents write and update `REPORT`, `REVIEW` and `DECISION` pages for their implementation, experimental testing or design works.
-- Both human and AI writes and maintains `KNOWLEDGE` (see below) pages and architecture pages (`[[ARCH/*]]`).
+- Both human and AI writes and maintains `KNOWLEDGE` pages and architecture pages (`[[ARCH/*]]`).
+- External conversations (Q&A sessions) are archived as `chat` pages, and may be referenced in journals. When a `chat` page is referenced in a journal-page block, that block content should be merely regarded as a concluding remark by human around that QA session, and one should never regard the referenced `chat` page(s) are approved by human.
 
 ## Logseq dev-notes structure
 
@@ -64,10 +65,14 @@ Under `logseq-dev-notes/pages`:
 
 | Type        | Logical page name        | Physical filename             |
 | ----------- | ------------------------ | ----------------------------- |
+| `ARCH`      | `ARCH/<description>`     | `ARCH___<description>.md`     |
 | `KNOWLEDGE` | natural page name        | `<page name>.md`              |
 | `DECISION`  | `DECISION/<description>` | `DECISION___<description>.md` |
 | `REPORT`    | `REPORT/<description>`   | `REPORT___<description>.md`   |
 | `REVIEW`    | `REVIEW/<description>`   | `REVIEW___<description>.md`   |
+| `chat`      | `chat/<description>`     | `chat___<description>.md`     |
+
+> **IMPORTANT**: Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED** third opinions. One should neither regard `chat` as verified and consolidated knowledge, nor a determined decision.
 
 Examples of pairing Metadata structure and page name:
 
