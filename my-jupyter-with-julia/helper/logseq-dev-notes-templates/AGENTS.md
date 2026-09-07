@@ -72,7 +72,9 @@ Under `logseq-dev-notes/pages`:
 | `REVIEW`    | `REVIEW/<description>`   | `REVIEW___<description>.md`   |
 | `chat`      | `chat/<description>`     | `chat___<description>.md`     |
 
-> **IMPORTANT**: Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED** third opinions. One should neither regard `chat` as verified and consolidated knowledge, nor a determined decision.
+> **IMPORTANT**:
+> 1. Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED** third opinions. One should neither regard `chat` as verified and consolidated knowledge, nor a determined decision.
+> 2. When writing, avoid strong words or overstatements unless it truly fits. Make statements that "no more or less" to the fact and evidence.
 
 Examples of pairing Metadata structure and page name:
 
