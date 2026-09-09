@@ -91,6 +91,7 @@ class RefsCommandTests(unittest.TestCase):
         page: str,
         list_children: bool = False,
         exclude_self: bool = False,
+        skip_namespace: list[str] | None = None,
     ) -> subprocess.CompletedProcess[str]:
         args = [
             sys.executable,
@@ -103,6 +104,8 @@ class RefsCommandTests(unittest.TestCase):
             args.append("--list-children")
         if exclude_self:
             args.append("--exclude-self")
+        for namespace in skip_namespace or []:
+            args.extend(["--skip-namespace", namespace])
         return subprocess.run(
             args,
             text=True,
@@ -556,6 +559,156 @@ class RefsCommandTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, "")
+
+    def test_skip_namespace_excludes_blocks_from_matching_pages(self) -> None:
+        self._write(
+            "pages/chat___malformed.md",
+            """
+            - Malformed page mentions [[Finite Element Method]].
+            """,
+        )
+        self._write(
+            "journals/2026-05-16.md",
+            """
+            - Journal mentions [[Finite Element Method]] too.
+            """,
+        )
+
+        without_flag = self._run("Finite Element Method")
+        with_flag = self._run("Finite Element Method", skip_namespace=["chat"])
+
+        self.assertEqual(without_flag.returncode, 0, without_flag.stderr)
+        self.assertIn(
+            "- Malformed page mentions [[Finite Element Method]].",
+            without_flag.stdout,
+        )
+
+        self.assertEqual(with_flag.returncode, 0, with_flag.stderr)
+        self.assertNotIn(
+            "- Malformed page mentions [[Finite Element Method]].",
+            with_flag.stdout,
+        )
+        self.assertIn(
+            "- Journal mentions [[Finite Element Method]] too.", with_flag.stdout
+        )
+
+    def test_skip_namespace_does_not_skip_unrelated_prefix_sibling(self) -> None:
+        self._write(
+            "pages/chatbot.md",
+            """
+            - Chatbot page mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method", skip_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(
+            "- Chatbot page mentions [[Finite Element Method]].", result.stdout
+        )
+
+    def test_skip_namespace_does_not_skip_the_namespace_root_page_itself(self) -> None:
+        self._write(
+            "pages/chat.md",
+            """
+            - Chat root page mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method", skip_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(
+            "- Chat root page mentions [[Finite Element Method]].", result.stdout
+        )
+
+    def test_skip_namespace_is_case_insensitive(self) -> None:
+        self._write(
+            "pages/chat___malformed.md",
+            """
+            - Malformed page mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method", skip_namespace=["Chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn(
+            "- Malformed page mentions [[Finite Element Method]].", result.stdout
+        )
+
+    def test_skip_namespace_is_repeatable_for_multiple_namespaces(self) -> None:
+        self._write(
+            "pages/chat___malformed.md",
+            """
+            - Chat page mentions [[Finite Element Method]].
+            """,
+        )
+        self._write(
+            "pages/projects___alpha.md",
+            """
+            - Projects page mentions [[Finite Element Method]].
+            """,
+        )
+        self._write(
+            "journals/2026-05-17.md",
+            """
+            - Journal mentions [[Finite Element Method]] too.
+            """,
+        )
+
+        result = self._run(
+            "Finite Element Method", skip_namespace=["chat", "projects"]
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn(
+            "- Chat page mentions [[Finite Element Method]].", result.stdout
+        )
+        self.assertNotIn(
+            "- Projects page mentions [[Finite Element Method]].", result.stdout
+        )
+        self.assertIn(
+            "- Journal mentions [[Finite Element Method]] too.", result.stdout
+        )
+
+    def test_skip_namespace_does_not_hide_targets_own_self_content(self) -> None:
+        self._write(
+            "pages/chat___sub-a.md",
+            """
+            - Chat sub-a page's own content.
+            """,
+        )
+
+        result = self._run("chat/sub-a", skip_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("[[chat/sub-a]]", result.stdout)
+        self.assertIn("Chat sub-a page's own content.", result.stdout)
+
+    def test_skip_namespace_combined_with_list_children(self) -> None:
+        self._write("pages/chat.md", "- Chat root page.\n")
+        self._write(
+            "pages/chat___sub-a.md",
+            """
+            - Sub-a page mentions [[chat]] again, which should be skipped from scanning.
+            """,
+        )
+        self._write(
+            "journals/2026-05-18.md",
+            """
+            - Journal ref to child [[chat/sub-a]]
+            """,
+        )
+
+        result = self._run("chat", list_children=True, skip_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- Journal ref to child [[chat/sub-a]]", result.stdout)
+        self.assertNotIn(
+            "- Sub-a page mentions [[chat]] again, which should be skipped from scanning.",
+            result.stdout,
+        )
 
 
 if __name__ == "__main__":

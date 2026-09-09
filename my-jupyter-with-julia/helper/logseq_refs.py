@@ -43,6 +43,9 @@ HELP_EXAMPLE = """
 
     # Omit PAGE's own content before the referencing blocks:
     python logseq_refs.py . refs "chat" --exclude-self
+
+    # Skip scanning pages under a namespace (e.g. known malformed pages):
+    python logseq_refs.py . refs "Discontinuous Galerkin" --skip-namespace "chat"
 """
 
 WIKILINK = re.compile(r"\[\[([^\[\]]+)\]\]")
@@ -341,6 +344,7 @@ def show_refs(
     page: str,
     list_children: bool = False,
     exclude_self: bool = False,
+    skip_namespaces: list[str] | None = None,
 ) -> None:
     target = graph.resolve(page)
     if target is None:
@@ -360,6 +364,16 @@ def show_refs(
         paths += sorted(
             graph.journals_dir.glob("*.md"), key=lambda p: p.name.casefold()
         )
+
+    if skip_namespaces:
+        prefixes = [f"{ns}/".casefold() for ns in skip_namespaces]
+        paths = [
+            path
+            for path in paths
+            if not (graph.canonical.get(path.resolve()) or "")
+            .casefold()
+            .startswith(tuple(prefixes))
+        ]
 
     first = True
     if not exclude_self:
@@ -474,6 +488,16 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="omit PAGE's own content before the blocks that reference it",
     )
+    backlinks.add_argument(
+        "--skip-namespace",
+        dest="skip_namespace",
+        metavar="NAMESPACE",
+        action="append",
+        help=(
+            "skip scanning pages under NAMESPACE/* for referencing blocks "
+            "(repeatable); useful to skip malformatted pages"
+        ),
+    )
 
     return parser
 
@@ -492,7 +516,13 @@ def main(argv: list[str] | None = None) -> int:
                 args.exclude_namespace,
             )
         else:
-            show_refs(graph, args.page, args.list_children, args.exclude_self)
+            show_refs(
+                graph,
+                args.page,
+                args.list_children,
+                args.exclude_self,
+                args.skip_namespace,
+            )
         return 0
     except (UserInputError, OSError, UnicodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
