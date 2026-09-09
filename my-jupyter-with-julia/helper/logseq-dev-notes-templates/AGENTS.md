@@ -29,26 +29,11 @@ rg -n '^status::'
 #### Using the custom `helper/logseq_refs.py`
 
 This is a custom helper to query logseq contents.
+It is especially useful to:
+- print pages referenced by an inclusive journal range,
+- print blocks that reference a page (canonical name or alias)
 
-```bash
-# Print pages referenced by an inclusive journal range; selected journals themselves before referenced pages.
-python helper/logseq_refs.py logseq-dev-notes journals --from 2026-08-07 --to 2026-08-21 --include-self
-
-# Print pages referenced by explicitly listed journals:
-python helper/logseq_refs.py logseq-dev-notes journals \
-    journals/2026-08-07.md journals/2026-08-12.md
-
-# Print blocks that reference a page (canonical name or alias):
-python helper/logseq_refs.py logseq-dev-notes refs "Fisher-Shannon Product"
-
-# Also print PAGE's own content before the referencing blocks:
-python helper/logseq_refs.py logseq-dev-notes refs "Fisher-Shannon Product" --include-self
-
-# Also include blocks that reference namespace children (e.g. [[chat/*]]):
-python helper/logseq_refs.py logseq-dev-notes refs "chat" --list-children
-
-# Run `python logseq_refs.py --help` or `... journals --help` for details.
-```
+Run `python logseq_refs.py --help` for example usage.
 
 ## Human--AI-Agent Collaboration Rules
 

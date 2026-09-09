@@ -1,38 +1,7 @@
 #!/usr/bin/env python3
+
 """
 Small reference utility for an OG/file-based Logseq graph.
-
-Examples
---------
-# Print pages referenced by explicitly listed journals:
-python logseq_refs.py . journals \
-    journals/2026-05-04.md journals/2026-05-05.md
-
-# Print pages referenced by an inclusive journal range:
-python logseq_refs.py . journals --from 2026-05-04 --to 2026-05-06
-
-# Path form is also accepted for range endpoints:
-python logseq_refs.py . journals \
-    --from journals/2026-05-04.md --to journals/2026-05-06.md
-
-# Omit the selected journals themselves, printing only referenced pages:
-python logseq_refs.py . journals \
-    --from 2026-05-04 --to 2026-05-06 --exclude-self
-
-# Print referenced-page stubs without content for pages under a namespace:
-python logseq_refs.py . journals \
-    --from 2026-05-04 --to 2026-05-06 --exclude-namespace "chat"
-
-# Print blocks that reference a page (canonical name or alias):
-python logseq_refs.py . refs "Discontinuous Galerkin"
-
-# Also include blocks that reference namespace children (e.g. not only [[chat]] but also [[chat/*]]):
-python logseq_refs.py . refs "chat" --list-children
-
-# Omit PAGE's own content before the referencing blocks:
-python logseq_refs.py . refs "chat" --exclude-self
-
-Run `python logseq_refs.py --help` or `... journals --help` for details.
 """
 
 from __future__ import annotations
@@ -44,6 +13,37 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import unquote
 
+
+HELP_EXAMPLE = """
+
+    # Print pages referenced by explicitly listed journals:
+    python logseq_refs.py . journals \
+        journals/2026-05-04.md journals/2026-05-05.md
+
+    # Print pages referenced by an inclusive journal range:
+    python logseq_refs.py . journals --from 2026-05-04 --to 2026-05-06
+
+    # Path form is also accepted for range endpoints:
+    python logseq_refs.py . journals \
+        --from journals/2026-05-04.md --to journals/2026-05-06.md
+
+    # Omit the selected journals themselves, printing only referenced pages:
+    python logseq_refs.py . journals \
+        --from 2026-05-04 --to 2026-05-06 --exclude-self
+
+    # Print referenced-page stubs without content for pages under a namespace:
+    python logseq_refs.py . journals \
+        --from 2026-05-04 --to 2026-05-06 --exclude-namespace "chat"
+
+    # Print blocks that reference a page (canonical name or alias):
+    python logseq_refs.py . refs "Discontinuous Galerkin"
+
+    # Also include blocks that reference namespace children (e.g. not only [[chat]] but also [[chat/*]]):
+    python logseq_refs.py . refs "chat" --list-children
+
+    # Omit PAGE's own content before the referencing blocks:
+    python logseq_refs.py . refs "chat" --exclude-self
+"""
 
 WIKILINK = re.compile(r"\[\[([^\[\]]+)\]\]")
 TAG = re.compile(r"(?<![\w/])#([A-Za-z0-9_.\-/]+)")
@@ -405,15 +405,8 @@ def selected_journals(graph: Graph, args: argparse.Namespace) -> list[Path]:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    examples = """examples:
-  logseq_refs.py . journals journals/2026-05-05.md journals/2026-05-06.md
-  logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06
-  logseq_refs.py . journals --from journals/2026-05-05.md --to journals/2026-05-06.md
-  logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06 --exclude-self
-  logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06 --exclude-namespace "chat"
-  logseq_refs.py . refs "Discontinuous Galerkin"
-  logseq_refs.py . refs "chat" --list-children
-  logseq_refs.py . refs "chat" --exclude-self
+    examples = f"""examples:
+   {HELP_EXAMPLE}
 """
     parser = argparse.ArgumentParser(
         description="Inspect references in an OG/file-based Logseq graph.",
