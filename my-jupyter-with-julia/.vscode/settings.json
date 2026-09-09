@@ -7,24 +7,29 @@
     "chat.agentFilesLocations": {
         ".github/agents": true,
         "~/projects/my-agents/general/agents": true,
-        "~/projects/my-agents/typst/agents": true,
+        // "~/projects/my-agents/typst/agents": true,
+        // "~/projects/my-agents/julia/agents": true,
+        // "~/projects/my-agents/dvc/agents": true,
+        // "~/projects/my-agents/documentation/agents": true,
     },
     "chat.promptFilesLocations": {
         "~/projects/my-agents/general/prompts": true,
     },
     "chat.instructionsFilesLocations": {
         "~/projects/my-agents/shell/instructions": true,
-        "~/projects/my-agents/logseq-dev-notes/instructions": true,
+        "~/projects/my-agents/general/instructions": true,
+        // "~/projects/my-agents/logseq-dev-notes/instructions": true,
+        // "~/projects/my-agents/julia/instructions": true,
     },
     "chat.agentSkillsLocations": {
         ".github/skills": true,
         ".claude/skills": true,
-        "~/projects/my-agents/typst/skills": true,
         "~/ai-skills/claude-skills": false,
-        "~/ai-skills/posit-dev-skills/quarto": false,
+        // "~/projects/my-agents/typst/skills": true,
+        // "~/ai-skills/posit-dev-skills/quarto": false,
         // Note their difference
-        "~/ai-skills/claude-skill-typst/skills": false,
-        "~/ai-skills/superpowers/skills": false,
+        // "~/ai-skills/claude-skill-typst/skills": false,
+        // "~/ai-skills/superpowers/skills": false,
     },
     // Julia
     "julia.executablePath": "/usr/local/bin/julia",
