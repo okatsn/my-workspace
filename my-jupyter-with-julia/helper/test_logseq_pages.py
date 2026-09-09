@@ -101,15 +101,25 @@ class PagesCommandTests(unittest.TestCase):
     def _journal(self, name: str, content: str) -> Path:
         return self._write(f"journals/{name}.md", content)
 
-    def _run(self, *journals: Path) -> subprocess.CompletedProcess[str]:
+    def _run(
+        self,
+        *journals: Path,
+        exclude_self: bool = False,
+        exclude_namespace: list[str] | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        args = [
+            sys.executable,
+            str(UTILITY),
+            str(self.graph),
+            "journals",
+            *(str(p) for p in journals),
+        ]
+        if exclude_self:
+            args.append("--exclude-self")
+        for namespace in exclude_namespace or []:
+            args.extend(["--exclude-namespace", namespace])
         return subprocess.run(
-            [
-                sys.executable,
-                str(UTILITY),
-                str(self.graph),
-                "journals",
-                *(str(p) for p in journals),
-            ],
+            args,
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -230,6 +240,180 @@ class PagesCommandTests(unittest.TestCase):
         self.assertIn("[[digital twins]]", result.stdout)
         self.assertNotIn("[[Not Referenced]]", result.stdout)
         self.assertNotIn("This page should never appear.", result.stdout)
+
+    def test_journal_own_content_is_included_by_default(self) -> None:
+        journal = self._journal(
+            "2026-05-09",
+            """
+            - Journal's own note about [[FEM]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Journal's own note about [[FEM]].", result.stdout)
+        self.assertIn("FEM page body.", result.stdout)
+
+        self_index = result.stdout.index(f"[[{journal.stem}]]")
+        ref_index = result.stdout.index("FEM page body.")
+        self.assertLess(self_index, ref_index)
+
+    def test_exclude_self_hides_journal_own_content(self) -> None:
+        journal = self._journal(
+            "2026-05-10",
+            """
+            - Journal's own note about [[FEM]].
+            """,
+        )
+
+        result = self._run(journal, exclude_self=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Journal's own note about [[FEM]].", result.stdout)
+        self.assertIn("FEM page body.", result.stdout)
+
+    def test_exclude_self_with_no_references_prints_nothing(self) -> None:
+        journal = self._journal(
+            "2026-05-11",
+            """
+            - Journal note with no page references.
+            """,
+        )
+
+        result = self._run(journal, exclude_self=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "")
+
+    def test_exclude_namespace_replaces_matching_child_page_content_with_stub(
+        self,
+    ) -> None:
+        self._write("pages/chat.md", "- Chat root page body.\n")
+        self._write(
+            "pages/chat___decisions-01-02a.md",
+            "- Chat decision page body.\n",
+        )
+        journal = self._journal(
+            "2026-05-12",
+            """
+            - Root ref [[chat]]
+            - Child ref [[chat/decisions-01-02a]]
+            """,
+        )
+
+        result = self._run(journal, exclude_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("[[chat/decisions-01-02a]]", result.stdout)
+        self.assertIn("pages/chat___decisions-01-02a.md", result.stdout)
+        self.assertNotIn("Chat decision page body.", result.stdout)
+        self.assertIn('<excluded: namespace "chat">', result.stdout)
+        # The namespace root page itself is not a child, so it is unaffected.
+        self.assertIn("Chat root page body.", result.stdout)
+
+    def test_exclude_namespace_does_not_affect_unrelated_prefix_sibling(
+        self,
+    ) -> None:
+        self._write("pages/chatbot.md", "- Chatbot page body.\n")
+        journal = self._journal(
+            "2026-05-13",
+            """
+            - Ref [[chatbot]]
+            """,
+        )
+
+        result = self._run(journal, exclude_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Chatbot page body.", result.stdout)
+        self.assertNotIn('<excluded: namespace "chat">', result.stdout)
+
+    def test_exclude_namespace_matches_deeply_nested_grandchild_pages(self) -> None:
+        self._write(
+            "pages/chat___sub-a___grandchild.md",
+            "- Chat grandchild page body.\n",
+        )
+        journal = self._journal(
+            "2026-05-14",
+            """
+            - Ref [[chat/sub-a/grandchild]]
+            """,
+        )
+
+        result = self._run(journal, exclude_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("[[chat/sub-a/grandchild]]", result.stdout)
+        self.assertNotIn("Chat grandchild page body.", result.stdout)
+        self.assertIn('<excluded: namespace "chat">', result.stdout)
+
+    def test_exclude_namespace_is_case_insensitive(self) -> None:
+        self._write("pages/chat___sub-a.md", "- Chat sub-a page body.\n")
+        journal = self._journal(
+            "2026-05-16",
+            """
+            - Ref [[chat/sub-a]]
+            """,
+        )
+
+        result = self._run(journal, exclude_namespace=["Chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Chat sub-a page body.", result.stdout)
+        self.assertIn('<excluded: namespace "Chat">', result.stdout)
+
+    def test_exclude_namespace_is_repeatable_for_multiple_namespaces(self) -> None:
+        self._write("pages/chat___sub-a.md", "- Chat sub-a page body.\n")
+        self._write("pages/projects___alpha.md", "- Projects alpha page body.\n")
+        journal = self._journal(
+            "2026-05-17",
+            """
+            - Ref [[chat/sub-a]]
+            - Ref [[projects/alpha]]
+            - Ref [[digital twins]]
+            """,
+        )
+
+        result = self._run(journal, exclude_namespace=["chat", "projects"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Chat sub-a page body.", result.stdout)
+        self.assertNotIn("Projects alpha page body.", result.stdout)
+        self.assertIn('<excluded: namespace "chat">', result.stdout)
+        self.assertIn('<excluded: namespace "projects">', result.stdout)
+        self.assertIn("Digital twins page body.", result.stdout)
+
+    def test_exclude_namespace_excluded_page_still_deduplicated_once(self) -> None:
+        self._write("pages/chat___sub-a.md", "- Chat sub-a page body.\n")
+        j1 = self._journal("2026-05-18", "- Ref [[chat/sub-a]]\n")
+        j2 = self._journal("2026-05-19", "- Again [[chat/sub-a]]\n")
+
+        result = self._run(j1, j2, exclude_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.count("[[chat/sub-a]]"), 1)
+        self.assertEqual(result.stdout.count('<excluded: namespace "chat">'), 1)
+
+    def test_exclude_namespace_combined_with_exclude_self(self) -> None:
+        self._write("pages/chat___sub-a.md", "- Chat sub-a page body.\n")
+        journal = self._journal(
+            "2026-05-20",
+            """
+            - Journal's own note referencing [[chat/sub-a]] and [[digital twins]].
+            """,
+        )
+
+        result = self._run(journal, exclude_self=True, exclude_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn(
+            "Journal's own note referencing [[chat/sub-a]] and [[digital twins]].",
+            result.stdout,
+        )
+        self.assertNotIn("Chat sub-a page body.", result.stdout)
+        self.assertIn('<excluded: namespace "chat">', result.stdout)
+        self.assertIn("Digital twins page body.", result.stdout)
 
 
 class PagesInterfaceEquivalenceTests(unittest.TestCase):
@@ -375,20 +559,44 @@ class PagesInterfaceEquivalenceTests(unittest.TestCase):
 
         self.assertSameBehavior(ranged, explicit)
 
-    def test_range_equals_explicit_with_include_self(self) -> None:
-        """Selection syntax must not affect --include-self output."""
+    def test_range_equals_explicit_with_exclude_self(self) -> None:
+        """Selection syntax must not affect --exclude-self output."""
         ranged = self._run(
             "--from",
             "2026-07-06",
             "--to",
             "2026-07-08",
-            "--include-self",
+            "--exclude-self",
         )
         explicit = self._run(
             "journals/2026-07-06.md",
             "journals/2026-07-07.md",
             "journals/2026-07-08.md",
-            "--include-self",
+            "--exclude-self",
+        )
+
+        self.assertSameBehavior(ranged, explicit)
+
+    def test_range_equals_explicit_with_exclude_namespace(self) -> None:
+        """Selection syntax must not affect --exclude-namespace output."""
+        self._write("pages/chat___sub-a.md", "- Chat sub-a page body.\n")
+        self._journal("2026-07-09", "- Ref [[chat/sub-a]]\n")
+
+        ranged = self._run(
+            "--from",
+            "2026-07-06",
+            "--to",
+            "2026-07-09",
+            "--exclude-namespace",
+            "chat",
+        )
+        explicit = self._run(
+            "journals/2026-07-06.md",
+            "journals/2026-07-07.md",
+            "journals/2026-07-08.md",
+            "journals/2026-07-09.md",
+            "--exclude-namespace",
+            "chat",
         )
 
         self.assertSameBehavior(ranged, explicit)

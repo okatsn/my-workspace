@@ -90,7 +90,7 @@ class RefsCommandTests(unittest.TestCase):
         self,
         page: str,
         list_children: bool = False,
-        include_self: bool = False,
+        exclude_self: bool = False,
     ) -> subprocess.CompletedProcess[str]:
         args = [
             sys.executable,
@@ -101,8 +101,8 @@ class RefsCommandTests(unittest.TestCase):
         ]
         if list_children:
             args.append("--list-children")
-        if include_self:
-            args.append("--include-self")
+        if exclude_self:
+            args.append("--exclude-self")
         return subprocess.run(
             args,
             text=True,
@@ -483,7 +483,7 @@ class RefsCommandTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("- Alias ref #sub-a-alias", result.stdout)
 
-    def test_include_self_prints_target_page_content_before_refs(self) -> None:
+    def test_self_content_is_included_by_default_before_refs(self) -> None:
         self._write(
             "pages/Standalone Page.md",
             """
@@ -497,22 +497,40 @@ class RefsCommandTests(unittest.TestCase):
             """,
         )
 
-        without_flag = self._run("Standalone Page")
-        with_flag = self._run("Standalone Page", include_self=True)
+        result = self._run("Standalone Page")
 
-        self.assertEqual(without_flag.returncode, 0, without_flag.stderr)
-        self.assertNotIn("Standalone page's own content.", without_flag.stdout)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("[[Standalone Page]]", result.stdout)
+        self.assertIn("Standalone page's own content.", result.stdout)
+        self.assertIn("- Reference to [[Standalone Page]].", result.stdout)
 
-        self.assertEqual(with_flag.returncode, 0, with_flag.stderr)
-        self.assertIn("[[Standalone Page]]", with_flag.stdout)
-        self.assertIn("Standalone page's own content.", with_flag.stdout)
-        self.assertIn("- Reference to [[Standalone Page]].", with_flag.stdout)
-
-        self_index = with_flag.stdout.index("Standalone page's own content.")
-        ref_index = with_flag.stdout.index("- Reference to [[Standalone Page]].")
+        self_index = result.stdout.index("Standalone page's own content.")
+        ref_index = result.stdout.index("- Reference to [[Standalone Page]].")
         self.assertLess(self_index, ref_index)
 
-    def test_include_self_works_even_without_any_references(self) -> None:
+    def test_exclude_self_hides_target_page_content(self) -> None:
+        self._write(
+            "pages/Standalone Page.md",
+            """
+            - Standalone page's own content.
+            """,
+        )
+        self._write(
+            "journals/2026-05-15.md",
+            """
+            - Reference to [[Standalone Page]].
+            """,
+        )
+
+        result = self._run("Standalone Page", exclude_self=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Standalone page's own content.", result.stdout)
+        self.assertIn("- Reference to [[Standalone Page]].", result.stdout)
+
+    def test_self_content_is_included_by_default_even_without_any_references(
+        self,
+    ) -> None:
         self._write(
             "pages/Unreferenced Page.md",
             """
@@ -520,11 +538,24 @@ class RefsCommandTests(unittest.TestCase):
             """,
         )
 
-        result = self._run("Unreferenced Page", include_self=True)
+        result = self._run("Unreferenced Page")
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("[[Unreferenced Page]]", result.stdout)
         self.assertIn("Nobody references this page.", result.stdout)
+
+    def test_exclude_self_with_no_references_prints_nothing(self) -> None:
+        self._write(
+            "pages/Unreferenced Page.md",
+            """
+            - Nobody references this page.
+            """,
+        )
+
+        result = self._run("Unreferenced Page", exclude_self=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "")
 
 
 if __name__ == "__main__":
