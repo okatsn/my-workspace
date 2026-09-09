@@ -15,18 +15,22 @@ python logseq_refs.py . journals --from 2026-05-04 --to 2026-05-06
 python logseq_refs.py . journals \
     --from journals/2026-05-04.md --to journals/2026-05-06.md
 
-# Also print the selected journals themselves, before referenced pages:
+# Omit the selected journals themselves, printing only referenced pages:
 python logseq_refs.py . journals \
-    --from 2026-05-04 --to 2026-05-06 --include-self
+    --from 2026-05-04 --to 2026-05-06 --exclude-self
+
+# Print referenced-page stubs without content for pages under a namespace:
+python logseq_refs.py . journals \
+    --from 2026-05-04 --to 2026-05-06 --exclude-namespace "chat"
 
 # Print blocks that reference a page (canonical name or alias):
 python logseq_refs.py . refs "Discontinuous Galerkin"
 
-# Also include blocks that reference namespace children (e.g. [[chat/*]]):
+# Also include blocks that reference namespace children (e.g. not only [[chat]] but also [[chat/*]]):
 python logseq_refs.py . refs "chat" --list-children
 
-# Also print PAGE's own content before the referencing blocks:
-python logseq_refs.py . refs "chat" --include-self
+# Omit PAGE's own content before the referencing blocks:
+python logseq_refs.py . refs "chat" --exclude-self
 
 Run `python logseq_refs.py --help` or `... journals --help` for details.
 """
@@ -290,7 +294,12 @@ def render_document(title: str, text: str, path: str | None = None) -> str:
     return "\n".join(header + ([body] if body else []))
 
 
-def show_journals(graph: Graph, journals: list[Path], include_self: bool) -> None:
+def show_journals(
+    graph: Graph,
+    journals: list[Path],
+    exclude_self: bool,
+    exclude_namespaces: list[str] | None = None,
+) -> None:
     sections: list[str] = []
     linked_pages: list[Path] = []
     seen: set[Path] = set()
@@ -298,7 +307,7 @@ def show_journals(graph: Graph, journals: list[Path], include_self: bool) -> Non
     for journal in journals:
         text = journal.read_text(encoding="utf-8")
 
-        if include_self:
+        if not exclude_self:
             sections.append(render_document(page_name_from_file(journal), text))
 
         for ref in refs(text):
@@ -308,13 +317,20 @@ def show_journals(graph: Graph, journals: list[Path], include_self: bool) -> Non
                 linked_pages.append(target)
 
     for target in linked_pages:
-        sections.append(
-            render_document(
-                graph.canonical[target],
-                target.read_text(encoding="utf-8"),
-                graph.display_path(target),
-            )
+        name = graph.canonical[target]
+        excluded_ns = next(
+            (
+                ns
+                for ns in (exclude_namespaces or [])
+                if name.casefold().startswith(f"{ns}/".casefold())
+            ),
+            None,
         )
+        if excluded_ns is not None:
+            body = f'<excluded: namespace "{excluded_ns}">'
+        else:
+            body = target.read_text(encoding="utf-8")
+        sections.append(render_document(name, body, graph.display_path(target)))
 
     if sections:
         print("\n\n".join(sections))
@@ -324,7 +340,7 @@ def show_refs(
     graph: Graph,
     page: str,
     list_children: bool = False,
-    include_self: bool = False,
+    exclude_self: bool = False,
 ) -> None:
     target = graph.resolve(page)
     if target is None:
@@ -346,7 +362,7 @@ def show_refs(
         )
 
     first = True
-    if include_self:
+    if not exclude_self:
         print(
             render_document(
                 graph.canonical[target],
@@ -393,10 +409,11 @@ def build_parser() -> argparse.ArgumentParser:
   logseq_refs.py . journals journals/2026-05-05.md journals/2026-05-06.md
   logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06
   logseq_refs.py . journals --from journals/2026-05-05.md --to journals/2026-05-06.md
-  logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06 --include-self
+  logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06 --exclude-self
+  logseq_refs.py . journals --from 2026-05-05 --to 2026-05-06 --exclude-namespace "chat"
   logseq_refs.py . refs "Discontinuous Galerkin"
   logseq_refs.py . refs "chat" --list-children
-  logseq_refs.py . refs "chat" --include-self
+  logseq_refs.py . refs "chat" --exclude-self
 """
     parser = argparse.ArgumentParser(
         description="Inspect references in an OG/file-based Logseq graph.",
@@ -433,9 +450,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="inclusive range end, e.g. 2026-05-06 or journals/2026-05-06.md",
     )
     journals.add_argument(
-        "--include-self",
+        "--exclude-self",
         action="store_true",
-        help="print selected journals before the pages they reference",
+        help="omit selected journals themselves, printing only referenced pages",
+    )
+    journals.add_argument(
+        "--exclude-namespace",
+        dest="exclude_namespace",
+        metavar="NAMESPACE",
+        action="append",
+        help=(
+            "print stubs but omit content for referenced pages under "
+            "NAMESPACE/* (repeatable)"
+        ),
     )
 
     backlinks = commands.add_parser(
@@ -450,9 +477,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="also include blocks referencing namespace children (e.g. [[PAGE/*]])",
     )
     backlinks.add_argument(
-        "--include-self",
+        "--exclude-self",
         action="store_true",
-        help="print PAGE's own content before the blocks that reference it",
+        help="omit PAGE's own content before the blocks that reference it",
     )
 
     return parser
@@ -465,9 +492,14 @@ def main(argv: list[str] | None = None) -> int:
     try:
         graph = Graph(args.graph)
         if args.command == "journals":
-            show_journals(graph, selected_journals(graph, args), args.include_self)
+            show_journals(
+                graph,
+                selected_journals(graph, args),
+                args.exclude_self,
+                args.exclude_namespace,
+            )
         else:
-            show_refs(graph, args.page, args.list_children, args.include_self)
+            show_refs(graph, args.page, args.list_children, args.exclude_self)
         return 0
     except (UserInputError, OSError, UnicodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
