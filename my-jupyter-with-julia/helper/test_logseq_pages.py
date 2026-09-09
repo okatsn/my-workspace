@@ -171,7 +171,7 @@ class PagesCommandTests(unittest.TestCase):
             """,
         )
 
-        result = self._run(j1, j2)
+        result = self._run(j1, j2, exclude_self=True)
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.count("[[Finite Element Method]]"), 1)
@@ -200,7 +200,7 @@ class PagesCommandTests(unittest.TestCase):
             """,
         )
 
-        result = self._run(journal)
+        result = self._run(journal, exclude_self=True)
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertNotIn("Does Not Exist", result.stdout)
@@ -219,7 +219,7 @@ class PagesCommandTests(unittest.TestCase):
             """,
         )
 
-        result = self._run(journal)
+        result = self._run(journal, exclude_self=True)
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("[[Finite Element Method]]", result.stdout)
@@ -389,7 +389,7 @@ class PagesCommandTests(unittest.TestCase):
         j1 = self._journal("2026-05-18", "- Ref [[chat/sub-a]]\n")
         j2 = self._journal("2026-05-19", "- Again [[chat/sub-a]]\n")
 
-        result = self._run(j1, j2, exclude_namespace=["chat"])
+        result = self._run(j1, j2, exclude_self=True, exclude_namespace=["chat"])
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.count("[[chat/sub-a]]"), 1)
