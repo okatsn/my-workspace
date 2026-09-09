@@ -167,7 +167,14 @@ class Graph:
         self.names[key] = path
 
     def resolve(self, name: str) -> Path | None:
-        return self.names.get(norm(name))
+        target = self.names.get(norm(name))
+        if target is not None:
+            return target
+        # Tolerate refs written with the file-style "___" separator
+        # (e.g. [[DECISION___foo]]) instead of the wikilink "/" form.
+        if "___" in name:
+            return self.names.get(norm(name.replace("___", "/")))
+        return None
 
     def display_path(self, path: Path) -> str:
         path = path.resolve()
