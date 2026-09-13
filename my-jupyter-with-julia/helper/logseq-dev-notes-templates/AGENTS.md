@@ -3,13 +3,20 @@
 Logseq use double square brackets syntax `[[page]]` to connect a dedicate page.
 For example, `[[Algorithm Whatever]]` in the body text or the metadata value connects to `pages/Algorithm Whatever.md`; similarly,
 `[[REPORT/implement-stage-1]]` or `#REPORT/implement-stage-1` connects to `REPORT___implement-stage-1.md` (`___` in file ↔️ `/` in wikilink text).
+In logseq OG, tags and page links are functionally identical (`#tag` and `[[tag]]` do the same thing).
 
 Logseq metadata are key-value pairs (syntax: `keys:: value`) for searchable attributes, tags, alias to an entire document pages.
 
 ### Query Methods
 
-Use `logseq_refs.py` if the target is written in logseq page syntax in `logseq-dev-notes`.
-Use ripgrep, `rg` if the target is written in plain text, or a page property; not necessarily in `logseq-dev-notes`.
+This is a logseq OG graph (i.e., flat local `.md` files; each page is a readable file); this means you can open a page `[[page]]` by opening the `page.md` file directly.
+Noted that we have a slightly different journal page naming convention: `journals/YYYY-MM-DD.md`.
+
+No logseq CLI available in the environment. Here are recommended (not mandatory) workarounds:
+
+1. If a date range is provided, use `helper/logseq_refs.py` with `journals` to pull journal pages in a range at once with relational context attached.
+2. If the target is a logseq page, i.e., `logseq-dev-notes/pages/*.md`, use `helper/logseq_refs.py` with `refs` to pull the target page with relational context attached.
+3. Use ripgrep, `rg`, to query for a page property, or for targets that might appear inside or outside `logseq-dev-notes`.
 
 
 See examples below.
@@ -31,11 +38,13 @@ rg -n '^status::'
 This is a custom helper to query logseq contents.
 It is especially useful to:
 
-1. print pages referenced by an inclusive journal range: `python helper/logseq_refs.py path/to//logseq-dev-notes/ journals --from 2026-01-01 --to 2026-09-20 --exclude-namespace "chat" > journals-summary.md`
-2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to//logseq-dev-notes/ refs "DECISION/01_whatever" --skip-namespace "chat" > refs-summary.md`
+1. print pages referenced by an inclusive journal range: `python helper/logseq_refs.py path/to//logseq-dev-notes/ journals --from 2026-01-01 --to 2026-09-20 --exclude-namespace "chat"`
+2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to//logseq-dev-notes/ refs "DECISION/01_whatever" --skip-namespace "chat"`
 
-> 💡 Following the example above, `chat/*` pages are excluded from both 1. and 2. because their contents are presumed to be 1. very long/verbose and 2. mal-formatted (incorrectly structured for logseq).
-> 💡 Run `python logseq_refs.py --help` to see complete examples.
+> 💡 In example 1. above, `chat/*` pages are excluded from the relational context (`--exclude-namespace` flag) because their contents are presumed to be very long and unnecessarily detailed.
+> 💡 In example 2. above, `chat/*` pages are skipped from parsing (`--skip-namespace` flag) because chat pages are often mal-formatted (incorrectly structured for logseq).
+> 💡 `--exclude-namespace` is exclusively for the method `python helper/logseq_refs.py ... journals ...`; `--skip-namespace` is exclusively for `python helper/logseq_refs.py ... refs ...`. Don't mixed them up.
+> 💡 Run `python helper/logseq_refs.py --help` to see complete examples.
 
 ## Human--AI-Agent Collaboration Rules
 
@@ -60,7 +69,9 @@ Under `logseq-dev-notes/pages`:
 | `chat`      | `chat/<description>`     | `chat___<description>.md`     |
 
 > **IMPORTANT**:
+>
 > 1. Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED** third opinions. One should neither regard `chat` as verified and consolidated knowledge, nor a determined decision.
+>    Always assume a `chat` page to be not well-formatted and unnecessarily detailed.
 > 2. When writing, avoid strong words or overstatements unless it truly fits. Make statements that "no more or less" to the fact and evidence.
 
 Examples of pairing Metadata structure and page name:
