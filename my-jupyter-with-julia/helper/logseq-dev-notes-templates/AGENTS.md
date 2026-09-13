@@ -31,8 +31,8 @@ rg -n '^status::'
 This is a custom helper to query logseq contents.
 It is especially useful to:
 
-1. print pages referenced by an inclusive journal range: `python logseq_refs.py . journals --from 2026-05-04 --to 2026-05-06 --exclude-namespace "chat"`
-2. print blocks that reference a page (canonical name or alias): `python logseq_refs.py . refs "Discontinuous Galerkin" --skip-namespace "chat"`
+1. print pages referenced by an inclusive journal range: `python helper/logseq_refs.py path/to//logseq-dev-notes/ journals --from 2026-01-01 --to 2026-09-20 --exclude-namespace "chat" > journals-summary.md`
+2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to//logseq-dev-notes/ refs "DECISION/01_whatever" --skip-namespace "chat" > refs-summary.md`
 
 > 💡 Following the example above, `chat/*` pages are excluded from both 1. and 2. because their contents are presumed to be 1. very long/verbose and 2. mal-formatted (incorrectly structured for logseq).
 > 💡 Run `python logseq_refs.py --help` to see complete examples.
