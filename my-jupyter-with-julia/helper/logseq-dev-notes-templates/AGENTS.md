@@ -73,6 +73,8 @@ Under `logseq-dev-notes/pages`:
 > 1. Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED** third opinions. One should neither regard `chat` as verified and consolidated knowledge, nor a determined decision.
 >    Always assume a `chat` page to be not well-formatted and unnecessarily detailed.
 > 2. When writing, avoid strong words or overstatements unless it truly fits. Make statements that "no more or less" to the fact and evidence.
+> 3. `ARCH` pages should not be stuffed with details of specs. Be concise but readable, focusing on explain the architecture and the rationale behind. Cross referencing details using `files:: ` or `stages:: ` at block level instead.
+> 4. `DECISION` pages should focus on explaining the rationale, complementary to REVIEW or REPORT pages with overlapping (duplicated details) minimized.
 
 Examples of pairing Metadata structure and page name:
 
