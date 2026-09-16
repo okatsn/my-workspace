@@ -15,8 +15,8 @@ Noted that we have a slightly different journal page naming convention: `journal
 No logseq CLI available in the environment. Here are recommended (not mandatory) workarounds:
 
 1. If a few journal filenames/dates are provided, use `helper/logseq_refs.py` with `journals` to pull journal pages at once with relational context attached.
-2. If the target is a logseq page, i.e., `logseq-dev-notes/pages/*.md`, use `helper/logseq_refs.py` with `refs` to pull the target page with relational context attached.
-3. Use ripgrep, `rg`, to query for a page property, or for targets that might appear inside or outside `logseq-dev-notes`.
+2. If the target is a logseq page, i.e., `GRAPH/pages/*.md`, use `helper/logseq_refs.py` with `refs` to pull the target page with relational context attached.
+3. Use ripgrep, `rg`, to query for a page property, or for targets that might appear inside or outside `GRAPH`.
 
 
 See examples below.
@@ -38,8 +38,8 @@ rg -n '^status::'
 This is a custom helper to query logseq contents.
 It is especially useful to:
 
-1. print all pages referenced by the selected journal pages (excluding `chat/*` ): `python helper/logseq_refs.py path/to/logseq-dev-notes/ journals 2026-01-01.md 2026-03-03.md --exclude-namespace "chat"`
-2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to/logseq-dev-notes/ refs "DECISION/01_whatever" --skip-namespace "chat"`
+1. print all pages referenced by the selected journal pages (excluding `chat/*` ): `python helper/logseq_refs.py path/to/GRAPH/ journals 2026-01-01.md 2026-03-03.md --exclude-namespace "chat"`
+2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to/GRAPH/ refs "DECISION/01_whatever" --skip-namespace "chat"`
 
 > 💡 In example 1. above, `chat/*` pages are excluded from the relational context (`--exclude-namespace` flag) because their contents are presumed to be very long and unnecessarily detailed.
 > 💡 In example 2. above, `chat/*` pages are skipped from parsing (`--skip-namespace` flag) because chat pages are often mal-formatted (incorrectly structured for logseq).
@@ -57,7 +57,7 @@ Ownership:
 
 ## Logseq dev-notes structure
 
-Under `logseq-dev-notes/pages`:
+Under `GRAPH/pages`:
 
 | Type        | Logical page name        | Physical filename             |
 | ----------- | ------------------------ | ----------------------------- |
@@ -141,7 +141,7 @@ evidences:: test/ingest.jl
 - `src/ingest.jl` in Stage 1 ...
 ```
 
-Noted that `files::` remain a deliberately lexical field; simply use `rg -l 'src/ingest\.jl' logseq-dev-notes/` (both prose and metadata) or `rg -l '^files:: .*src/ingest\.jl'` (targeting metadata `files` only) to get the files with such file.
+Noted that `files::` remain a deliberately lexical field; simply use `rg -l 'src/ingest\.jl' path/to/GRAPH/` (both prose and metadata) or `rg -l '^files:: .*src/ingest\.jl'` (targeting metadata `files` only) to get the files with such file.
 We don't use `files:: [[src/ingest.jl]], [[scripts/ingest.jl]]` because we don't want the logseq graph to be cluttered with file/path entities.
 
 
@@ -150,5 +150,5 @@ We don't use `files:: [[src/ingest.jl]], [[scripts/ingest.jl]]` because we don't
 Journal pages are expected to be short, and it cost little to read all RAW journal pages (i.e., `journals/*.md`) without pulling relational context. Journals will mention some critical events. So the recommended workflow would be:
 
 1. Read all journal pages in raw, and select a few pages that is relevant to the current task.
-2. Use `python helper/logseq_refs.py path/to/logseq-dev-notes/ journals <page1> <page2> --exclude-namespace "chat"` to pull these relevant pages with relational context.
+2. Use `python helper/logseq_refs.py path/to/GRAPH/ journals <page1> <page2> --exclude-namespace "chat"` to pull these relevant pages with relational context.
 3. Read page `[[ARCH/CURRENT-STATUS]]`, `dvc.yaml`, `params.yaml` if provided.
