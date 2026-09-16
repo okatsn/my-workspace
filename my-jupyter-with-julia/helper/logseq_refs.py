@@ -16,16 +16,17 @@ from urllib.parse import unquote
 
 HELP_EXAMPLE = """
 
-    # Print pages referenced by explicitly listed journals:
+    # Print pages referenced by explicitly listed journals
+    # (filenames inside GRAPH/journals):
     python logseq_refs.py . journals \
-        journals/2026-05-04.md journals/2026-05-05.md
+        2026-05-04.md 2026-05-05.md
 
     # Print pages referenced by an inclusive journal range:
     python logseq_refs.py . journals --from 2026-05-04 --to 2026-05-06
 
-    # Path form is also accepted for range endpoints:
+    # Filename form is also accepted for range endpoints:
     python logseq_refs.py . journals \
-        --from journals/2026-05-04.md --to journals/2026-05-06.md
+        --from 2026-05-04.md --to 2026-05-06.md
 
     # Omit the selected journals themselves, printing only referenced pages:
     python logseq_refs.py . journals \
@@ -220,11 +221,17 @@ def block_ranges(text: str) -> tuple[list[str], list[tuple[int, int, int, int]]]
 
 
 def resolve_journal_file(graph: Graph, value: str | Path) -> Path:
-    """Resolve an explicit journal path relative to GRAPH when needed."""
+    """Resolve an explicit journal filename inside GRAPH/journals, or an absolute path."""
     path = Path(value).expanduser()
-    if not path.is_absolute():
-        path = graph.root / path
-    path = path.resolve()
+    if path.is_absolute():
+        path = path.resolve()
+    elif path.parent == Path("."):
+        path = (graph.journals_dir / path.name).resolve()
+    else:
+        raise UserInputError(
+            f"journal must be a bare filename (e.g. 2026-05-04.md) or an "
+            f"absolute path: {value}"
+        )
 
     if not path.is_file():
         raise UserInputError(f"journal file does not exist: {path}")
@@ -236,7 +243,7 @@ def resolve_journal_file(graph: Graph, value: str | Path) -> Path:
 
 
 def parse_range_endpoint(graph: Graph, value: str) -> date:
-    """Parse DATE, DATE.md, journals/DATE.md, or an absolute journal path."""
+    """Parse DATE, DATE.md (bare filename), or an absolute journal path."""
     raw = value.strip()
 
     if ISO_DATE.fullmatch(raw):
@@ -246,7 +253,7 @@ def parse_range_endpoint(graph: Graph, value: str) -> date:
         if candidate.suffix.lower() != ".md" or not ISO_DATE.fullmatch(candidate.stem):
             raise UserInputError(
                 f"invalid journal range endpoint {value!r}; expected YYYY-MM-DD "
-                "or a YYYY-MM-DD.md journal path"
+                "or a YYYY-MM-DD.md journal filename"
             )
 
         if candidate.is_absolute():
@@ -254,7 +261,10 @@ def parse_range_endpoint(graph: Graph, value: str) -> date:
         elif candidate.parent == Path("."):
             path = (graph.journals_dir / candidate.name).resolve()
         else:
-            path = (graph.root / candidate).resolve()
+            raise UserInputError(
+                f"invalid journal range endpoint {value!r}; expected a bare "
+                "filename (e.g. 2026-05-04.md) or an absolute path"
+            )
 
         if path.parent != graph.journals_dir.resolve():
             raise UserInputError(
@@ -449,19 +459,19 @@ def build_parser() -> argparse.ArgumentParser:
         "journals",
         metavar="JOURNAL",
         nargs="*",
-        help="journal path, absolute or relative to GRAPH",
+        help="journal filename inside GRAPH/journals (e.g. 2026-05-04.md), or an absolute path",
     )
     journals.add_argument(
         "--from",
         dest="from_journal",
         metavar="DATE_OR_JOURNAL",
-        help="inclusive range start, e.g. 2026-05-05 or journals/2026-05-05.md",
+        help="inclusive range start, e.g. 2026-05-05 or 2026-05-05.md",
     )
     journals.add_argument(
         "--to",
         dest="to_journal",
         metavar="DATE_OR_JOURNAL",
-        help="inclusive range end, e.g. 2026-05-06 or journals/2026-05-06.md",
+        help="inclusive range end, e.g. 2026-05-06 or 2026-05-06.md",
     )
     journals.add_argument(
         "--exclude-self",

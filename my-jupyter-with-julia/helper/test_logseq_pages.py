@@ -535,26 +535,26 @@ class PagesInterfaceEquivalenceTests(unittest.TestCase):
             "2026-07-08",
         )
         explicit = self._run(
-            "journals/2026-07-06.md",
-            "journals/2026-07-07.md",
-            "journals/2026-07-08.md",
+            "2026-07-06.md",
+            "2026-07-07.md",
+            "2026-07-08.md",
         )
 
         self.assertSameBehavior(ranged, explicit)
         self.assertEqual(ranged.returncode, 0, ranged.stderr)
 
-    def test_path_endpoint_range_equals_explicit_contiguous_journals(self) -> None:
-        """Path-form --from/--to endpoints are equivalent to explicit files."""
+    def test_filename_endpoint_range_equals_explicit_contiguous_journals(self) -> None:
+        """Filename-form --from/--to endpoints are equivalent to explicit files."""
         ranged = self._run(
             "--from",
-            "journals/2026-07-06.md",
+            "2026-07-06.md",
             "--to",
-            "journals/2026-07-08.md",
+            "2026-07-08.md",
         )
         explicit = self._run(
-            "journals/2026-07-06.md",
-            "journals/2026-07-07.md",
-            "journals/2026-07-08.md",
+            "2026-07-06.md",
+            "2026-07-07.md",
+            "2026-07-08.md",
         )
 
         self.assertSameBehavior(ranged, explicit)
@@ -569,9 +569,9 @@ class PagesInterfaceEquivalenceTests(unittest.TestCase):
             "--exclude-self",
         )
         explicit = self._run(
-            "journals/2026-07-06.md",
-            "journals/2026-07-07.md",
-            "journals/2026-07-08.md",
+            "2026-07-06.md",
+            "2026-07-07.md",
+            "2026-07-08.md",
             "--exclude-self",
         )
 
@@ -591,10 +591,10 @@ class PagesInterfaceEquivalenceTests(unittest.TestCase):
             "chat",
         )
         explicit = self._run(
-            "journals/2026-07-06.md",
-            "journals/2026-07-07.md",
-            "journals/2026-07-08.md",
-            "journals/2026-07-09.md",
+            "2026-07-06.md",
+            "2026-07-07.md",
+            "2026-07-08.md",
+            "2026-07-09.md",
             "--exclude-namespace",
             "chat",
         )
@@ -613,14 +613,11 @@ class PagesInterfaceEquivalenceTests(unittest.TestCase):
             "--to",
             "2026-07-12",
         )
-        explicit = self._run(
-            str(j10.relative_to(self.graph)),
-            str(j12.relative_to(self.graph)),
-        )
+        explicit = self._run(j10.name, j12.name)
 
         self.assertSameBehavior(ranged, explicit)
 
-    def test_date_and_path_endpoint_ranges_are_equivalent(self) -> None:
+    def test_date_and_filename_endpoint_ranges_are_equivalent(self) -> None:
         """Both supported endpoint spellings select the same journals."""
         dates = self._run(
             "--from",
@@ -628,25 +625,25 @@ class PagesInterfaceEquivalenceTests(unittest.TestCase):
             "--to",
             "2026-07-08",
         )
-        paths = self._run(
+        filenames = self._run(
             "--from",
-            "journals/2026-07-06.md",
+            "2026-07-06.md",
             "--to",
-            "journals/2026-07-08.md",
+            "2026-07-08.md",
         )
 
-        self.assertSameBehavior(dates, paths)
+        self.assertSameBehavior(dates, filenames)
 
-    def test_absolute_and_graph_relative_explicit_paths_are_equivalent(self) -> None:
+    def test_absolute_and_bare_filename_explicit_paths_are_equivalent(self) -> None:
         """Explicit journal selection should not depend on path spelling."""
-        relative = self._run(
-            "journals/2026-07-06.md",
-            "journals/2026-07-07.md",
-            "journals/2026-07-08.md",
+        bare = self._run(
+            "2026-07-06.md",
+            "2026-07-07.md",
+            "2026-07-08.md",
         )
         absolute = self._run(str(self.j1), str(self.j2), str(self.j3))
 
-        self.assertSameBehavior(relative, absolute)
+        self.assertSameBehavior(bare, absolute)
 
 
 if __name__ == "__main__":
