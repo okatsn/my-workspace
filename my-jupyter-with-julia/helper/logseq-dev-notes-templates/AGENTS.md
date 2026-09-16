@@ -38,7 +38,7 @@ rg -n '^status::'
 This is a custom helper to query logseq contents.
 It is especially useful to:
 
-1. print pages referenced by an inclusive journal range: `python helper/logseq_refs.py path/to/logseq-dev-notes/ journals --from 2026-01-01 --to 2026-09-20 --exclude-namespace "chat"`
+1. print all pages excluding `chat/*` referenced by selected journal pages: `python helper/logseq_refs.py path/to/logseq-dev-notes/ journals 2026-01-01.md 2026-03-03.md --exclude-namespace "chat"`
 2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to/logseq-dev-notes/ refs "DECISION/01_whatever" --skip-namespace "chat"`
 
 > 💡 In example 1. above, `chat/*` pages are excluded from the relational context (`--exclude-namespace` flag) because their contents are presumed to be very long and unnecessarily detailed.
@@ -145,3 +145,10 @@ Noted that `files::` remain a deliberately lexical field; simply use `rg -l 'src
 We don't use `files:: [[src/ingest.jl]], [[scripts/ingest.jl]]` because we don't want the logseq graph to be cluttered with file/path entities.
 
 
+## Progressive Disclosure in Understanding the Context
+
+Journal pages are expected to be short, and it cost little to read all RAW journal pages (i.e., `journals/*.md`) without pulling relational context. Journals will mention some critical events. So the recommended workflow would be:
+
+1. Read all journal pages in raw, and select a few pages that is relevant to the current task.
+2. Use `python helper/logseq_refs.py path/to/logseq-dev-notes/ journals <page1> <page2> --exclude-namespace "chat"` to pull these relevant pages with relational context.
+3. Read page `[[ARCH/CURRENT-STATUS]]`, `dvc.yaml`, `params.yaml` if provided.
