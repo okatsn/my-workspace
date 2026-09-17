@@ -107,7 +107,7 @@ EOF
     mkdir -p "$pages_dir" "$journals_dir"
 
 
-    for name in ARCH REPORT DECISION REVIEW INDEX; do
+    for name in ARCH REPORT DECISION REVIEW INDEX ACTIVE DEFERRED RESOLVED STALE; do
         create_page \
             "$pages_dir/$name.md" \
             "$template_dir/$name.md"
