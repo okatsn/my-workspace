@@ -16,7 +16,7 @@ No logseq CLI available in the environment. Here are recommended (not mandatory)
 
 1. If a few journal filenames/dates are provided, use `helper/logseq_refs.py` with `journals` to pull journal pages at once with relational context attached.
 2. If the target is a logseq page, i.e., `GRAPH/pages/*.md`, use `helper/logseq_refs.py` with `refs` to pull the target page with relational context attached.
-3. Use ripgrep, `rg`, to query for a page property, or for targets that might appear inside or outside `GRAPH`.
+3. Use ripgrep, `rg`, to query for a page property name, or for targets that might appear inside or outside `GRAPH`.
 
 
 See examples below.
@@ -44,6 +44,9 @@ It is especially useful to:
 > 💡 In example 1. above, `chat/*` pages are excluded from the relational context (`--exclude-namespace` flag) because their contents are presumed to be very long and unnecessarily detailed.
 > 💡 In example 2. above, `chat/*` pages are skipped from parsing (`--skip-namespace` flag) because chat pages are often mal-formatted (incorrectly structured for logseq).
 > 💡 `--exclude-namespace` is exclusively for the method `python helper/logseq_refs.py ... journals ...`; `--skip-namespace` is exclusively for `python helper/logseq_refs.py ... refs ...`. Don't mixed them up.
+> 💡 `refs` takes `--scope blocks` (default) or `--scope pages`: `blocks` prints each matching block (possibly several per file); `pages` prints each matching page once, in full — useful when the only reference lives in a page-level property (e.g. `status:: [[ACTIVE]]`), which `blocks` scope does not see.
+> 💡 For example, `python logseq_refs.py . refs "ACTIVE" --scope pages` is especially useful to give you all `DECSION` pages whose status is `[[ACTIVE]]` or contain `[[ACTIVE]]`.
+> 💡 `refs PAGE` also matches a dangling page name, i.e. a `[[PAGE]]` link with no corresponding page file yet.
 > 💡 Run `python helper/logseq_refs.py --help` to see complete examples.
 
 ## Human--AI-Agent Collaboration Rules
