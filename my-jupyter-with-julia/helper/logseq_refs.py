@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from collections.abc import Callable
 from datetime import date
 from pathlib import Path
 from urllib.parse import unquote
@@ -36,8 +37,14 @@ HELP_EXAMPLE = """
     python logseq_refs.py . journals \
         --from 2026-05-04 --to 2026-05-06 --exclude-namespace "chat"
 
-    # Print blocks that reference a page (canonical name or alias):
+    # Print blocks that reference a page (default scope; canonical name or alias):
     python logseq_refs.py . refs "Discontinuous Galerkin"
+
+    # Print each whole referencing page once instead of per-block excerpts:
+    python logseq_refs.py . refs "Discontinuous Galerkin" --scope pages
+
+    # PAGE need not exist as a physical page; dangling [[links]] are matched too:
+    python logseq_refs.py . refs "ACTIVE"
 
     # Also include blocks that reference namespace children (e.g. not only [[chat]] but also [[chat/*]]):
     python logseq_refs.py . refs "chat" --list-children
@@ -356,25 +363,45 @@ def show_journals(
         print("\n\n".join(sections))
 
 
+def build_target_matcher(
+    graph: Graph, page: str, list_children: bool
+) -> tuple[Path | None, Callable[[str], bool]]:
+    """Resolve PAGE and return (target-or-None, ref -> bool matcher).
+
+    PAGE need not resolve to a physical page: a dangling name is matched by
+    normalized text instead of by page identity.
+    """
+    target = graph.resolve(page)
+    if target is not None:
+        targets = {target}
+        if list_children:
+            prefix = f"{graph.canonical[target]}/".casefold()
+            targets |= {
+                path
+                for path, name in graph.canonical.items()
+                if name.casefold().startswith(prefix)
+            }
+        return target, lambda ref: graph.resolve(ref) in targets
+
+    query = norm(page).replace("___", "/")
+    prefix = f"{query}/"
+
+    def matches_dangling(ref: str) -> bool:
+        key = norm(ref).replace("___", "/")
+        return key == query or (list_children and key.startswith(prefix))
+
+    return None, matches_dangling
+
+
 def show_refs(
     graph: Graph,
     page: str,
     list_children: bool = False,
     exclude_self: bool = False,
     skip_namespaces: list[str] | None = None,
+    scope: str = "blocks",
 ) -> None:
-    target = graph.resolve(page)
-    if target is None:
-        raise UserInputError(f"Unknown page: {page!r}")
-
-    targets = {target}
-    if list_children:
-        prefix = f"{graph.canonical[target]}/".casefold()
-        targets |= {
-            path
-            for path, name in graph.canonical.items()
-            if name.casefold().startswith(prefix)
-        }
+    target, matches = build_target_matcher(graph, page, list_children)
 
     paths = sorted(graph.pages_dir.glob("*.md"), key=lambda p: p.name.casefold())
     if graph.journals_dir.is_dir():
@@ -393,7 +420,7 @@ def show_refs(
         ]
 
     first = True
-    if not exclude_self:
+    if not exclude_self and target is not None:
         print(
             render_document(
                 graph.canonical[target],
@@ -406,11 +433,21 @@ def show_refs(
     for path in paths:
         path = path.resolve()
         text = path.read_text(encoding="utf-8")
-        lines, blocks = block_ranges(text)
 
+        if scope == "pages":
+            if not any(matches(ref) for ref in refs(text)):
+                continue
+            if not first:
+                print()
+            first = False
+            title = graph.canonical.get(path) or page_name_from_file(path)
+            print(render_document(title, text, graph.display_path(path)))
+            continue
+
+        lines, blocks = block_ranges(text)
         for start, own_end, subtree_end, _indent in blocks:
             own_text = "".join(lines[start:own_end])
-            if not any(graph.resolve(ref) in targets for ref in refs(own_text)):
+            if not any(matches(ref) for ref in refs(own_text)):
                 continue
 
             if not first:
@@ -515,6 +552,15 @@ def build_parser() -> argparse.ArgumentParser:
             "(repeatable); useful to skip malformatted pages"
         ),
     )
+    backlinks.add_argument(
+        "--scope",
+        choices=["blocks", "pages"],
+        default="blocks",
+        help=(
+            "blocks: print each matching block, possibly repeating a file "
+            "(default); pages: print each matching page once, in full"
+        ),
+    )
 
     return parser
 
@@ -539,6 +585,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.list_children,
                 args.exclude_self,
                 args.skip_namespace,
+                args.scope,
             )
         return 0
     except (UserInputError, OSError, UnicodeError) as exc:
