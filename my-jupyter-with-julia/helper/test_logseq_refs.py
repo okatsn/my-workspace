@@ -92,6 +92,7 @@ class RefsCommandTests(unittest.TestCase):
         list_children: bool = False,
         exclude_self: bool = False,
         skip_namespace: list[str] | None = None,
+        scope: str | None = None,
     ) -> subprocess.CompletedProcess[str]:
         args = [
             sys.executable,
@@ -106,6 +107,8 @@ class RefsCommandTests(unittest.TestCase):
             args.append("--exclude-self")
         for namespace in skip_namespace or []:
             args.extend(["--skip-namespace", namespace])
+        if scope is not None:
+            args.extend(["--scope", scope])
         return subprocess.run(
             args,
             text=True,
@@ -404,12 +407,50 @@ class RefsCommandTests(unittest.TestCase):
         self.assertIn("pages/Topic One.md", result.stdout)
         self.assertIn("pages/Topic Two.md", result.stdout)
 
-    def test_unknown_page_fails_cleanly(self) -> None:
+    def test_dangling_page_name_with_no_references_prints_nothing(self) -> None:
         result = self._run("Page That Does Not Exist")
 
-        self.assertNotEqual(result.returncode, 0)
-        combined = result.stdout + result.stderr
-        self.assertIn("Unknown page", combined)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "")
+
+    def test_dangling_page_name_matches_wikilink_references(self) -> None:
+        self._write(
+            "journals/2026-05-19.md",
+            """
+            - This block mentions [[Some Dangling Page]].
+            """,
+        )
+
+        result = self._run("Some Dangling Page")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- This block mentions [[Some Dangling Page]].", result.stdout)
+
+    def test_dangling_page_name_matches_tag_references(self) -> None:
+        self._write(
+            "journals/2026-05-20.md",
+            """
+            - Status update #ACTIVE
+            """,
+        )
+
+        result = self._run("ACTIVE")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("- Status update #ACTIVE", result.stdout)
+
+    def test_dangling_page_name_does_not_match_unrelated_prefix(self) -> None:
+        self._write(
+            "journals/2026-05-21.md",
+            """
+            - Ref to [[ACTIVE-ish]]
+            """,
+        )
+
+        result = self._run("ACTIVE")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("[[ACTIVE-ish]]", result.stdout)
 
     def test_list_children_includes_namespace_child_pages(self) -> None:
         self._write("pages/chat.md", "- Chat root page.\n")
@@ -657,9 +698,7 @@ class RefsCommandTests(unittest.TestCase):
             """,
         )
 
-        result = self._run(
-            "Finite Element Method", skip_namespace=["chat", "projects"]
-        )
+        result = self._run("Finite Element Method", skip_namespace=["chat", "projects"])
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertNotIn(
@@ -709,6 +748,106 @@ class RefsCommandTests(unittest.TestCase):
             "- Sub-a page mentions [[chat]] again, which should be skipped from scanning.",
             result.stdout,
         )
+
+    def test_scope_defaults_to_blocks_and_ignores_page_level_properties(self) -> None:
+        self._write(
+            "pages/DECISION___foo.md",
+            """
+            type:: [[DECISION]]
+            status:: [[ACTIVE]]
+
+            - Decision body.
+            """,
+        )
+
+        result = self._run("ACTIVE")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "")
+
+    def test_scope_pages_matches_page_level_property_and_returns_whole_page(
+        self,
+    ) -> None:
+        self._write(
+            "pages/DECISION___foo.md",
+            """
+            type:: [[DECISION]]
+            status:: [[ACTIVE]]
+
+            - Decision body.
+            """,
+        )
+
+        result = self._run("ACTIVE", scope="pages")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("[[DECISION/foo]]", result.stdout)
+        self.assertIn("status:: [[ACTIVE]]", result.stdout)
+        self.assertIn("- Decision body.", result.stdout)
+
+    def test_scope_pages_prints_matching_page_only_once(self) -> None:
+        self._write(
+            "pages/Another Topic.md",
+            """
+            - First mention of [[FEM]].
+            - Second mention of [[FEM]].
+            """,
+        )
+
+        result = self._run("Finite Element Method", scope="pages")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.count("pages/Another Topic.md"), 1)
+
+    def test_scope_pages_does_not_repeat_block_style_headers(self) -> None:
+        self._write(
+            "journals/2026-05-24.md",
+            """
+            - Mentions [[FEM]] here.
+            """,
+        )
+
+        result = self._run("Finite Element Method", scope="pages")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("---", result.stdout)
+
+    def test_scope_pages_exclude_self_hides_target_own_content(self) -> None:
+        self._write(
+            "pages/Standalone Page.md",
+            """
+            - Standalone page's own content.
+            """,
+        )
+        self._write(
+            "journals/2026-05-25.md",
+            """
+            - Reference to [[Standalone Page]].
+            """,
+        )
+
+        result = self._run("Standalone Page", scope="pages", exclude_self=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Standalone page's own content.", result.stdout)
+        self.assertIn("Reference to [[Standalone Page]]", result.stdout)
+
+    def test_scope_pages_works_with_dangling_page_name(self) -> None:
+        self._write(
+            "pages/DECISION___bar.md",
+            """
+            type:: [[DECISION]]
+            status:: [[ACTIVE]]
+
+            - Bar decision body.
+            """,
+        )
+
+        result = self._run("ACTIVE", scope="pages")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("status:: [[ACTIVE]]", result.stdout)
+        self.assertIn("- Bar decision body.", result.stdout)
 
 
 if __name__ == "__main__":
