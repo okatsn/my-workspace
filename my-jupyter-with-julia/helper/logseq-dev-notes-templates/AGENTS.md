@@ -152,3 +152,5 @@ Journal pages are expected to be short, and it cost little to read all RAW journ
 1. Read all journal pages in raw, and select a few pages that is relevant to the current task.
 2. Use `python helper/logseq_refs.py path/to/GRAPH/ journals <page1> <page2> --exclude-namespace "chat"` to pull these relevant pages with relational context.
 3. Read page `[[ARCH/CURRENT-STATUS]]`, `dvc.yaml`, `params.yaml` if provided.
+
+> Note: the date on a journal do not have too much meaning, at most hinting at the sequential order for when an idea/issue firstly proposed. It is expected that a journal date might be misaligned against the date in the committed history.
