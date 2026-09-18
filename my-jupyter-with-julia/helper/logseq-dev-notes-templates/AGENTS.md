@@ -16,7 +16,7 @@ No logseq CLI available in the environment. Here are recommended (not mandatory)
 
 1. If a few journal filenames/dates are provided, use `helper/logseq_refs.py` with `journals` to pull journal pages at once with relational context attached.
 2. If the target is a logseq page, i.e., `GRAPH/pages/*.md`, use `helper/logseq_refs.py` with `refs` to pull the target page with relational context attached.
-3. Use ripgrep, `rg`, to query for a page property name, or for targets that might appear inside or outside `GRAPH`.
+3. Use ripgrep, `rg`, to query targets that might appear inside or outside `GRAPH`.
 
 
 See examples below.
