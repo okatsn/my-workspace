@@ -58,7 +58,11 @@ ATTR_RE = re.compile(
     r"""(?<!\S)([A-Za-z][A-Za-z0-9_-]*)=(?:"([^"]*)"|'([^']*)'|([^\s]+))"""
 )
 
-ANY_MARKER_RE = re.compile(rb"CUTPASTE:(BEGIN|END|HERE):([A-Za-z0-9_.-]+)")
+ANY_MARKER_RE = re.compile(
+    # Lazy id capture: stop at the first non-id char, or at a glued "-->"
+    # (the id charset includes "-", so a greedy match would swallow it).
+    rb"CUTPASTE:(BEGIN|END|HERE):([A-Za-z0-9_.-]+?)(?:(?![A-Za-z0-9_.-])|(?=-->))"
+)
 
 
 class CutPasteError(RuntimeError):
@@ -194,8 +198,13 @@ def find_occurrences(
 
     token = cid.encode("utf-8")
 
+    # The id charset itself includes "-", so a plain negative lookahead would
+    # reject a marker glued directly to a closing "-->" (e.g. "id-->" with no
+    # separating space): treat "-->" as a boundary too, not just non-id chars.
     target_re = re.compile(
-        rb"CUTPASTE:(BEGIN|END|HERE):" + re.escape(token) + rb"(?![A-Za-z0-9_.-])"
+        rb"CUTPASTE:(BEGIN|END|HERE):"
+        + re.escape(token)
+        + rb"(?:(?![A-Za-z0-9_.-])|(?=-->))"
     )
 
     found: list[Occurrence] = []
