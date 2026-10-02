@@ -502,7 +502,7 @@ See references:
 #### Use a local build for quick testing
 (following `julia-debian-build/README.md`)
 - Create a temporary local build: `docker tag jbuild temp-local:latest`, and
-- use it in other Dockerfile `FROM temp-local AS build-julia`.
+- use it in other Dockerfile, e.g., `docker build --build-arg JULIA_BUILD_REF=temp-local:latest ...` for `my-jupyter-with-julia/Dockerfile` (its `QUARTO_BUILD_REF` and `TYPST_BUILD_REF` are required as well).
 
 
 ### DVC

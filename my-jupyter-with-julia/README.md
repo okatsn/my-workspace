@@ -4,18 +4,26 @@
 
 The Dockerfile script for building this workspace is [my-jupyter-with-julia/Dockerfile](Dockerfile).
 
-Use [my-jupyter-with-julia/docker_build_and_push.sh](docker_build_and_push.sh) to build an image for this and push it to Dockerhub.
+Use [my-jupyter-with-julia/docker_build_and_push.sh](docker_build_and_push.sh) (run as `./docker_build_and_push.sh`, not sourced) to build an image for this and push it to Dockerhub.
 
 ### Convention
 
-Always push with two tags:  `. docker_build_and_push.sh v[yyyy][a-z] v[yyyy][a-z].[n]`;
-the `v[yyyy][a-z]` always refer the latest/largest `n` in the same prefix.
+Every image is pushed with an immutable tag `v[yyyy][a-z].[n]` and a channel tag `v[yyyy][a-z]` that always refers the largest `n`.
+The versions, releases and revisions (`n`) are all in [release.env](../release.env); the tags are derived from it by [shscripts/release_vars.sh](../shscripts/release_vars.sh).
+Never use a channel tag as the input of another image: this Dockerfile takes the three build images as immutable tags (`JULIA_BUILD_REF`, `QUARTO_BUILD_REF` and `TYPST_BUILD_REF`).
 
-For example:
-- `. docker_build_and_push.sh v2026c v2026c.0` (the first push of "v2026c" version; `v2026c` and `v2026c.0` refers the same image);
-- `. docker_build_and_push.sh v2026c v2026c.1` (now `v2026c` refers the `v2026c.1` image).
+### Version bump (Julia / Quarto / Typst)
 
-
+1. Edit [release.env](../release.env): the version and `*_RELEASE` of what changed, with `*_REV=0` (or only bump `*_REV` to rebuild the same release). Bump `JUPYTER_RELEASE` (and `JUPYTER_REV=0`) as well.
+2. Build and push in this order; each step fails loudly, pushing nothing, if a check fails (invalid `release.env`, existing immutable tag, missing build image, failed smoke test):
+    ```bash
+    (cd ../julia-debian-build && ./docker_build_and_push.sh)
+    (cd ../quarto-debian-build && ./docker_build_and_push.sh)
+    # Typst is built in the submodule `typst-official-build`: `./docker_build_and_push.sh v[TYPST_RELEASE].[TYPST_REV] v[TYPST_RELEASE] latest`
+    ./docker_build_and_push.sh
+    ```
+    Only run the steps for what changed.
+3. Set the `FROM` line of [.devcontainer/Dockerfile](.devcontainer/Dockerfile) (the distributed Dockerfile) to the printed tag, run `../shscripts/check_release.sh`, and commit.
 
 ## Apply this workspace as arbitrary container (for user)
 

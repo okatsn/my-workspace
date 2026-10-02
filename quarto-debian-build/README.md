@@ -3,18 +3,14 @@
 # README
 ## How to build the image solely from the Dockerfile:
 
+The Quarto version is set in [release.env](../release.env) (see [Version bump](../my-jupyter-with-julia/README.md#version-bump-julia--quarto--typst)); do not edit the Dockerfile for it.
+
 ```bash
 # These commands should be executed in WSL in the quarto-debian-build directory
 cd quarto-debian-build
 
-# bulid docker image of tag (-t) "jbuild" using file ("-f") "Dockerfile" in the context of current directory (`.` in the end)
-docker compose --env-file ../my-build.env build --no-cache
-
-# tag the image
-docker tag qbuild okatsn/my-quarto-build:latest
-
-# push it to dockerhub
-docker push okatsn/my-quarto-build:latest
+# build, smoke test and push `v<major>.<minor>-<RELEASE>.<REV>`, `v<major>.<minor>-<RELEASE>` and `latest` derived from release.env
+./docker_build_and_push.sh
 ```
 
 ## How to use:
