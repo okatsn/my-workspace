@@ -3,8 +3,8 @@ ARG NB_GID="to be replaced by that in docker-compose.yml"
 
 ARG NB_UID="to be replaced by that in docker-compose.yml"
 
-# SETME:
-ARG QUARTO_VER="1.8.26"
+# QUARTO_VER (e.g., "1.8.26") has no default: set it in `release.env` and build via `docker_build_and_push.sh`.
+ARG QUARTO_VER
 ARG QUARTO_URL="https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb"
 ARG QUARTO_FILE="quarto-${QUARTO_VER}-linux-amd64.deb"
 # # or the latest:
@@ -14,6 +14,7 @@ ARG QUARTO_FILE="quarto-${QUARTO_VER}-linux-amd64.deb"
 FROM debian:${DEBIAN_VERSION}
 
 # Re-declare ARGs after FROM to make them available
+ARG QUARTO_VER
 ARG QUARTO_URL
 ARG QUARTO_FILE
 
@@ -31,9 +32,12 @@ RUN apt-get update \
 # - https://docs.posit.co/resources/install-quarto/#quarto-deb-file-install
 
 
-RUN echo "QUARTO_URL: ${QUARTO_URL}" \
-    && curl -LO ${QUARTO_URL} \
-    && gdebi --non-interactive ${QUARTO_FILE}
+# - `curl -f` fails on HTTP errors; the last check fails the build if the installed Quarto is not QUARTO_VER.
+RUN : "${QUARTO_VER:?QUARTO_VER is required}" \
+    && echo "QUARTO_URL: ${QUARTO_URL}" \
+    && curl -fLO ${QUARTO_URL} \
+    && gdebi --non-interactive ${QUARTO_FILE} \
+    && test "$(quarto --version)" = "${QUARTO_VER}"
 
 
 
