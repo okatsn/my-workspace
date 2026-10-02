@@ -23,3 +23,7 @@ smoke_test() {
 }
 
 source "$(dirname "${BASH_SOURCE[0]}")/../shscripts/docker_build_push_lib.sh"
+
+# The push succeeded, so a stale distributed Dockerfile is reported loudly but does not change the exit code.
+echo "NEXT: set the FROM line of .devcontainer/Dockerfile to the pushed tag, then commit." >&2
+../shscripts/check_release.sh || true
