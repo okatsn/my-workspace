@@ -6,4 +6,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      # Exported by shscripts/release_vars.sh (run via docker_build_and_push.sh); the build stops if unset.
+      args:
+        - JULIA_BUILD_REF=${JULIA_BUILD_REF:?JULIA_BUILD_REF is required}
+        - QUARTO_BUILD_REF=${QUARTO_BUILD_REF:?QUARTO_BUILD_REF is required}
+        - TYPST_BUILD_REF=${TYPST_BUILD_REF:?TYPST_BUILD_REF is required}
     entrypoint: sh -c "sleep infinity"

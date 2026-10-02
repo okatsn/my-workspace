@@ -27,3 +27,22 @@ check_format QUARTO_REV "${QUARTO_REV:-}" '^[0-9]+$'
 QUARTO_MINOR="${QUARTO_VERSION%.*}"
 export QUARTO_BUILD_CHANNEL="v${QUARTO_MINOR}-${QUARTO_RELEASE}"
 export QUARTO_BUILD_TAG="${QUARTO_BUILD_CHANNEL}.${QUARTO_REV}"
+
+check_format TYPST_RELEASE "${TYPST_RELEASE:-}" '^[0-9]{4}[a-z]$'
+check_format TYPST_REV "${TYPST_REV:-}" '^[0-9]+$'
+check_format JUPYTER_RELEASE "${JUPYTER_RELEASE:-}" '^[0-9]{4}[a-z]$'
+check_format JUPYTER_REV "${JUPYTER_REV:-}" '^[0-9]+$'
+
+export TYPST_BUILD_CHANNEL="v${TYPST_RELEASE}"
+export TYPST_BUILD_TAG="${TYPST_BUILD_CHANNEL}.${TYPST_REV}"
+export JUPYTER_CHANNEL="v${JUPYTER_RELEASE}"
+export JUPYTER_TAG="${JUPYTER_CHANNEL}.${JUPYTER_REV}"
+
+# Image names, and the refs of the build images consumed by my-jupyter-with-julia/Dockerfile (always immutable tags).
+export JULIA_BUILD_IMAGE="okatsn/my-julia-build"
+export QUARTO_BUILD_IMAGE="okatsn/my-quarto-build"
+export TYPST_BUILD_IMAGE="okatsn/my-typst-space"
+export JUPYTER_IMAGE="okatsn/my-jupyter-with-julia"
+export JULIA_BUILD_REF="${JULIA_BUILD_IMAGE}:${JULIA_BUILD_TAG}"
+export QUARTO_BUILD_REF="${QUARTO_BUILD_IMAGE}:${QUARTO_BUILD_TAG}"
+export TYPST_BUILD_REF="${TYPST_BUILD_IMAGE}:${TYPST_BUILD_TAG}"
