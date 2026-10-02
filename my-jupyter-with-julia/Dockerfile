@@ -52,15 +52,21 @@ RUN chown -R $NB_UID:$NB_GID /home/$NB_USER && \
 # - I've also tried named volume instead (e.g., - pydrive2fs-cache:/home/jovyan/.cache/pydrive2fs), but 1. not working 2. named volume does not align with my goal (one container one credential; it's much better for every container to mount the only credential on host.)
 # - Currently, in host (WSL) run `sudo chown -R okatsn:okatsn /home/okatsn/` can solve this issue.
 
+# # Super Fundamental Utilities
+# - Must-Included utilities for alost every machine.
+
 RUN apt-get update && apt-get -y install \
     bash-completion \
     #
     # KEYNOTE:
     # - `apt-cache search fonts | grep noto` to see available fonts.
     # - See also https://samwhelp.github.io/note-about-ubuntu/read/adjustment/env/font.html
-    # RUN apt-get update && apt-get -y install \
-    tree
-# `tree` list the tree of file directory.
+    # # `tree` list the tree of file directory.
+    tree \
+    # # ripgrep (especially useful for agents)
+    ripgrep
+
+
 
 
 ## Install typst

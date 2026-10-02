@@ -55,7 +55,8 @@
         "REMOTE_CONTAINERS_IPC": "",
         "GIT_ASKPASS": "",
         "VSCODE_GIT_ASKPASS_NODE": "",
-        "VSCODE_GIT_ASKPASS_MAIN": ""
+        "VSCODE_GIT_ASKPASS_MAIN": "",
+        "SSH_AUTH_SOCK": ""
     },
     // Runs after every VS Code attach. Overwrites the relay JS client injected by
     // Dev Containers with a no-op, then clears the user-level credential.helper.

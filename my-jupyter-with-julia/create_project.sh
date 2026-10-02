@@ -30,5 +30,6 @@ node render.js
 cp -r .devcontainer "$newproj/.devcontainer"
 cp -r .vscode "$newproj/.vscode"
 cp data.json "$newproj/data.json"
-# Helper scripts
-cp -r helper/ "$newproj/helper"
+# Helper scripts (excluding test_* files)
+mkdir -p "$newproj/helper"
+rsync -av --exclude='test_*' helper/ "$newproj/helper/"
