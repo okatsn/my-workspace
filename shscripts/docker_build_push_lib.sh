@@ -2,9 +2,12 @@
 # Shared logic of every `docker_build_and_push.sh`; source it from a wrapper that defines:
 # - `IMAGE_NAME`: e.g., "okatsn/my-julia-build"
 # - `build_image`: a function that builds the image and tags it as "$IMAGE_NAME:temp"
+#   (not required if `MIRROR_FROM` is set)
 # Optional in the wrapper:
+# - `MIRROR_FROM`: an existing registry image (e.g., "ghcr.io/typst/typst:0.14.2"). Instead of building, it is smoke tested
+#   and copied registry-side (`docker buildx imagetools create`, keeping its digest and platforms) to every tag.
 # - `DEFAULT_TAGS`: an array of tags to push when none is given on the command line
-# - `smoke_test`: a function that must succeed on "$IMAGE_NAME:temp" before anything is pushed
+# - `smoke_test`: a function that must succeed on the image ("$1": "$IMAGE_NAME:temp", or "$MIRROR_FROM") before anything is pushed
 #
 # Usage of the wrapper: ./docker_build_and_push.sh [--no-build] [tag1 tag2 ...]
 #
@@ -14,7 +17,7 @@ set -Eeuo pipefail
 trap 'echo "ERROR: line $LINENO: $BASH_COMMAND (exit $?)" >&2' ERR
 
 : "${IMAGE_NAME:?IMAGE_NAME must be set by the wrapper}"
-declare -F build_image >/dev/null || { echo "ERROR: build_image must be defined by the wrapper" >&2; exit 2; }
+[ -n "${MIRROR_FROM:-}" ] || declare -F build_image >/dev/null || { echo "ERROR: build_image must be defined by the wrapper" >&2; exit 2; }
 
 # Wrappers rely on relative paths such as `../my-build.env`.
 cd "$(dirname "${BASH_SOURCE[1]}")"
@@ -50,6 +53,22 @@ for TAG in "${TAGS[@]}"; do
   fi
 done
 
+if [ -n "${MIRROR_FROM:-}" ]; then
+  [ "$BUILD_IMAGE" = true ] || { echo "ERROR: --no-build is meaningless when mirroring $MIRROR_FROM" >&2; exit 2; }
+  docker buildx imagetools inspect "$MIRROR_FROM" >/dev/null ||
+    { echo "ERROR: cannot mirror: $MIRROR_FROM is not available" >&2; exit 1; }
+  if declare -F smoke_test >/dev/null; then
+    echo "Smoke testing $MIRROR_FROM"
+    smoke_test "$MIRROR_FROM"
+  fi
+  for TAG in "${TAGS[@]}"; do
+    echo "Mirroring $MIRROR_FROM as: $IMAGE_NAME:$TAG"
+    docker buildx imagetools create -t "$IMAGE_NAME:$TAG" "$MIRROR_FROM"
+  done
+  echo "Docker image mirrored successfully for tags: ${TAGS[*]}"
+  exit 0
+fi
+
 if [ "$BUILD_IMAGE" = true ]; then
   echo "Building Docker image with tag: $IMAGE_NAME:temp"
   build_image
@@ -61,7 +80,7 @@ fi
 
 if declare -F smoke_test >/dev/null; then
   echo "Smoke testing $IMAGE_NAME:temp"
-  smoke_test
+  smoke_test "$IMAGE_NAME:temp"
 fi
 
 for TAG in "${TAGS[@]}"; do

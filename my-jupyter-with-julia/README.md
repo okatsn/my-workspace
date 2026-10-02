@@ -19,7 +19,7 @@ Never use a channel tag as the input of another image: this Dockerfile takes the
     ```bash
     (cd ../julia-debian-build && ./docker_build_and_push.sh)
     (cd ../quarto-debian-build && ./docker_build_and_push.sh)
-    # Typst is built in the submodule `typst-official-build`: `./docker_build_and_push.sh v[TYPST_RELEASE].[TYPST_REV] v[TYPST_RELEASE] latest`
+    (cd ../typst-mirror && ./docker_build_and_push.sh)  # mirrors ghcr.io/typst/typst:[TYPST_VERSION]; nothing is built
     ./docker_build_and_push.sh
     ```
     Only run the steps for what changed.
