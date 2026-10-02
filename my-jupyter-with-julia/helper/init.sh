@@ -14,13 +14,13 @@ trap 'rc=$?; if [ "$rc" -ne 0 ]; then
   fi
 fi' EXIT
 
-# The version is the first argument, referring `ls -la ~/.julia/environments/` (e.g., "v1.12")
+# The version is the first argument, referring `ls -la ~/.julia/environments/` (e.g., "v1.13")
 # For example:
 # ```bash
-# . .devcontainer/init.sh "v1.12"
+# . .devcontainer/init.sh "v1.13"
 # ```
 if [ -z "$1" ]; then
-  echo "ERROR: VERSION argument is required (e.g., v1.12)" >&2
+  echo "ERROR: VERSION argument is required (e.g., v1.13)" >&2
   exit 1
 fi
 

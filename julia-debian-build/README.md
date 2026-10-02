@@ -1,5 +1,6 @@
 - [Docker](#docker)
-  - [How to build the image solely from the Dockerfile:](#how-to-build-the-image-solely-from-the-dockerfile)
+  - [How to build the image solely from the Dockerfile](#how-to-build-the-image-solely-from-the-dockerfile)
+    - [Best practice](#best-practice)
     - [Explain](#explain)
   - [How to use `my-julia-build` in another `Dockerfile`](#how-to-use-my-julia-build-in-another-dockerfile)
     - [Import the image](#import-the-image)
@@ -14,7 +15,11 @@
 
 The content of this folder is migrated from [okatsn/my-julia-build](https://github.com/okatsn/my-julia-build); please refer to this archive for older history.
 
-## How to build the image solely from the Dockerfile:
+## How to build the image solely from the Dockerfile
+
+Run `. docker_build_and_push.sh latest`,
+
+which is equivalently
 
 ```bash
 # These commands should be executed in WSL in the julia-debian-build directory
@@ -29,6 +34,11 @@ docker tag jbuild okatsn/my-julia-build:latest
 # push it to dockerhub
 docker push okatsn/my-julia-build:latest
 ```
+
+### Best practice
+
+- `. docker_build_and_push.sh v1.13-2026d.0 v1.13-2026d latest`: This pins 2026d and latest to 2026d.0.
+
 
 ### Explain
 Why not use devcontainer.json to build (saying `$ docker compose -f .devcontainer/docker-compose.yml build`)?
