@@ -138,6 +138,9 @@ However, this approach requires configuring `gdrive_client_id` and `gdrive_clien
 !!! warning ⚠️
     It will fail when there is an imported DVC file whose referenced remote name is not identical to what you defined locally, while it is tedious to manually track and maintain the dependent remote information across repo.
     To deal this conundrum, one can clone all associated repos to local, and use [this python helper](./pyscripts/config_global_gdrive_client.py) to automatically set global configuration (this script scan repos but touches only the global DVC config, `~/.config/dvc/config`). Furthermore, this is more safe since secrets are stored out of the scope of each project (that an agent can never touch).
+!!! tip 💡
+   When correctly configured, you should see `https://accounts.google.com/o/oauth2/auth?client_id=<GDRIVE_CLIENT_ID>...`.
+   If the `client_id=<GDRIVE_CLIENT_ID>` in the link does not match, you will be blocked by google; try `rm -rf ~/.cache/pydrive2fs` and retry again.
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
