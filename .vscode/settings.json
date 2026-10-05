@@ -1,4 +1,8 @@
 {
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#b69100",
+        "titleBar.inactiveBackground": "#b69100",
+    },
     "chat.agentFilesLocations": {
         "~/projects/my-agents/mustache-maker/agents": true
     },
