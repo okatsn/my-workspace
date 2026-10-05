@@ -116,9 +116,9 @@ dvc remote modify --local myremote gdrive_service_account_json_file_path ~/.cach
     It makes no sense to grant a service account 'write' permission when it has no GDrive quota (then it is equivalent to a Google Account with 0 GB storage: it can delete but cannot push). This is the limitation of for personal Google Account.
     You can assign service account GDrive quota with paid Google Workspace via organization admin.
 
-#### Method 2
+#### Method 2 (Current Approach)
 
-Create an client App that provides client ID and password that DVC can be used to redirect user to App's authentication page.
+Create a client App that provides client ID and password that DVC can be used to redirect user to App's authentication page.
 
 Refer [DVC - Using a custom Google Cloud project](https://doc.dvc.org/user-guide/data-management/remote-storage/google-drive#using-a-custom-google-cloud-project-recommended), enable the Drive API in [Google Cloud Console/APIs & Services](https://console.cloud.google.com/apis), and create [OAuth Clients](https://console.cloud.google.com/auth/clients) to get `gdrive_client_id` and `gdrive_client_secret`. Don't forget to go to [APIs & Services > OAuth consent screen > Audience](https://console.cloud.google.com/auth/audience) to Add users (with otherwise blocked).
 
@@ -137,7 +137,7 @@ However, this approach requires configuring `gdrive_client_id` and `gdrive_clien
 
 !!! warning ⚠️
     It will fail when there is an imported DVC file whose referenced remote name is not identical to what you defined locally, while it is tedious to manually track and maintain the dependent remote information across repo.
-    To deal this conundrum, one can clone all associated repos to local, and use [this python helper](./pyscripts/config_global_gdrive_client.py) to automatically make global configuration. Furthermore, this is more safe since secrets are stored out of the scope of each project (that an agent can never touch).
+    To deal this conundrum, one can clone all associated repos to local, and use [this python helper](./pyscripts/config_global_gdrive_client.py) to automatically set global configuration (this script scan repos but touches only the global DVC config, `~/.config/dvc/config`). Furthermore, this is more safe since secrets are stored out of the scope of each project (that an agent can never touch).
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
