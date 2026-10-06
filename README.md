@@ -24,6 +24,7 @@
     - [Docker](#docker)
     - [DVC](#dvc)
     - [`dvc pull` fails on the Google Drive remote although the files are there](#dvc-pull-fails-on-the-google-drive-remote-although-the-files-are-there)
+    - [Python environment best practice](#python-environment-best-practice)
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
     - [Docker rebuild error "connect: network is unreachable"](#docker-rebuild-error-connect-network-is-unreachable)
@@ -551,6 +552,26 @@ The remote had been migrated manually between Google Drive locations. Drive's we
 
 !!! warning
    `dvc_gdrive_fix_extensions.py` depends on `PyDrive2` and `oauth2client`. Refer the docstring to setup environment before running the script.
+
+
+### Python environment best practice
+
+Activate a virtual environment before `pip install`:
+
+```bash
+cd <workspace>
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+> 💡**Hint:** you will see an additional `(.venv)` in the command line.
+
+De-active venv:
+
+```bash
+deactivate
+rm -rf .venv
+```
 
 
 ### Remove Zone.Identifier
