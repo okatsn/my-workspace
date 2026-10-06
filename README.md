@@ -549,6 +549,9 @@ The remote had been migrated manually between Google Drive locations. Drive's we
 - Objects that already have a correctly named identical copy are only reported; they are trashed (reversibly) only with `--trash-duplicates`.
 - After a migration, avoid manual copy through the Drive web UI; use `dvc push` from a machine with the cache instead.
 
+!!! warning
+   `dvc_gdrive_fix_extensions.py` depends on `PyDrive2` and `oauth2client`. Refer the docstring to setup environment before running the script.
+
 
 ### Remove Zone.Identifier
 

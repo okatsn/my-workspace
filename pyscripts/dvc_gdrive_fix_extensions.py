@@ -33,7 +33,13 @@ Trashing is reversible; nothing is ever hard-deleted.
 
 Usage
 -----
-    pip install pydrive2
+    # Set up virtual environment
+    cd <workspace>
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+    # Install dependent packages
+    pip install PyDrive2 oauth2client
 
     # Inspect only
     python scripts/dvc_gdrive_fix_extensions.py \\
