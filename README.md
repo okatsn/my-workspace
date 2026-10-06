@@ -540,7 +540,7 @@ The remote had been migrated manually between Google Drive locations. Drive's we
 
 **Solution**
 
-[scripts/dvc_gdrive_fix_extensions.py](scripts/dvc_gdrive_fix_extensions.py) renames such objects back by Drive file ID (metadata only, so the data are never re-uploaded). It only renames an object when Drive's own md5 equals the hash encoded in its path, and it reports anything ambiguous instead of guessing. Hints:
+[pyscripts/dvc_gdrive_fix_extensions.py](pyscripts/dvc_gdrive_fix_extensions.py) renames such objects back by Drive file ID (metadata only, so the data are never re-uploaded). It only renames an object when Drive's own md5 equals the hash encoded in its path, and it reports anything ambiguous instead of guessing. Hints:
 
 - Always run without `--apply` first, and review the report and plan file it writes.
 - Do a canary run (`--apply --limit 1`) before the full run, then check with `dvc status -c` and `dvc pull`.
