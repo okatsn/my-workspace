@@ -23,6 +23,7 @@
     - [Permission Denied on mounted volumes](#permission-denied-on-mounted-volumes)
     - [Docker](#docker)
     - [DVC](#dvc)
+    - [`dvc pull` fails on the Google Drive remote although the files are there](#dvc-pull-fails-on-the-google-drive-remote-although-the-files-are-there)
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
     - [Docker rebuild error "connect: network is unreachable"](#docker-rebuild-error-connect-network-is-unreachable)
@@ -525,6 +526,28 @@ Here are an example workflow:
   0% Checking cache in '1XXXXXXXXXXXXX-xx/files/md5'|                                                        |0/? [00:00<?,    ?files/s]oauth2client/_helpers.py:255: UserWarning: Cannot access /home/jovyan/.cache/pydrive2fs/xxxxxxxx-xxxxxxxxxxxxxxx.apps.googleusercontent.com/default.json: No such file or directory
   ```
 - Copy `default.json` to the new machine at the same place, and DVC should access Google Drive as the old machine.
+
+
+### `dvc pull` fails on the Google Drive remote although the files are there
+
+**What happened**
+
+`dvc pull` reported `[Errno 2] No such file or directory` for hundreds of cache objects (`<remote>/files/md5/xx/yyyy…`), even though the data were visibly present in the correct Drive folders. DVC and its Drive backend were not at fault; mismatched DVC versions between the machines (pushed with 3.62.0, pulled with 3.67.1) were ruled out as the cause.
+
+**Root cause**
+
+The remote had been migrated manually between Google Drive locations. Drive's web uploader appends an extension guessed from the file content, so some objects became `<hash>.png` instead of `<hash>`. DVC looks objects up by their exact name, hence it treats them as missing. (DVC's own `dvc push` goes through the Drive API, which never renames files.) The stray extensions affected only some objects, and directory manifests (`*.dir`) were legitimately named.
+
+**Solution**
+
+[scripts/dvc_gdrive_fix_extensions.py](scripts/dvc_gdrive_fix_extensions.py) renames such objects back by Drive file ID (metadata only, so the data are never re-uploaded). It only renames an object when Drive's own md5 equals the hash encoded in its path, and it reports anything ambiguous instead of guessing. Hints:
+
+- Always run without `--apply` first, and review the report and plan file it writes.
+- Do a canary run (`--apply --limit 1`) before the full run, then check with `dvc status -c` and `dvc pull`.
+- `--credentials` is the OAuth cache file that DVC/PyDrive2 stores under `~/.cache/pydrive2fs/<client_id>/`; it contains refresh credentials, so pass it by path only and never commit or paste it.
+- The remote root ID is the one in the `gdrive://<id>` URL of `.dvc/config`.
+- Objects that already have a correctly named identical copy are only reported; they are trashed (reversibly) only with `--trash-duplicates`.
+- After a migration, avoid manual copy through the Drive web UI; use `dvc push` from a machine with the cache instead.
 
 
 ### Remove Zone.Identifier
