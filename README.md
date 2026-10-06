@@ -23,6 +23,7 @@
     - [Permission Denied on mounted volumes](#permission-denied-on-mounted-volumes)
     - [Docker](#docker)
     - [DVC](#dvc)
+    - [`dvc pull` fails on the Google Drive remote although the files are there](#dvc-pull-fails-on-the-google-drive-remote-although-the-files-are-there)
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
     - [Docker rebuild error "connect: network is unreachable"](#docker-rebuild-error-connect-network-is-unreachable)
@@ -116,9 +117,9 @@ dvc remote modify --local myremote gdrive_service_account_json_file_path ~/.cach
     It makes no sense to grant a service account 'write' permission when it has no GDrive quota (then it is equivalent to a Google Account with 0 GB storage: it can delete but cannot push). This is the limitation of for personal Google Account.
     You can assign service account GDrive quota with paid Google Workspace via organization admin.
 
-#### Method 2
+#### Method 2 (Current Approach)
 
-Create an client App that provides client ID and password that DVC can be used to redirect user to App's authentication page.
+Create a client App that provides client ID and password that DVC can be used to redirect user to App's authentication page.
 
 Refer [DVC - Using a custom Google Cloud project](https://doc.dvc.org/user-guide/data-management/remote-storage/google-drive#using-a-custom-google-cloud-project-recommended), enable the Drive API in [Google Cloud Console/APIs & Services](https://console.cloud.google.com/apis), and create [OAuth Clients](https://console.cloud.google.com/auth/clients) to get `gdrive_client_id` and `gdrive_client_secret`. Don't forget to go to [APIs & Services > OAuth consent screen > Audience](https://console.cloud.google.com/auth/audience) to Add users (with otherwise blocked).
 
@@ -137,7 +138,13 @@ However, this approach requires configuring `gdrive_client_id` and `gdrive_clien
 
 !!! warning ⚠️
     It will fail when there is an imported DVC file whose referenced remote name is not identical to what you defined locally, while it is tedious to manually track and maintain the dependent remote information across repo.
-    To deal this conundrum, one can clone all associated repos to local, and use [this python helper](./pyscripts/config_global_gdrive_client.py) to automatically make global configuration. Furthermore, this is more safe since secrets are stored out of the scope of each project (that an agent can never touch).
+    To deal this conundrum, one can clone all associated repos to local, and use [the python helper](./pyscripts/config_global_gdrive_client.py) to automatically set global configuration (this script scan repos but touches only the global DVC config, `~/.config/dvc/config`). Furthermore, this is more safe since secrets are stored out of the scope of each project (that an agent can never touch).
+!!! tip 💡
+    [The python helper](./pyscripts/config_global_gdrive_client.py) simply scans the repos, extract the remote name in each `.dvc/config` to setup the configurations in the global DVC config.
+!!! tip 💡
+   When correctly configured, you should see `https://accounts.google.com/o/oauth2/auth?client_id=<GDRIVE_CLIENT_ID>...` with `<GDRIVE_CLIENT_ID>` matches `$GDRIVE_CLIENT_ID`. If the `client_id=<GDRIVE_CLIENT_ID>` in the link does not match, you will be blocked by google. Run `rm -rf ~/.cache/pydrive2fs` and retry again may solve the problem.
+!!! tip 💡
+   If a repo A contains imported data from B, you have to also clone B then run [the python helper](./pyscripts/config_global_gdrive_client.py); otherwise, the client ID will fallback to the default client ID "710796635688-iivsgbgsb6uv1fap6635dhvuei09o66c" (and then blocked by Google). The rationale is that, to pull data from B, DVC firstly clones repo B, and if the `gdrive_client_id` and `gdrive_client_secret` is not set either globally or locally for B, it fallbacks to default client ID.
 
 ## Install WSL
 Open the Windows Terminal, install WSL2 and the Ubuntu-24.04 distribution as default with the following command.
@@ -519,6 +526,31 @@ Here are an example workflow:
   0% Checking cache in '1XXXXXXXXXXXXX-xx/files/md5'|                                                        |0/? [00:00<?,    ?files/s]oauth2client/_helpers.py:255: UserWarning: Cannot access /home/jovyan/.cache/pydrive2fs/xxxxxxxx-xxxxxxxxxxxxxxx.apps.googleusercontent.com/default.json: No such file or directory
   ```
 - Copy `default.json` to the new machine at the same place, and DVC should access Google Drive as the old machine.
+
+
+### `dvc pull` fails on the Google Drive remote although the files are there
+
+**What happened**
+
+`dvc pull` reported `[Errno 2] No such file or directory` for hundreds of cache objects (`<remote>/files/md5/xx/yyyy…`), even though the data were visibly present in the correct Drive folders. DVC and its Drive backend were not at fault; mismatched DVC versions between the machines (pushed with 3.62.0, pulled with 3.67.1) were ruled out as the cause.
+
+**Root cause**
+
+The remote had been migrated manually between Google Drive locations. Drive's web uploader appends an extension guessed from the file content, so some objects became `<hash>.png` instead of `<hash>`. DVC looks objects up by their exact name, hence it treats them as missing. (DVC's own `dvc push` goes through the Drive API, which never renames files.) The stray extensions affected only some objects, and directory manifests (`*.dir`) were legitimately named.
+
+**Solution**
+
+[pyscripts/dvc_gdrive_fix_extensions.py](pyscripts/dvc_gdrive_fix_extensions.py) renames such objects back by Drive file ID (metadata only, so the data are never re-uploaded). It only renames an object when Drive's own md5 equals the hash encoded in its path, and it reports anything ambiguous instead of guessing. Hints:
+
+- Always run without `--apply` first, and review the report and plan file it writes.
+- Do a canary run (`--apply --limit 1`) before the full run, then check with `dvc status -c` and `dvc pull`.
+- `--credentials` is the OAuth cache file that DVC/PyDrive2 stores under `~/.cache/pydrive2fs/<client_id>/`; it contains refresh credentials, so pass it by path only and never commit or paste it.
+- The remote root ID is the one in the `gdrive://<id>` URL of `.dvc/config`.
+- Objects that already have a correctly named identical copy are only reported; they are trashed (reversibly) only with `--trash-duplicates`.
+- After a migration, avoid manual copy through the Drive web UI; use `dvc push` from a machine with the cache instead.
+
+!!! warning
+   `dvc_gdrive_fix_extensions.py` depends on `PyDrive2` and `oauth2client`. Refer the docstring to setup environment before running the script.
 
 
 ### Remove Zone.Identifier
