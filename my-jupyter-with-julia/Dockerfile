@@ -1,6 +1,11 @@
-FROM okatsn/my-julia-build:v1.12-2026c AS build-julia
-FROM okatsn/my-quarto-build:v1.8-2026a AS build-quarto
-FROM okatsn/my-typst-space:v2026a AS build0
+# The refs of the three build images have no default: they are the immutable tags derived from `release.env`;
+# build via `docker_build_and_push.sh`. A missing ref fails with "base name should not be blank".
+ARG JULIA_BUILD_REF
+ARG QUARTO_BUILD_REF
+ARG TYPST_BUILD_REF
+FROM ${JULIA_BUILD_REF} AS build-julia
+FROM ${QUARTO_BUILD_REF} AS build-quarto
+FROM ${TYPST_BUILD_REF} AS build0
 # Please refer to https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook
 # # Docker image repository seems to moved to quay.io
 # # The list of available tags: https://quay.io/repository/jupyter/minimal-notebook?tab=tags

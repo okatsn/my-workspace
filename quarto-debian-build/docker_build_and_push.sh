@@ -1,56 +1,17 @@
 #!/usr/bin/env bash
-set -e
-# Pause before exit when the script fails so the caller can see the error.
-# - Uses an EXIT trap to catch any non-zero exit (including explicit `exit 1`).
-# - If running interactively it prompts the user to press Enter. In CI or
-#   non-interactive environments it sleeps for 5 seconds instead.
-trap 'rc=$?; if [ "$rc" -ne 0 ]; then
-  echo "\nERROR: script exited with code $rc at $(date)" >&2
-  if [ -n "$CI" ] || [ ! -t 1 ]; then
-    echo "Non-interactive or CI environment detected; sleeping 5s before exit..." >&2
-    sleep 5
-  else
-    read -rp "Press Enter to exit..."
-  fi
-fi' EXIT
+# Usage: ./docker_build_and_push.sh [--no-build] [tag1 tag2 ...]
+# Without tags, pushes the tags derived from release.env (immutable, channel and latest).
+source "$(dirname "${BASH_SOURCE[0]}")/../shscripts/release_vars.sh"
+IMAGE_NAME="$QUARTO_BUILD_IMAGE"
+DEFAULT_TAGS=("$QUARTO_BUILD_TAG" "$QUARTO_BUILD_CHANNEL" latest)
 
-IMAGE_NAME="okatsn/my-quarto-build"
-BUILD_IMAGE=true
-TAGS=()
-
-# Parse arguments
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        --no-build) BUILD_IMAGE=false; shift ;;
-        *) TAGS+=("$1"); shift ;;
-    esac
-done
-
-# Check if any tags were provided
-if [ ${#TAGS[@]} -eq 0 ]; then
-  echo "Usage: $0 [--no-build] <tag1> [tag2 ...]"
-  sleep 5
-  exit 1
-fi
-
-# Build the image if BUILD_IMAGE is true
-if [ "$BUILD_IMAGE" = true ]; then
-  echo "Building Docker image with tag: $IMAGE_NAME:temp"
-  # Build with docker compose
+build_image() {
   docker compose --env-file ../my-build.env build --no-cache
   docker tag qbuild "$IMAGE_NAME:temp"
-else
-  echo "Skipping build step (--no-build specified)."
-  echo "Assuming image $IMAGE_NAME:temp already exists locally..."
-fi
+}
 
-# Tag and push all specified tags
-for TAG in "${TAGS[@]}"; do
-  echo "Tagging image as: $IMAGE_NAME:$TAG"
-  docker tag "$IMAGE_NAME:temp" "$IMAGE_NAME:$TAG"
+smoke_test() {
+  test "$(docker run --rm "$IMAGE_NAME:temp" quarto --version)" = "$QUARTO_VERSION"
+}
 
-  echo "Pushing Docker image: $IMAGE_NAME:$TAG"
-  docker push "$IMAGE_NAME:$TAG"
-done
-
-echo "Docker image processed successfully for tags: ${TAGS[*]}"
+source "$(dirname "${BASH_SOURCE[0]}")/../shscripts/docker_build_push_lib.sh"

@@ -19,10 +19,9 @@ RUN apt-get update && apt-get -y install \
     tar
 
 # Install Julia
-# SETME: Set the julia version here.
-# !!! note Also replace "v1.10" since there are probably hard codes elsewhere.
-ARG VARIANT="1.12.6"
-ARG JULIA_PROJECT="v1.12"
+# VARIANT (e.g., "1.12.6") and JULIA_PROJECT (e.g., "v1.12") have no default: set them in `release.env` and build via `docker_build_and_push.sh`.
+ARG VARIANT
+ARG JULIA_PROJECT
 ARG JULIA_PKG_DEVDIR="$HOME/.julia/dev/"
 # KEYNOTE: JULIA_PROJECT must match the [default LOAD_PATH pattern](https://docs.julialang.org/en/v1/base/constants/#Base.LOAD_PATH). Following default is less prone to error and minimize the effort of later-stage docker image building process.
 
@@ -48,9 +47,14 @@ ENV JULIA_PATH=/opt/julia-okatsn
 ENV JULIA_PKG_DEVDIR=${JULIA_PKG_DEVDIR}
 
 # Install Julia
-RUN mkdir $JULIA_PATH \
-    && curl -L https://julialang-s3.julialang.org/bin/linux/x64/`echo ${VARIANT} | cut -d. -f 1,2`/julia-${VARIANT}-linux-x86_64.tar.gz | tar zxf - -C $JULIA_PATH --strip=1 \
-    && ln -fs $JULIA_PATH/bin/julia /usr/local/bin/julia
+# - `curl -f` fails on HTTP errors instead of piping an error page to `tar`.
+# - The last two checks fail the build if VARIANT is not the installed Julia, or JULIA_PROJECT is inconsistent with it.
+RUN : "${VARIANT:?VARIANT is required}" "${JULIA_PROJECT:?JULIA_PROJECT is required}" \
+    && mkdir $JULIA_PATH \
+    && curl -fsSL https://julialang-s3.julialang.org/bin/linux/x64/`echo ${VARIANT} | cut -d. -f 1,2`/julia-${VARIANT}-linux-x86_64.tar.gz | tar zxf - -C $JULIA_PATH --strip=1 \
+    && ln -fs $JULIA_PATH/bin/julia /usr/local/bin/julia \
+    && test "$(julia --startup-file=no -e 'print(VERSION)')" = "${VARIANT}" \
+    && test "${JULIA_PROJECT}" = "v$(echo ${VARIANT} | cut -d. -f 1,2)"
 
 # # For Julia installed under /opt/julia-${VARIANT}/bin/julia,
 # # the following command set `/usr/local/bin/julia` as a link to /opt/julia-${VARIANT}/bin/julia, that in bash type `julia` starts the julia REPL.

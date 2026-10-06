@@ -2,7 +2,3 @@
 	path = my-tex-life
 	url = https://github.com/okatsn/MyTeXLife.git
 	branch = main
-[submodule "typst-official-build"]
-	path = typst-official-build
-	url = https://github.com/okatsn/my-typst-space.git
-	branch = main
