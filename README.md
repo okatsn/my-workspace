@@ -573,6 +573,13 @@ deactivate
 rm -rf .venv
 ```
 
+Check the installation directory directly:
+
+Run `pip show` while `.venv` is active:
+
+```bash
+pip show PyDrive2 oauth2client
+```
 
 ### Remove Zone.Identifier
 
