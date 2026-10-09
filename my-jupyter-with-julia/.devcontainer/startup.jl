@@ -15,7 +15,11 @@
 #    The current solution: Manually run `helper/init.sh v1.xx` once a container is rebuild.
 
 
-
+# !!! note "Best practices in interactive / REPL mode:"
+#
+# - Always launch julia with `julia --project` or `julia --project=@.`
+#
+# > Ref. https://gemini.google.com/app/dc4dbd0bfdba4ef1
 
 # ==============================================================================
 # 1. Early-stage tools (Revise must run before other code is evaluated)
