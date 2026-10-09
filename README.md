@@ -566,7 +566,7 @@ source .venv/bin/activate
 
 > 💡**Hint:** you will see an additional `(.venv)` in the command line.
 
-De-active venv:
+Deactivate venv:
 
 ```bash
 deactivate
