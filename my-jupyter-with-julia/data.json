@@ -8,6 +8,8 @@
     "instruction_families": [
         "common",
         "julia",
+        "typst",
+        "logseq-dev-notes",
         "shell"
     ]
 }
