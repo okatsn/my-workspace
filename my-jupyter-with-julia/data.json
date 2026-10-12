@@ -1,4 +1,5 @@
 {
+    "project_id": "myjupyternotebookwithjulia",
     "devcontainer_name": "MyJupyterNotebookWithJulia",
     "service": "devjj",
     "image": "jujulia",

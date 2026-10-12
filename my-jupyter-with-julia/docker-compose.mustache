@@ -142,6 +142,8 @@ volumes:
   vscode-server:
   # Per-project Copilot state; `docker compose down -v` deletes it.
   copilot-state:
+    name:
+      {{project_id}}_copilot-state
   {{#dind}}
   dind-data:
   {{/dind}}

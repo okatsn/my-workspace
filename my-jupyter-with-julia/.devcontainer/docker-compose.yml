@@ -98,3 +98,5 @@ volumes:
   vscode-server:
   # Per-project Copilot state; `docker compose down -v` deletes it.
   copilot-state:
+    name:
+      myjupyternotebookwithjulia_copilot-state
