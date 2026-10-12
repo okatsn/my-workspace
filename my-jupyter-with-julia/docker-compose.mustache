@@ -50,25 +50,15 @@ services:
         read_only: true
         bind:
           create_host_path: false
-      # Instruction families selected for this project (add/remove in sync with preflight.sh)
+      # Instruction families selected for this project (listed in `instruction_families` of data.json; also used to render preflight.sh)
+      {{#instruction_families}}
       - type: bind
-        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/common
-        target: /home/jovyan/.copilot/instructions/common
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/{{{.}}}
+        target: /home/jovyan/.copilot/instructions/{{{.}}}
         read_only: true
         bind:
           create_host_path: false
-      - type: bind
-        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/julia
-        target: /home/jovyan/.copilot/instructions/julia
-        read_only: true
-        bind:
-          create_host_path: false
-      - type: bind
-        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/shell
-        target: /home/jovyan/.copilot/instructions/shell
-        read_only: true
-        bind:
-          create_host_path: false
+      {{/instruction_families}}
       # Skill sets are discovered through COPILOT_SKILLS_DIRS (see `environment`); each set is a skill discovery root, i.e., skills sit directly beneath it.
       - type: bind
         source: ${HOME:?HOME is required}/projects/my-agents/copilot/skillsets/typst

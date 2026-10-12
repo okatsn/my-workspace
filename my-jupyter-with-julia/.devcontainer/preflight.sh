@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Host-side check (devcontainer.json `initializeCommand`): fail before Docker starts
 # if a Git-controlled Copilot source mounted by docker-compose.yml is missing or empty.
-# Keep the lists below in sync with the bind mounts in docker-compose.yml.
+# Generated from preflight.sh.mustache by render.js; the instruction families come from `instruction_families` in data.json.
 set -euo pipefail
 
 ROOT="${HOME}/projects/my-agents/copilot"
@@ -19,7 +19,7 @@ check() {
 }
 
 check "$ROOT/agents" '*.agent.md'
-for family in common julia shell; do
+for family in common julia typst logseq-dev-notes shell; do
     check "$ROOT/instructions/$family" '*.instructions.md'
 done
 check "$ROOT/skillsets/typst" 'SKILL.md'

@@ -45,7 +45,7 @@ services:
         read_only: true
         bind:
           create_host_path: false
-      # Instruction families selected for this project (add/remove in sync with preflight.sh)
+      # Instruction families selected for this project (listed in `instruction_families` of data.json; also used to render preflight.sh)
       - type: bind
         source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/common
         target: /home/jovyan/.copilot/instructions/common
@@ -55,6 +55,18 @@ services:
       - type: bind
         source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/julia
         target: /home/jovyan/.copilot/instructions/julia
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/typst
+        target: /home/jovyan/.copilot/instructions/typst
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/logseq-dev-notes
+        target: /home/jovyan/.copilot/instructions/logseq-dev-notes
         read_only: true
         bind:
           create_host_path: false
