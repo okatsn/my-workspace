@@ -2315,37 +2315,24 @@ code.visualstudio.com
 ```
 my-agent/
 └── copilot/
+│   ├── agents/
     ├── instructions/
     │   ├── common/
-    │   ├── julia/
-    │   └── latex/
+    │   ├── ...
+    │   └── typst/
     │
     └── skillsets/
         ├── common/
-        │   ├── markdown-convert/
+        │   ├── ...
         │   │   └── SKILL.md
-        │   ├── git-review/
+        │   ├── ...
+        │
+        ├── typst/
+        │   ├── ...
         │   │   └── SKILL.md
-        │   └── research-workflow/
-        │       └── SKILL.md
+        │   └── ...
         │
-        ├── julia/
-        │   ├── julia-package-audit/
-        │   │   └── SKILL.md
-        │   └── julia-release/
-        │       └── SKILL.md
-        │
-        ├── latex/
-        │   └── latex-build/
-        │       └── SKILL.md
-        │
-        ├── python/
-        │   └── python-package-release/
-        │       └── SKILL.md
-        │
-        └── dvc/
-            └── dvc-pipeline/
-                └── SKILL.md
+
 ```
 
 Here, `skillsets/` and its categories are your own organizational conventions. The Copilot harness does not inherently understand them as skill categories.
