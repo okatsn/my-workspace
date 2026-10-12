@@ -9,6 +9,8 @@
     // the service in docker-compose.yml
     "service": "{{service}}",
     "shutdownAction": "stopCompose",
+    // Runs on the host before the container is created; fails fast if the bind-mount sources from okatsn/my-agents are missing or empty.
+    "initializeCommand": "bash .devcontainer/preflight.sh",
     "workspaceFolder": "/home/jovyan/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
         "vscode": {
@@ -55,7 +57,8 @@
         "REMOTE_CONTAINERS_IPC": "",
         "GIT_ASKPASS": "",
         "VSCODE_GIT_ASKPASS_NODE": "",
-        "VSCODE_GIT_ASKPASS_MAIN": ""
+        "VSCODE_GIT_ASKPASS_MAIN": "",
+        "SSH_AUTH_SOCK": ""
     },
     // Runs after every VS Code attach. Overwrites the relay JS client injected by
     // Dev Containers with a no-op, then clears the user-level credential.helper.

@@ -9,6 +9,8 @@
     // the service in docker-compose.yml
     "service": "devjj",
     "shutdownAction": "stopCompose",
+    // Runs on the host before the container is created; fails fast if the bind-mount sources from okatsn/my-agents are missing or empty.
+    "initializeCommand": "bash .devcontainer/preflight.sh",
     "workspaceFolder": "/home/jovyan/workspace", // KEYNOTE: make this consistent with that in docker-compose.yml. See okatsn/my-tex-life for where it is defined
     "customizations": {
         "vscode": {
