@@ -18,6 +18,10 @@ RUN apt-get update && \
     # # Copilot sandboxing
     bubblewrap \
     socat \
+    # For coiplot sandboxing to work. Also read [MyVSCodeSettings/init_ubuntu/README.md](https://github.com/okatsn/MyVSCodeSettings/blob/main/init_ubuntu/README.md):
+    slirp4netns \
+    iptables \
+    uidmap \
     # # PDF utilities
     ghostscript \
     # # git-crypt
@@ -96,8 +100,8 @@ RUN apt-get update && \
 # NOTE: `jovyan` is the user in the base image.
 RUN install -d -m 0700 -o jovyan -g "$(id -gn jovyan)" /home/jovyan/.copilot \
     && install -d -m 0755 -o jovyan -g "$(id -gn jovyan)" \
-        /home/jovyan/.copilot/agents \
-        /home/jovyan/.copilot/instructions
+    /home/jovyan/.copilot/agents \
+    /home/jovyan/.copilot/instructions
 
 USER $NB_USER
 
