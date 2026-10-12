@@ -52,6 +52,7 @@ rm -rv TEMP
 git restore data.json
 git restore .devcontainer/devcontainer.json
 git restore .devcontainer/docker-compose.yml
+git restore .devcontainer/preflight.sh
 cd ..
 ```
 
