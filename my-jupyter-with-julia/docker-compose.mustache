@@ -35,10 +35,47 @@ services:
       # - ~/.ssh:/home/jovyan/.ssh
       # # For Windows without WSL, a copy will be made from /tmp/.ssh to ~/.ssh to fix permissions
       # - ~/.ssh:/tmp/.ssh:ro
-      # # Copilot agents
-      - ~/projects/my-agents:/home/jovyan/projects/my-agents:ro
-      # Off-the-shelf skills
-      - ~/ai-skills:/home/jovyan/ai-skills:ro
+      # # Copilot (Agent Host) customizations from okatsn/my-agents; see MIGRATION-PLAN.md
+      # KEYNOTE:
+      # - ~/.copilot is a private, writable named volume (state, sessions, logs); only the selected customization directories below are bind-mounted read-only over it.
+      # - Keep ~/.copilot/instructions free of anything but these mount targets; leftovers in the volume would also be discovered.
+      # - `create_host_path: false` makes compose fail instead of silently creating a missing host directory. `.devcontainer/preflight.sh` (initializeCommand) also checks the sources before start.
+      - type: volume
+        source: copilot-state
+        target: /home/jovyan/.copilot
+      # Custom agents (flat directory; all are exposed)
+      - type: bind
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/agents
+        target: /home/jovyan/.copilot/agents
+        read_only: true
+        bind:
+          create_host_path: false
+      # Instruction families selected for this project (add/remove in sync with preflight.sh)
+      - type: bind
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/common
+        target: /home/jovyan/.copilot/instructions/common
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/julia
+        target: /home/jovyan/.copilot/instructions/julia
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/instructions/shell
+        target: /home/jovyan/.copilot/instructions/shell
+        read_only: true
+        bind:
+          create_host_path: false
+      # Skill sets are discovered through COPILOT_SKILLS_DIRS (see `environment`); each set is a skill discovery root, i.e., skills sit directly beneath it.
+      - type: bind
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/skillsets/typst
+        target: /home/jovyan/skillsets/typst
+        read_only: true
+        bind:
+          create_host_path: false
       # # WARNING: Git config
       # - ~/.gitconfig:/home/jovyan/.gitconfig
       # # Persistent volumes for this container; Avoid reinstall vscode extensions
@@ -64,6 +101,9 @@ services:
       # Set time zone (GMT-8 is UTC+8):
       # - To print available time-zone names: ls /usr/share/zoneinfo
       - TZ=Etc/GMT-8
+      - COPILOT_HOME=/home/jovyan/.copilot
+      # Comma-separated skill discovery roots (no spaces)
+      - COPILOT_SKILLS_DIRS=/home/jovyan/skillsets/typst
     entrypoint: sh -c "sleep infinity"
 
 {{#dind}}
@@ -100,6 +140,8 @@ services:
 volumes:
   julia-depot:
   vscode-server:
+  # Per-project Copilot state; `docker compose down -v` deletes it.
+  copilot-state:
   {{#dind}}
   dind-data:
   {{/dind}}

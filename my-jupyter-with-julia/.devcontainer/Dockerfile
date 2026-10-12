@@ -92,6 +92,13 @@ RUN apt-get update && \
 # # Install JQ
 # RUN sudo apt update && sudo apt install -y jq
 
+# Prepare ~/.copilot for the non-root user. The named volume mounted there copies this ownership on first creation (an existing volume keeps its old ownership), and the bind-mount targets are created inside it.
+# NOTE: `jovyan` is the user in the base image.
+RUN install -d -m 0700 -o jovyan -g "$(id -gn jovyan)" /home/jovyan/.copilot \
+    && install -d -m 0755 -o jovyan -g "$(id -gn jovyan)" \
+        /home/jovyan/.copilot/agents \
+        /home/jovyan/.copilot/instructions
+
 USER $NB_USER
 
 # Force Julia's Pkg to use the git CLI instead of LibGit2.
