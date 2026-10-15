@@ -60,6 +60,10 @@ WIKILINK = re.compile(r"\[\[([^\[\]]+)\]\]")
 TAG = re.compile(r"(?<![\w/])#([A-Za-z0-9_.\-/]+)")
 ALIAS = re.compile(r"^\s*-?\s*alias::\s*(.+?)\s*$", re.I | re.M)
 BLOCK = re.compile(r"^([ \t]*)-\s+")
+PROPERTY_LINE = re.compile(r"^[ \t]*(?:-[ \t]+)?[\w-]+::")
+EXCLUDE_FROM_GRAPH = re.compile(
+    r"^[ \t]*(?:-[ \t]+)?exclude-from-graph-view::[ \t]*true[ \t]*$", re.I
+)
 FENCE = re.compile(r"^\s*(?:-\s+)?(`{3,}|~{3,})")
 INLINE_CODE = re.compile(r"`+[^`\n]*`+")
 ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -113,6 +117,24 @@ def without_code(text: str) -> str:
     )
 
 
+def is_excluded_from_graph(text: str) -> bool:
+    """Return True if page properties set exclude-from-graph-view:: true.
+
+    Page properties are the blank and `key:: value` lines at the top of the
+    file; a first block written as `- key:: value` also counts. The scan stops
+    at the first other line, so the same text inside a bullet block or code
+    fence does not exclude the page.
+    """
+    for line in text.lstrip("\ufeff").splitlines():
+        if not line.strip():
+            continue
+        if EXCLUDE_FROM_GRAPH.match(line):
+            return True
+        if not PROPERTY_LINE.match(line):
+            return False
+    return False
+
+
 def refs(text: str, include_tags: bool = True) -> list[str]:
     text = without_code(text)
     result = [m.group(1).strip() for m in WIKILINK.finditer(text)]
@@ -137,7 +159,11 @@ def aliases(text: str) -> list[str]:
 
 
 class Graph:
-    """Minimal page/alias index for a Logseq file graph."""
+    """Minimal page/alias index for a Logseq file graph.
+
+    Pages with exclude-from-graph-view:: true are left out entirely, as if
+    their files did not exist.
+    """
 
     def __init__(self, root: str | Path):
         self.root = Path(root).expanduser().resolve()
@@ -157,6 +183,9 @@ class Graph:
         ):
             path = path.resolve()
             text = path.read_text(encoding="utf-8")
+            if is_excluded_from_graph(text):
+                continue
+
             canonical = page_name_from_file(path)
             self.canonical[path] = canonical
 
@@ -246,6 +275,10 @@ def resolve_journal_file(graph: Graph, value: str | Path) -> Path:
         raise UserInputError(
             f"journal must be a .md file directly inside {graph.journals_dir}"
         )
+    if is_excluded_from_graph(path.read_text(encoding="utf-8")):
+        raise UserInputError(
+            f"journal is excluded from graph view (exclude-from-graph-view:: true): {path}"
+        )
     return path
 
 
@@ -300,8 +333,11 @@ def select_journal_range(graph: Graph, start: str, end: str) -> list[Path]:
             current = date.fromisoformat(path.stem)
         except ValueError:
             continue
-        if start_date <= current <= end_date:
-            selected.append((current, path.resolve()))
+        if not start_date <= current <= end_date:
+            continue
+        if is_excluded_from_graph(path.read_text(encoding="utf-8")):
+            continue
+        selected.append((current, path.resolve()))
 
     selected.sort(key=lambda item: item[0])
     if not selected:
@@ -433,6 +469,8 @@ def show_refs(
     for path in paths:
         path = path.resolve()
         text = path.read_text(encoding="utf-8")
+        if is_excluded_from_graph(text):
+            continue
 
         if scope == "pages":
             if not any(matches(ref) for ref in refs(text)):
@@ -477,7 +515,11 @@ def build_parser() -> argparse.ArgumentParser:
    {HELP_EXAMPLE}
 """
     parser = argparse.ArgumentParser(
-        description="Inspect references in an OG/file-based Logseq graph.",
+        description=(
+            "Inspect references in an OG/file-based Logseq graph. Pages and "
+            "journals with exclude-from-graph-view:: true are ignored, as if "
+            "their files did not exist."
+        ),
         epilog=examples,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
