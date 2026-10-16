@@ -155,3 +155,13 @@ Journal pages are expected to be short, and it cost little to read all RAW journ
 3. Read page `[[ARCH/CURRENT-STATUS]]`, `dvc.yaml`, `params.yaml` if provided.
 
 > Note: the date on a journal do not have too much meaning, at most hinting at the sequential order for when an idea/issue firstly proposed. It is expected that a journal date might be misaligned against the date in the committed history.
+
+## Page Layout Instructions
+
+Read the corresponding instruction(s) first when editing a page in the Target list.
+
+| Instructions                                            | Target                           |
+| ------------------------------------------------------- | -------------------------------- |
+| `logseq-current-status-format.instructions.md`          | `ARCH___CURRENT-STATUS.md`       |
+| `logseq-decision-page-format.instructions.md`           | `DECISION___*.md`                |
+| `logseq-review-implement-report-format.instructions.md` | `REPORT___*.md`; `REVIEW___*.md` |
