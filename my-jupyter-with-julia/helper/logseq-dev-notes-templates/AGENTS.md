@@ -38,7 +38,7 @@ rg -n '^status::'
 This is a custom helper to query logseq contents.
 It is especially useful to:
 
-1. print all pages referenced by the selected journal pages (excluding `chat/*` ): `python helper/logseq_refs.py path/to/GRAPH/ journals 2026-01-01.md 2026-03-03.md`
+1. print all pages referenced by the selected journal pages (excluding `chat/*` by default): `python helper/logseq_refs.py path/to/GRAPH/ journals 2026-01-01.md 2026-03-03.md`
 2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to/GRAPH/ refs "DECISION/01_whatever"`
 
 
@@ -54,7 +54,7 @@ Ownership:
 - Only human developers write `journals/*.md`, review and update status of `DECISION`.
 - AI agents write and update `REPORT`, `REVIEW` and `DECISION` pages for their implementation, experimental testing or design works.
 - Both human and AI writes and maintains `KNOWLEDGE` pages and architecture pages (`[[ARCH/*]]`).
-- External conversations (Q&A sessions) are archived as `chat` pages, and may be referenced in journals. When a `chat` page is referenced in a journal-page block, that block content should be merely regarded as a concluding remark by human around that QA session, and one should never regard the referenced `chat` page(s) are approved by human.
+- `chat` pages: Archived external conversations (Q&A sessions) and third opinions for traceability. Never regard a description in `chat` as proofed or confirmed.
 
 ## Logseq dev-notes structure
 
@@ -71,7 +71,7 @@ Under `GRAPH/pages`:
 
 > **IMPORTANT**:
 >
-> 1. Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED** third opinions. One should neither regard `chat` as verified and consolidated knowledge, nor a determined decision.
+> 1. Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED**: never regard `chat` as consolidated knowledge, adopted plans or determined decisions.
 >    Always assume a `chat` page to be not well-formatted and unnecessarily detailed.
 > 2. When writing, avoid strong words or overstatements unless it truly fits. Make statements that "no more or less" to the fact and evidence.
 > 3. `ARCH` pages should not be stuffed with details of specs. Be concise but readable, focusing on explain the architecture and the rationale behind. Cross referencing details using `files:: ` or `stages:: ` at block level instead.
