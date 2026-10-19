@@ -106,14 +106,18 @@ class PagesCommandTests(unittest.TestCase):
         *journals: Path,
         exclude_self: bool = False,
         exclude_namespace: list[str] | None = None,
+        date_range: tuple[str, str] | None = None,
     ) -> subprocess.CompletedProcess[str]:
         args = [
             sys.executable,
             str(UTILITY),
             str(self.graph),
             "journals",
-            *(str(p) for p in journals),
         ]
+        if date_range is not None:
+            args.extend(["--from", date_range[0], "--to", date_range[1]])
+        else:
+            args.extend(str(p) for p in journals)
         if exclude_self:
             args.append("--exclude-self")
         for namespace in exclude_namespace or []:
@@ -414,6 +418,266 @@ class PagesCommandTests(unittest.TestCase):
         self.assertNotIn("Chat sub-a page body.", result.stdout)
         self.assertIn('<excluded: namespace "chat">', result.stdout)
         self.assertIn("Digital twins page body.", result.stdout)
+
+    def test_excluded_page_is_omitted_not_stubbed(self) -> None:
+        self._write(
+            "pages/Hidden Page.md",
+            """
+            exclude-from-graph-view:: true
+
+            - Hidden page body.
+            """,
+        )
+        journal = self._journal(
+            "2026-05-21",
+            """
+            - See [[Hidden Page]] and [[digital twins]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Hidden page body.", result.stdout)
+        self.assertNotIn("<excluded", result.stdout)
+        self.assertIn("Digital twins page body.", result.stdout)
+
+    def test_excluded_page_reached_by_alias_is_omitted(self) -> None:
+        self._write(
+            "pages/Hidden Target.md",
+            """
+            alias:: [[HT]]
+            exclude-from-graph-view:: true
+
+            - Hidden target body.
+            """,
+        )
+        journal = self._journal(
+            "2026-05-22",
+            """
+            - Reach it via [[HT]] and [[FEM]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Hidden target body.", result.stdout)
+        self.assertNotIn("<excluded", result.stdout)
+        self.assertIn("FEM page body.", result.stdout)
+
+    def test_exclude_property_after_dash_alias_is_honored(self) -> None:
+        self._write(
+            "pages/Dash Hidden.md",
+            """
+            - alias::[[DH]]
+            - exclude-from-graph-view:: true
+
+            - Dash hidden body.
+            """,
+        )
+        journal = self._journal(
+            "2026-05-23",
+            """
+            - Mentions [[DH]] and [[digital twins]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Dash hidden body.", result.stdout)
+        self.assertIn("Digital twins page body.", result.stdout)
+
+    def test_exclude_property_inside_block_does_not_exclude_page(self) -> None:
+        self._write(
+            "pages/Block Flag.md",
+            """
+            - Real block body.
+              exclude-from-graph-view:: true
+            """,
+        )
+        journal = self._journal(
+            "2026-05-24",
+            """
+            - Mentions [[Block Flag]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Real block body.", result.stdout)
+
+    def test_exclude_property_false_keeps_page(self) -> None:
+        self._write(
+            "pages/Kept Page.md",
+            """
+            exclude-from-graph-view:: false
+
+            - Kept page body.
+            """,
+        )
+        journal = self._journal(
+            "2026-05-25",
+            """
+            - Mentions [[Kept Page]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Kept page body.", result.stdout)
+
+    def test_exclude_property_is_case_insensitive(self) -> None:
+        self._write(
+            "pages/Shouted Page.md",
+            """
+            Exclude-From-Graph-View:: TRUE
+
+            - Shouted page body.
+            """,
+        )
+        journal = self._journal(
+            "2026-05-26",
+            """
+            - Mentions [[Shouted Page]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Shouted page body.", result.stdout)
+
+    def test_exclude_property_with_utf8_bom_is_honored(self) -> None:
+        (self.graph / "pages" / "BOM Hidden.md").write_bytes(
+            "\ufeffexclude-from-graph-view:: true\n\n- BOM hidden body.\n".encode(
+                "utf-8"
+            )
+        )
+        journal = self._journal(
+            "2026-05-27",
+            """
+            - Mentions [[BOM Hidden]] and [[digital twins]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("BOM hidden body.", result.stdout)
+        self.assertIn("Digital twins page body.", result.stdout)
+
+    def test_explicit_excluded_journal_is_rejected(self) -> None:
+        journal = self._journal(
+            "2026-05-28",
+            """
+            exclude-from-graph-view:: true
+
+            - Private journal body.
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("exclude-from-graph-view", result.stderr)
+        self.assertNotIn("Private journal body.", result.stdout)
+
+    def test_range_skips_excluded_journal(self) -> None:
+        self._journal(
+            "2026-05-10",
+            """
+            - Visible journal note about [[digital twins]].
+            """,
+        )
+        self._journal(
+            "2026-05-11",
+            """
+            exclude-from-graph-view:: true
+
+            - Hidden journal note about [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run(date_range=("2026-05-10", "2026-05-11"))
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Visible journal note", result.stdout)
+        self.assertIn("Digital twins page body.", result.stdout)
+        self.assertNotIn("Hidden journal note", result.stdout)
+        self.assertNotIn("2026-05-11", result.stdout)
+        self.assertNotIn("FEM page body.", result.stdout)
+
+    def test_excluded_alias_does_not_collide_with_visible_alias(self) -> None:
+        self._write(
+            "pages/Hidden Twin.md",
+            """
+            alias:: [[FEM]]
+            exclude-from-graph-view:: true
+
+            - Hidden twin body.
+            """,
+        )
+        journal = self._journal(
+            "2026-05-29",
+            """
+            - Mentions [[FEM]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("FEM page body.", result.stdout)
+        self.assertNotIn("Hidden twin body.", result.stdout)
+
+    def test_excluded_page_in_excluded_namespace_has_no_stub(self) -> None:
+        self._write(
+            "pages/chat___hidden.md",
+            """
+            exclude-from-graph-view:: true
+
+            - Chat hidden body.
+            """,
+        )
+        journal = self._journal(
+            "2026-05-30",
+            """
+            - Mentions [[chat/hidden]] and [[digital twins]].
+            """,
+        )
+
+        result = self._run(journal, exclude_namespace=["chat"])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Chat hidden body.", result.stdout)
+        self.assertNotIn("<excluded", result.stdout)
+        self.assertIn("Digital twins page body.", result.stdout)
+
+    def test_links_from_excluded_page_are_not_followed(self) -> None:
+        self._write(
+            "pages/Hidden Hub.md",
+            """
+            exclude-from-graph-view:: true
+
+            - Hub links [[digital twins]].
+            """,
+        )
+        journal = self._journal(
+            "2026-05-31",
+            """
+            - See [[Hidden Hub]].
+            """,
+        )
+
+        result = self._run(journal)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Hub links", result.stdout)
+        self.assertNotIn("Digital twins page body.", result.stdout)
 
 
 class PagesInterfaceEquivalenceTests(unittest.TestCase):

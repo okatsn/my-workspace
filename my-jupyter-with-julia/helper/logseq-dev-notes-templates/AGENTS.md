@@ -38,12 +38,10 @@ rg -n '^status::'
 This is a custom helper to query logseq contents.
 It is especially useful to:
 
-1. print all pages referenced by the selected journal pages (excluding `chat/*` ): `python helper/logseq_refs.py path/to/GRAPH/ journals 2026-01-01.md 2026-03-03.md --exclude-namespace "chat"`
-2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to/GRAPH/ refs "DECISION/01_whatever" --skip-namespace "chat"`
+1. print all pages referenced by the selected journal pages (excluding `chat/*` by default): `python helper/logseq_refs.py path/to/GRAPH/ journals 2026-01-01.md 2026-03-03.md`
+2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to/GRAPH/ refs "DECISION/01_whatever"`
 
-> 💡 In example 1. above, `chat/*` pages are excluded from the relational context (`--exclude-namespace` flag) because their contents are presumed to be very long and unnecessarily detailed.
-> 💡 In example 2. above, `chat/*` pages are skipped from parsing (`--skip-namespace` flag) because chat pages are often mal-formatted (incorrectly structured for logseq).
-> 💡 `--exclude-namespace` is exclusively for the method `python helper/logseq_refs.py ... journals ...`; `--skip-namespace` is exclusively for `python helper/logseq_refs.py ... refs ...`. Don't mixed them up.
+
 > 💡 `refs` takes `--scope blocks` (default) or `--scope pages`: `blocks` prints each matching block (possibly several per file); `pages` prints each matching page once, in full — useful when the only reference lives in a page-level property (e.g. `status:: [[ACTIVE]]`), which `blocks` scope does not see.
 > 💡 For example, `python logseq_refs.py . refs "ACTIVE" --scope pages` is especially useful to give you all `DECSION` pages whose status is `[[ACTIVE]]` or contain `[[ACTIVE]]`.
 > 💡 `refs PAGE` also matches a dangling page name, i.e. a `[[PAGE]]` link with no corresponding page file yet.
@@ -56,7 +54,7 @@ Ownership:
 - Only human developers write `journals/*.md`, review and update status of `DECISION`.
 - AI agents write and update `REPORT`, `REVIEW` and `DECISION` pages for their implementation, experimental testing or design works.
 - Both human and AI writes and maintains `KNOWLEDGE` pages and architecture pages (`[[ARCH/*]]`).
-- External conversations (Q&A sessions) are archived as `chat` pages, and may be referenced in journals. When a `chat` page is referenced in a journal-page block, that block content should be merely regarded as a concluding remark by human around that QA session, and one should never regard the referenced `chat` page(s) are approved by human.
+- `chat` pages: Archived external conversations (Q&A sessions) and third opinions for traceability. Never regard a description in `chat` as proofed or confirmed.
 
 ## Logseq dev-notes structure
 
@@ -73,7 +71,7 @@ Under `GRAPH/pages`:
 
 > **IMPORTANT**:
 >
-> 1. Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED** third opinions. One should neither regard `chat` as verified and consolidated knowledge, nor a determined decision.
+> 1. Contents in the pages of type `chat` should ALWAYS be considered as **UNVERIFIED**: never regard `chat` as consolidated knowledge, adopted plans or determined decisions.
 >    Always assume a `chat` page to be not well-formatted and unnecessarily detailed.
 > 2. When writing, avoid strong words or overstatements unless it truly fits. Make statements that "no more or less" to the fact and evidence.
 > 3. `ARCH` pages should not be stuffed with details of specs. Be concise but readable, focusing on explain the architecture and the rationale behind. Cross referencing details using `files:: ` or `stages:: ` at block level instead.
@@ -153,7 +151,17 @@ We don't use `files:: [[src/ingest.jl]], [[scripts/ingest.jl]]` because we don't
 Journal pages are expected to be short, and it cost little to read all RAW journal pages (i.e., `journals/*.md`) without pulling relational context. Journals will mention some critical events. So the recommended workflow would be:
 
 1. Read all journal pages in raw, and select a few pages that is relevant to the current task.
-2. Use `python helper/logseq_refs.py path/to/GRAPH/ journals <page1> <page2> --exclude-namespace "chat"` to pull these relevant pages with relational context.
+2. Use `python helper/logseq_refs.py path/to/GRAPH/ journals <page1> <page2>` to pull these relevant pages with relational context.
 3. Read page `[[ARCH/CURRENT-STATUS]]`, `dvc.yaml`, `params.yaml` if provided.
 
 > Note: the date on a journal do not have too much meaning, at most hinting at the sequential order for when an idea/issue firstly proposed. It is expected that a journal date might be misaligned against the date in the committed history.
+
+## Page Layout Instructions
+
+Read the corresponding instruction(s) first when editing a page in the Target list.
+
+| Instructions                                            | Target                           |
+| ------------------------------------------------------- | -------------------------------- |
+| `logseq-current-status-format.instructions.md`          | `ARCH___CURRENT-STATUS.md`       |
+| `logseq-decision-page-format.instructions.md`           | `DECISION___*.md`                |
+| `logseq-review-implement-report-format.instructions.md` | `REPORT___*.md`; `REVIEW___*.md` |

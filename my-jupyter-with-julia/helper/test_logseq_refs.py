@@ -849,6 +849,240 @@ class RefsCommandTests(unittest.TestCase):
         self.assertIn("status:: [[ACTIVE]]", result.stdout)
         self.assertIn("- Bar decision body.", result.stdout)
 
+    def test_excluded_page_blocks_are_not_printed(self) -> None:
+        self._write(
+            "pages/Hidden Note.md",
+            """
+            exclude-from-graph-view:: true
+
+            - Hidden note mentions [[Finite Element Method]].
+            """,
+        )
+        self._write(
+            "journals/2026-05-01.md",
+            """
+            - Journal mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Journal mentions", result.stdout)
+        self.assertNotIn("Hidden note mentions", result.stdout)
+
+    def test_exclude_property_after_alias_is_honored(self) -> None:
+        self._write(
+            "pages/Aliased Hidden.md",
+            """
+            alias:: [[AH]]
+            exclude-from-graph-view:: true
+
+            - Aliased hidden mentions [[Finite Element Method]].
+            """,
+        )
+        self._write(
+            "journals/2026-05-02.md",
+            """
+            - Journal mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Journal mentions", result.stdout)
+        self.assertNotIn("Aliased hidden mentions", result.stdout)
+
+    def test_exclude_property_after_dash_alias_is_honored(self) -> None:
+        self._write(
+            "pages/Dash Hidden.md",
+            """
+            - alias::[[DH]]
+            - exclude-from-graph-view:: true
+
+            - Dash hidden mentions [[Finite Element Method]].
+            """,
+        )
+        self._write(
+            "journals/2026-05-03.md",
+            """
+            - Journal mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Journal mentions", result.stdout)
+        self.assertNotIn("Dash hidden mentions", result.stdout)
+
+    def test_exclude_property_inside_block_does_not_exclude_page(self) -> None:
+        self._write(
+            "pages/Block Flag.md",
+            """
+            - Block flag mentions [[Finite Element Method]].
+              exclude-from-graph-view:: true
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Block flag mentions", result.stdout)
+
+    def test_exclude_property_false_keeps_page(self) -> None:
+        self._write(
+            "pages/Kept Mention.md",
+            """
+            exclude-from-graph-view:: false
+
+            - Kept mention of [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Kept mention of", result.stdout)
+
+    def test_exclude_property_is_case_insensitive(self) -> None:
+        self._write(
+            "pages/Shouted Mention.md",
+            """
+            Exclude-From-Graph-View:: TRUE
+
+            - Shouted mention of [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Shouted mention of", result.stdout)
+
+    def test_exclude_property_with_utf8_bom_is_honored(self) -> None:
+        (self.graph / "pages" / "BOM Mention.md").write_bytes(
+            "\ufeffexclude-from-graph-view:: true\n\n"
+            "- BOM mention of [[Finite Element Method]].\n".encode("utf-8")
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("BOM mention of", result.stdout)
+
+    def test_excluded_journal_is_skipped(self) -> None:
+        self._write(
+            "journals/2026-05-04.md",
+            """
+            exclude-from-graph-view:: true
+
+            - Private journal mentions [[Finite Element Method]].
+            """,
+        )
+        self._write(
+            "journals/2026-05-05.md",
+            """
+            - Public journal mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Public journal mentions", result.stdout)
+        self.assertNotIn("Private journal mentions", result.stdout)
+
+    def test_excluded_alias_does_not_cause_ambiguity(self) -> None:
+        self._write(
+            "pages/Hidden Twin.md",
+            """
+            alias:: [[FEM]]
+            exclude-from-graph-view:: true
+
+            - Hidden twin body.
+            """,
+        )
+        self._write(
+            "journals/2026-05-06.md",
+            """
+            - Journal mentions [[FEM]].
+            """,
+        )
+
+        result = self._run("Finite Element Method")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Journal mentions", result.stdout)
+        self.assertNotIn("Hidden twin body.", result.stdout)
+
+    def test_excluded_page_queried_by_name_prints_no_page_content(self) -> None:
+        self._write(
+            "pages/Hidden Self.md",
+            """
+            exclude-from-graph-view:: true
+
+            - Hidden self body.
+            """,
+        )
+
+        result = self._run("Hidden Self")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("Hidden self body.", result.stdout)
+
+    def test_list_children_does_not_expand_excluded_children(self) -> None:
+        self._write(
+            "pages/conference___EGU26___Hidden Session.md",
+            """
+            exclude-from-graph-view:: true
+
+            - Hidden session body.
+            """,
+        )
+        self._write(
+            "pages/conference___EGU26___Visible Session.md",
+            """
+            - Visible session body.
+            """,
+        )
+        self._write(
+            "journals/2026-05-07.md",
+            """
+            - Visible talk about [[conference/EGU26/Visible Session]].
+            - Hidden talk about [[conference/EGU26/Hidden Session]].
+            """,
+        )
+
+        result = self._run("conference/EGU26", list_children=True)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Visible talk about", result.stdout)
+        self.assertNotIn("Hidden talk about", result.stdout)
+
+    def test_scope_pages_skips_excluded_pages(self) -> None:
+        self._write(
+            "pages/Hidden Scope.md",
+            """
+            exclude-from-graph-view:: true
+
+            - Hidden scope mentions [[Finite Element Method]].
+            """,
+        )
+        self._write(
+            "pages/Visible Scope.md",
+            """
+            - Visible scope mentions [[Finite Element Method]].
+            """,
+        )
+
+        result = self._run("Finite Element Method", scope="pages")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Visible scope mentions", result.stdout)
+        self.assertNotIn("Hidden scope mentions", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
