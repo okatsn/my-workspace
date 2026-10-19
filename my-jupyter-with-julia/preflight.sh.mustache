@@ -22,6 +22,16 @@ check "$ROOT/agents" '*.agent.md'
 for family in{{#instruction_families}} {{{.}}}{{/instruction_families}}; do
     check "$ROOT/instructions/$family" '*.instructions.md'
 done
-check "$ROOT/skillsets/typst" 'SKILL.md'
+
+# Every skill set under skillsets/ is mounted (not configured in data.json)
+shopt -s nullglob
+skillsets=("$ROOT"/skillsets/*/)
+if [[ ${#skillsets[@]} -eq 0 ]]; then
+    echo "ERROR: no skill sets found in: $ROOT/skillsets" >&2
+    exit 1
+fi
+for set in "${skillsets[@]}"; do
+    check "${set%/}" 'SKILL.md'
+done
 
 echo "Copilot sources OK: $ROOT"
