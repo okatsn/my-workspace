@@ -56,6 +56,14 @@ git restore .devcontainer/preflight.sh
 cd ..
 ```
 
+### Copilot customizations
+
+Mounted read-only from `~/projects/my-agents/copilot` (checked by `.devcontainer/preflight.sh` before start):
+
+- `agents/` and `skillsets/` are mounted in full; nothing to configure in [data.json](data.json).
+- `skillsets/` is mounted as `~/.copilot/skills`, so each skill must sit directly beneath it (`skillsets/<skill>/SKILL.md`, not nested in a set folder). New skills on the host show up without re-rendering or rebuilding the container.
+- `instructions/` families are selected by `instruction_families` in [data.json](data.json).
+
 ## Security Guidelines
 
 ### Pass GDrive token to docker
