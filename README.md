@@ -1,4 +1,3 @@
-[README](#readme)
 - [README](#readme)
   - [Be safe in agentic coding](#be-safe-in-agentic-coding)
     - [Best practices](#best-practices)
@@ -23,7 +22,6 @@
     - [Permission Denied on mounted volumes](#permission-denied-on-mounted-volumes)
     - [Docker](#docker)
     - [DVC](#dvc)
-    - [`dvc pull` fails on the Google Drive remote although the files are there](#dvc-pull-fails-on-the-google-drive-remote-although-the-files-are-there)
     - [Python environment best practice](#python-environment-best-practice)
     - [Remove Zone.Identifier](#remove-zoneidentifier)
     - [Error "Are you trying to mount a directory onto a file (or vice-versa)?"](#error-are-you-trying-to-mount-a-directory-onto-a-file-or-vice-versa)
@@ -529,7 +527,7 @@ Here are an example workflow:
 - Copy `default.json` to the new machine at the same place, and DVC should access Google Drive as the old machine.
 
 
-### `dvc pull` fails on the Google Drive remote although the files are there
+#### `dvc pull` fails on the Google Drive remote although the files are there
 
 **What happened**
 
@@ -553,6 +551,12 @@ The remote had been migrated manually between Google Drive locations. Drive's we
 !!! warning
    `dvc_gdrive_fix_extensions.py` depends on `PyDrive2` and `oauth2client`. Refer the docstring to setup environment before running the script.
 
+
+#### `dvc list/import` fails but the target file do exist
+
+In the case where `dvc list <target_repo>` works but `dvc list -R <target_repo>` failed, showing 404 no file found but the target repo did have the target file on the target `rev`; one possible cause is that the "missing file" is "imported" by the target repo and its rev-lock is stale, thus lead to the failure of the import chain.
+
+Switch to the workspace of the target repo and run `dvc update path/to/the/problematic/file` to update `rev-lock`, commit and push, then run `dvc list -R <target_repo>` or `dvc import <target_repo>` again should work.
 
 ### Python environment best practice
 
