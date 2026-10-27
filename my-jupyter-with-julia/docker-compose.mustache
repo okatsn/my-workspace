@@ -25,6 +25,8 @@ services:
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ..:/home/jovyan/workspace
+      # The shared directory for all projects of `my-jupyter-with-julia` environment
+      - /tmp/shared:/tmp/shared
       {{^dind}}
       # # WARNING: Docker socket to access Docker server
       # Docker command run inside the container actually communicates with the Docker engine on your host machine. This theoretically allows a malicious agent to grant root accessibility to your host machine by creating a new container and mounted it to the entire hard drive.

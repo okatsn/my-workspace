@@ -6,6 +6,15 @@ set -euo pipefail
 
 ROOT="${HOME}/projects/my-agents/copilot"
 
+
+# - if `/tmp/shared` already exists as root:root, running mkdir -p -m 1777 /tmp/shared in preflight.sh silently does nothing.
+# - `-m 1777` gives the folder sticky world-writable permissions—just like standard /tmp—so any container running under any UID (root, jovyan, vscode) can read and write to it without conflict.
+# - Linux distros inside WSL2 only wipe /tmp when the WSL2 VM itself restarts (e.g., Windows reboot or wsl --shutdown).
+# - If you are on native Linux or macOS, /tmp is wiped on every standard OS reboot as expected.
+mkdir -p -m 1777 /tmp/shared
+echo "/tmp/shared created (will wipe out on OS reboot)"
+
+
 check() {
     local dir="$1" pattern="$2"
     if [[ ! -d "$dir" ]]; then
@@ -25,3 +34,4 @@ done
 check "$ROOT/skillsets/typst" 'SKILL.md'
 
 echo "Copilot sources OK: $ROOT"
+
