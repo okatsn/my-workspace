@@ -11,5 +11,11 @@
         "typst",
         "logseq-dev-notes",
         "shell"
+    ],
+    "skill_families": [
+        "common",
+        "typst",
+        "julia",
+        "dvc"
     ]
 }

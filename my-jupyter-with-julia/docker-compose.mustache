@@ -61,7 +61,7 @@ services:
         bind:
           create_host_path: false
       {{/instruction_families}}
-      # Skill sets are discovered through COPILOT_SKILLS_DIRS (see `environment`); each set is a skill discovery root, i.e., skills sit directly beneath it.
+      # Skill families selected for this project (listed in `skill_families` of data.json; also used to render COPILOT_SKILLS_DIRS and preflight.sh); each family is a skill discovery root, i.e., skills sit directly beneath it.
       - type: bind
         source: ${HOME:?HOME is required}/projects/my-agents/copilot/skillsets
         target: /home/jovyan/skillsets
@@ -94,8 +94,8 @@ services:
       # - To print available time-zone names: ls /usr/share/zoneinfo
       - TZ=Etc/GMT-8
       - COPILOT_HOME=/home/jovyan/.copilot
-      # Comma-separated skill discovery roots (no spaces)
-      - COPILOT_SKILLS_DIRS=/home/jovyan/skillsets/common,/home/jovyan/skillsets/typst,/home/jovyan/skillsets/julia,/home/jovyan/skillsets/dvc
+      # Comma-separated skill discovery roots (no spaces); generated from `skill_families` of data.json
+      - COPILOT_SKILLS_DIRS={{#skill_family_items}}/home/jovyan/skillsets/{{{name}}}{{sep}}{{/skill_family_items}}
     entrypoint: sh -c "sleep infinity"
 
 {{#dind}}
