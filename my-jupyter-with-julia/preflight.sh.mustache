@@ -31,7 +31,7 @@ check "$ROOT/agents" '*.agent.md'
 for family in{{#instruction_families}} {{{.}}}{{/instruction_families}}; do
     check "$ROOT/instructions/$family" '*.instructions.md'
 done
-check "$ROOT/skillsets/typst" 'SKILL.md'
+check "$ROOT/skillsets/common" 'SKILL.md'
 
 echo "Copilot sources OK: $ROOT"
 
