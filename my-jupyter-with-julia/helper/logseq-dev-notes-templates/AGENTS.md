@@ -1,5 +1,7 @@
 # AGENTS.md
 
+Always firstly read and use the `logseq-basic` SKILL. If this SKILL is not available, must raise warning.
+
 ## Human--AI-Agent Collaboration Rules
 
 Ownership:
