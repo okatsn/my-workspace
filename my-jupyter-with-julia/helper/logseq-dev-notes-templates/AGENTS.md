@@ -1,3 +1,4 @@
+# AGENTS.md
 
 ## Human--AI-Agent Collaboration Rules
 
@@ -7,6 +8,8 @@ Ownership:
 - AI agents write and update `REPORT`, `REVIEW` and `DECISION` pages for their implementation, experimental testing or design works.
 - Both human and AI writes and maintains `KNOWLEDGE` pages and architecture pages (`[[ARCH/*]]`).
 - `chat` pages: Archived external conversations (Q&A sessions) and third opinions for traceability. Never regard a description in `chat` as proofed or confirmed.
+
+Noted that we have a slightly different journal page naming convention: `journals/YYYY-MM-DD.md`.
 
 ## Logseq dev-notes structure
 
