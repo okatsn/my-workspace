@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Host-side check (devcontainer.json `initializeCommand`): fail before Docker starts
+# Host-side check (devcontainer.json `initializeCommand`): print obvious warnings (without failing)
 # if a Git-controlled Copilot source mounted by docker-compose.yml is missing or empty.
 # Generated from preflight.sh.mustache by render.js; the families come from `instruction_families` and `skill_families` in data.json.
 set -euo pipefail
@@ -15,25 +15,37 @@ mkdir -p -m 1777 /tmp/shared
 echo "/tmp/shared created (will wipe out on OS reboot)"
 
 
+WARNINGS=0
+
+warn() {
+    echo "" >&2
+    echo "##########################################################" >&2
+    echo "!!! WARNING: $1" >&2
+    echo "##########################################################" >&2
+    echo "" >&2
+    WARNINGS=$((WARNINGS + 1))
+}
+
 check() {
     local dir="$1" pattern="$2"
     if [[ ! -d "$dir" ]]; then
-        echo "ERROR: missing directory: $dir" >&2
-        exit 1
-    fi
-    if ! find "$dir" -name "$pattern" -print -quit | grep -q .; then
-        echo "ERROR: no '$pattern' found in: $dir" >&2
-        exit 1
+        warn "missing directory: $dir"
+    elif ! find "$dir" -name "$pattern" -print -quit | grep -q .; then
+        warn "no '$pattern' found in: $dir"
     fi
 }
 
 check "$ROOT/agents" '*.agent.md'
-for family in common julia typst logseq-dev-notes shell; do
+for family in common julia quarto typst logseq-dev-notes shell; do
     check "$ROOT/instructions/$family" '*.instructions.md'
 done
-for family in common typst julia dvc; do
+for family in common typst quarto julia dvc logseq; do
     check "$ROOT/skillsets/$family" 'SKILL.md'
 done
 
-echo "Copilot sources OK: $ROOT"
+if [[ "$WARNINGS" -gt 0 ]]; then
+    echo "!!! $WARNINGS warning(s): some Copilot sources are missing or empty under $ROOT (continuing anyway)" >&2
+else
+    echo "Copilot sources OK: $ROOT"
+fi
 
