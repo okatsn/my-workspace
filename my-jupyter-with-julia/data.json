@@ -16,6 +16,7 @@
         "common",
         "typst",
         "julia",
-        "dvc"
+        "dvc",
+        "logseq"
     ]
 }

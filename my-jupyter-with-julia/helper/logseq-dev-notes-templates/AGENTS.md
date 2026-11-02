@@ -1,51 +1,6 @@
-## Logseq basics
+# AGENTS.md
 
-Logseq use double square brackets syntax `[[page]]` to connect a dedicate page.
-For example, `[[Algorithm Whatever]]` in the body text or the metadata value connects to `pages/Algorithm Whatever.md`; similarly,
-`[[REPORT/implement-stage-1]]` or `#REPORT/implement-stage-1` connects to `REPORT___implement-stage-1.md` (`___` in file ↔️ `/` in wikilink text).
-In logseq OG, tags and page links are functionally identical (`#tag` and `[[tag]]` do the same thing).
-
-Logseq metadata are key-value pairs (syntax: `keys:: value`) for searchable attributes, tags, alias to an entire document pages.
-
-### Query Methods
-
-This is a logseq OG graph (i.e., flat local `.md` files; each page is a readable file); this means you can open a page `[[page]]` by opening the `page.md` file directly.
-Noted that we have a slightly different journal page naming convention: `journals/YYYY-MM-DD.md`.
-
-No logseq CLI available in the environment. Here are recommended (not mandatory) workarounds:
-
-1. If a few journal filenames/dates are provided, use `helper/logseq_refs.py` with `journals` to pull journal pages at once with relational context attached.
-2. If the target is a logseq page, i.e., `GRAPH/pages/*.md`, use `helper/logseq_refs.py` with `refs` to pull the target page with relational context attached.
-3. Use ripgrep, `rg`, to query targets that might appear inside or outside `GRAPH`.
-
-
-See examples below.
-
-#### `ripgrep`
-
-ripgrep is available. Use `rg` for query, for example:
-
-```bash
-# Find a concept directly:
-rg -n 'Quasi Differentiation'
-
-# Print the file names of all pages having property "status" (and its value):
-rg -n '^status::'
-```
-
-#### Using the custom `helper/logseq_refs.py`
-
-This is a custom helper to query logseq contents.
-It is especially useful to:
-
-1. print all pages referenced by the selected journal pages (excluding `chat/*` by default): `python helper/logseq_refs.py path/to/GRAPH/ journals 2026-01-01.md 2026-03-03.md`
-2. print blocks that reference a page (canonical name or alias): `python helper/logseq_refs.py path/to/GRAPH/ refs "DECISION/01_whatever"`
-
-
-> 💡 `refs` takes `--scope blocks` (default) or `--scope pages`: `blocks` prints each matching block (possibly several per file); `pages` prints each matching page once, in full — useful when the only reference lives in a page-level property (e.g. `status:: [[ACTIVE]]`), which `blocks` scope does not see.
-> 💡 For example, `python logseq_refs.py . refs "ACTIVE" --scope pages` is especially useful to give you all `DECSION` pages whose status is `[[ACTIVE]]` or contain `[[ACTIVE]]`.
-> 💡 `refs PAGE` also matches a dangling page name, i.e. a `[[PAGE]]` link with no corresponding page file yet.
-> 💡 Run `python helper/logseq_refs.py --help` to see complete examples.
+Always firstly read and use the `logseq-basic` SKILL. If this SKILL is not available, must raise warning.
 
 ## Human--AI-Agent Collaboration Rules
 
@@ -55,6 +10,8 @@ Ownership:
 - AI agents write and update `REPORT`, `REVIEW` and `DECISION` pages for their implementation, experimental testing or design works.
 - Both human and AI writes and maintains `KNOWLEDGE` pages and architecture pages (`[[ARCH/*]]`).
 - `chat` pages: Archived external conversations (Q&A sessions) and third opinions for traceability. Never regard a description in `chat` as proofed or confirmed.
+
+Noted that we have a slightly different journal page naming convention: `journals/YYYY-MM-DD.md`.
 
 ## Logseq dev-notes structure
 
