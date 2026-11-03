@@ -22,4 +22,14 @@ fi
 [ -f "$template_dir/create_project.sh" ] || { echo "Error: template not found at '$template_dir'. Set MY_WORKSPACE." >&2; exit 1; }
 [ -f "$project/data.json" ] || { echo "Error: '$project/data.json' not found." >&2; exit 1; }
 
+echo "WARNING: the following in '$(cd "$project" && pwd)' will be OVERWRITTEN with the template '$template_dir':"
+echo "  - .devcontainer/ and .vscode/ (files with the same names are replaced)"
+echo "  - helper/ (mirrored: files only in the project's helper/ are DELETED)"
+echo "  - data.json is used as the input and is kept."
+read -r -p "Proceed? [Y/n] " answer || answer="n"
+case "${answer:-Y}" in
+  [Yy]|[Yy][Ee][Ss]) ;;
+  *) echo "Aborted."; exit 1 ;;
+esac
+
 bash "$template_dir/create_project.sh" --source "$project/data.json" --target "$project" --force
