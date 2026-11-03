@@ -37,34 +37,36 @@ Never use a channel tag as the input of another image: this Dockerfile takes the
 
 ## Apply this workspace as arbitrary container (for user)
 
-To build user's workspace, modify [my-jupyter-with-julia/data.json](data.json) and use [my-jupyter-with-julia/create_project.sh](create_project.sh) to export `.devcontainer` files based on [data.json](data.json). For example,
+Use [my-jupyter-with-julia/create_project.sh](create_project.sh) to populate the templates with a `data.json` and export `.devcontainer`, `.vscode`, `data.json` and `helper/` to a project. It is path stable (run it from anywhere, executed rather than sourced) and renders in a temporary directory, so this template directory is never modified.
 
 ```bash
-# After set up my-jupyter-with-julia/data.json
-cd my-jupyter-with-julia
-. create_project.sh TEMP
+create_project.sh --target DIR [--source data.json] [--force]
 ```
 
-creates `TEMP` in the current directory, that you can:
+- `--target`: the project directory. It must not exist unless `--force` is given.
+- `--source`: the `data.json` to populate the templates with; default to [data.json](data.json) next to the script.
+- `--force`: allow an existing target and overwrite its files (`cp -rf`; `helper/` is mirrored with `rsync --delete`, `test_*` excluded).
+
+### Create a new project
 
 ```bash
-cp -r TEMP/. ../../MyProject/
+~/projects/my-workspace/my-jupyter-with-julia/create_project.sh --target ~/projects/NewProject
 ```
 
-Remeber to restore the current workspace.
+Then edit `NewProject/data.json` as needed.
+
+### Update an existing project to the latest template
+
+In the project (e.g., `~/projects/Project1`, whose `data.json` is the one to populate with), run
 
 ```bash
-rm -rv TEMP
+cd ~/projects/Project1
+bash helper/update-devcontainer.sh
 ```
 
+[helper/update-devcontainer.sh](helper/update-devcontainer.sh) is synced to the project's `helper/`; it calls `create_project.sh --source ./data.json --target . --force` of the template in `$MY_WORKSPACE/my-jupyter-with-julia` (default to the template in `~/projects/my-workspace`, or the one containing the script itself when run inside my-workspace). An optional argument sets the project directory: `bash helper/update-devcontainer.sh ~/projects/Project1`.
 
-```bash
-git restore data.json
-git restore .devcontainer/devcontainer.json
-git restore .devcontainer/docker-compose.yml
-git restore .devcontainer/preflight.sh
-cd ..
-```
+Beware that `--force` overwrites `.devcontainer/`, `.vscode/` and `helper/` in the project (files only in the project's `helper/` are deleted); review with `git diff` in the project afterwards.
 
 ## Security Guidelines
 
