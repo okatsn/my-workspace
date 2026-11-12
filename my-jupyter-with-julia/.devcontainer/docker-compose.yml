@@ -22,6 +22,8 @@ services:
     volumes:
       # # The home directory is called "workspace"; try `cd ..` and `ls` to figure it out.
       - ..:/home/jovyan/workspace
+      # The shared directory for all projects of `my-jupyter-with-julia` environment
+      - /tmp/shared:/tmp/shared
       # # WARNING: Docker socket to access Docker server
       # Docker command run inside the container actually communicates with the Docker engine on your host machine. This theoretically allows a malicious agent to grant root accessibility to your host machine by creating a new container and mounted it to the entire hard drive.
       # - /var/run/docker.sock:/var/run/docker.sock
@@ -76,10 +78,10 @@ services:
         read_only: true
         bind:
           create_host_path: false
-      # Skill sets are discovered through COPILOT_SKILLS_DIRS (see `environment`); each set is a skill discovery root, i.e., skills sit directly beneath it.
+      # Skill families selected for this project (listed in `skill_families` of data.json; also used to render COPILOT_SKILLS_DIRS and preflight.sh); each family is a skill discovery root, i.e., skills sit directly beneath it.
       - type: bind
-        source: ${HOME:?HOME is required}/projects/my-agents/copilot/skillsets/typst
-        target: /home/jovyan/skillsets/typst
+        source: ${HOME:?HOME is required}/projects/my-agents/copilot/skillsets
+        target: /home/jovyan/skillsets
         read_only: true
         bind:
           create_host_path: false
@@ -98,8 +100,8 @@ services:
       # - To print available time-zone names: ls /usr/share/zoneinfo
       - TZ=Etc/GMT-8
       - COPILOT_HOME=/home/jovyan/.copilot
-      # Comma-separated skill discovery roots (no spaces)
-      - COPILOT_SKILLS_DIRS=/home/jovyan/skillsets/typst
+      # Comma-separated skill discovery roots (no spaces); generated from `skill_families` of data.json
+      - COPILOT_SKILLS_DIRS=/home/jovyan/skillsets/common,/home/jovyan/skillsets/typst,/home/jovyan/skillsets/julia,/home/jovyan/skillsets/dvc
     entrypoint: sh -c "sleep infinity"
 
 

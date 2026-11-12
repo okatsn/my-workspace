@@ -1,18 +1,39 @@
-# Example: In my-latex-devcontainer run `. create_project.sh HelloWorld`
+#!/usr/bin/env bash
+# Populate the templates in this directory with a `data.json` and copy the result to a target project.
+# Path stable: run it from anywhere, as an executable (`bash create_project.sh ...`), not sourced.
+#
+# Usage: create_project.sh --target DIR [--source data.json] [--force]
+#   --target  destination project directory (required); it must not exist unless `--force` is given.
+#   --source  `data.json` to populate the templates with (default: `data.json` next to this script).
+#   --force   allow an existing target and overwrite the files in it (`cp -rf`), including the manuscript template.
+#
+# Examples:
+#   Create a new project:  create_project.sh --target ~/projects/NewProject
+#   Update a project:      cd ~/projects/Project1 && create_project.sh --source ./data.json --target . --force
+set -euo pipefail
 
-newproj=$1
+template_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source_json="$template_dir/data.json"
+target=""
+force=false
 
-# Attempt to create the directory.
-# If target directory already exists, exit and raise error to prevent the later unintended `cp` behaviors.
-if mkdir "$newproj"; then
-  echo "Directory '$newproj' created successfully."
-else
-  echo "Error: Failed to create directory '$newproj'. The terminal will be closed soon." >&2
-  sleep 5 # Wait before exiting to allow user to see the error message
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --source) source_json="${2:?--source needs a path}"; shift 2 ;;
+    --target) target="${2:?--target needs a path}"; shift 2 ;;
+    --force) force=true; shift ;;
+    *) echo "Error: unknown argument '$1'." >&2; exit 1 ;;
+  esac
+done
+
+[ -n "$target" ] || { echo "Error: --target is required." >&2; exit 1; }
+[ -f "$source_json" ] || { echo "Error: --source '$source_json' is not a file." >&2; exit 1; }
+
+# Without --force, an existing target is an error to prevent unintended overwrites.
+if [ -e "$target" ] && [ "$force" = false ]; then
+  echo "Error: '$target' already exists. Use --force to overwrite." >&2
   exit 1
 fi
-
-# The following `cp` commands will create an extra folder if there already is, for example, resulting in NewProject/.vscode/.vscode/settings.json if NewProject/.vscode already exists.
 
 # Guard: ensure node is available
 if ! command -v node > /dev/null 2>&1; then
@@ -21,27 +42,31 @@ if ! command -v node > /dev/null 2>&1; then
 fi
 
 # Guard: ensure mustache package is installed (install automatically if missing)
-if [ ! -d node_modules ]; then
+if [ ! -d "$template_dir/node_modules" ]; then
   echo "node_modules not found. Running npm install..." >&2
-  npm install
+  (cd "$template_dir" && npm install)
 fi
 
-node render.js
-cp -r .devcontainer "$newproj/.devcontainer"
-cp -r .vscode "$newproj/.vscode"
-cp data.json "$newproj/data.json"
+# Render into a temporary directory so the template directory is never modified.
+stage="$(mktemp -d)"
+trap 'rm -rf "$stage"' EXIT
+cp -r "$template_dir/.devcontainer" "$stage/.devcontainer"
+node "$template_dir/render.js" --data "$source_json" --out "$stage"
+
+# `cp -rf DIR "$target/"` merges into an existing "$target/DIR" instead of nesting.
+mkdir -p "$target"
+cp -rf "$stage/.devcontainer" "$target/"
+cp -rf "$template_dir/.vscode" "$target/"
+# `--source` may already be the target's own data.json.
+[ "$source_json" -ef "$target/data.json" ] || cp -f "$source_json" "$target/data.json"
 # DVC pipeline
-cp dvc.yaml "$newproj/dvc.yaml"
-cp params.yaml "$newproj/params.yaml"
+cp -f "$template_dir/dvc.yaml" "$template_dir/params.yaml" "$target/"
 # scripts used in DVC pipeline
-cp expand_output.sh "$newproj/expand_output.sh"
-cp clean_n_zip.sh "$newproj/clean_n_zip.sh"
-cp diff_ref.sh "$newproj/diff_ref.sh"
-cp tex_graph.py "$newproj/tex_graph.py"
+cp -f "$template_dir/expand_output.sh" "$template_dir/clean_n_zip.sh" "$template_dir/diff_ref.sh" "$template_dir/tex_graph.py" "$target/"
 # manuscript template
-cp -r manuscript "$newproj/manuscript"
-cp -r chapters "$newproj/chapters"
-cp -r contents "$newproj/contents"
-cp .gitignore "$newproj/.gitignore"
+cp -rf "$template_dir/manuscript" "$template_dir/chapters" "$template_dir/contents" "$target/"
+cp -f "$template_dir/.gitignore" "$target/"
 # AGENTS.md (README shared by agents and human)
-cp AGENTS.md "$newproj/AGENTS.md"
+cp -f "$template_dir/AGENTS.md" "$target/"
+
+echo "Project '$target' is populated from '$source_json'."
