@@ -45,7 +45,6 @@
         "oijaz.unicode-latex",
         // DVC (data version control)
         "lakefs.lakefs-dvc",
-        "lakefs.lakefs-dvc-pack",
         // Graphviz/Dotfile Preview
         "wuzhiguo.callviz", // simple
         "tintinweb.graphviz-interactive-preview", //full of features
