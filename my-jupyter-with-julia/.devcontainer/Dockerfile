@@ -29,7 +29,10 @@ RUN apt-get update && \
     # gnupg \
     # # For Claude `docx` skill (okatsn/claude-skills)
     # libreoffice \
-    # poppler-utils \
+    # # For PDF ingestion
+    poppler-utils \
+    pdftotext \
+    pdftoppm \
     # # Final clean
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
