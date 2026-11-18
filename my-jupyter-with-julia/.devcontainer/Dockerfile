@@ -31,8 +31,6 @@ RUN apt-get update && \
     # libreoffice \
     # # For PDF ingestion
     poppler-utils \
-    pdftotext \
-    pdftoppm \
     # # Final clean
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
