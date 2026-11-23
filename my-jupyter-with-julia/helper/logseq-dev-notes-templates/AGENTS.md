@@ -6,12 +6,17 @@ Always firstly read and use the `logseq-basic` SKILL. If this SKILL is not avail
 
 Ownership:
 
-- Only human developers write `journals/*.md`, review and update status of `DECISION`.
+- Only human developers write `journals/*.md`.
 - AI agents write and update `REPORT`, `REVIEW` and `DECISION` pages for their implementation, experimental testing or design works.
 - Both human and AI writes and maintains `KNOWLEDGE` pages and architecture pages (`[[ARCH/*]]`).
 - `chat` pages: Archived external conversations (Q&A sessions) and third opinions for traceability. Never regard a description in `chat` as proofed knowledge or confirmed, determined decisions.
 
 Noted that we have a slightly different journal page naming convention: `journals/YYYY-MM-DD.md`.
+
+!!! note IMPORTANT
+    Human developers write journals (`journals/*.md`); the journal pages are the source of human intents.
+    Never touch journal pages; flag misalignment between human intents and the specification/documentation instead.
+
 
 ## Logseq dev-notes structure
 
