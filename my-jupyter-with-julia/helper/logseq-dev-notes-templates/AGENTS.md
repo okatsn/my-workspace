@@ -17,6 +17,22 @@ Noted that we have a slightly different journal page naming convention: `journal
     Human developers write journals (`journals/*.md`); the journal pages are the source of human intents.
     Never touch journal pages; flag misalignment between human intents and the specification/documentation instead.
 
+## GRAPH map
+
+```text
+⋮
+├── logseq-dev-notes      # Logseq GRAPH for development notes
+│   ├── journals/         # Key notes as Diary written by Human developers
+│   │   └── ...           # Journal pages is the source of Human intents
+│   └── pages/
+│       ├── INDEX.md        # Overview (Dashboard)
+│       ├── ARCH___*.md     # Architecture Design
+│       ├── REPORT___*.md   # Implementation Reports
+│       ├── DECISION___*.md # Decision Gates or Blockers
+│       ├── REVIEW___*.md   # Code Review and testing Summary
+│       └── ...             # Knowledge and other pages
+⋮
+```
 
 ## Logseq dev-notes structure
 
